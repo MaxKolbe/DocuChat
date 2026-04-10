@@ -1,7 +1,7 @@
 //ROUTES
 import express from "express";
-import { validateJoiRequest, validateZodRequest} from "./user.middleware.js"
-import { getController, postController, putController, deleteController } from "./user.controller.js";
+import { validateRequest} from "./user.validation.js"
+import { getController, postController, putController, deleteController } from "./user.controllers.js";
 const router = express.Router();
 
 router.get("/", getController);
@@ -9,13 +9,9 @@ router.post("/", postController);
 router.put("/", putController);
 router.delete("/", deleteController);
 
-/* //request validation with joi 
-import {userSchema1} from "./user.schema.js"
-router.get("/", validateJoiRequest(userSchema1), getController)
-*/
 /* //request validation with zod 
-import {userSchema2} from "./user.schema.js"
-router.get("/", validateZodRequest(userSchema2), getController)
+import {userSchema} from "./user.schema.js"
+router.get("/", validatRequest(userSchema2), getController)
 */
 
 export default router;

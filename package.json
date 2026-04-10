@@ -26,7 +26,6 @@
     "dotenv": "^17.3.1",
     "ejs": "^5.0.1",
     "express": "^5.2.1",
-    "joi": "^18.0.2",
     "pg": "^8.20.0",
     "redis": "^5.11.0",
     "winston": "^3.19.0",
@@ -35,12 +34,9 @@
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
-    "@types/jest": "^30.0.0",
-    "@types/joi": "^17.2.2",
     "@types/node": "^25.5.0",
     "@types/pg": "^8.18.0",
     "@types/redis": "^4.0.10",
-    "ts-jest": "^29.4.6",
     "typescript": "^5.9.3"
   }
 }

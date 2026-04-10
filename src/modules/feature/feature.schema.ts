@@ -2,7 +2,7 @@
 import * as z from "zod";
 
 //ZOD
-export const userSchema = z.object({
+export const featureSchema = z.object({
   string: z.string(),
   number: z.number(),
   bigint: z.bigint(),
@@ -20,4 +20,4 @@ export const userSchema = z.object({
     }),
   ),
 });
-export type User = z.infer<typeof userSchema>;
+export type Feature = z.infer<typeof featureSchema>;

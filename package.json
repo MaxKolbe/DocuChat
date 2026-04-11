@@ -8,7 +8,10 @@
     "build": "npm install --include=dev && npx tsc",
     "start": "node dist/index.js",
     "dev": "tsx watch src/index.ts",
-    "watch": "npx tsc -w"
+    "watch": "npx tsc -w",
+    "db:gen": "npx prisma generate",
+    "db:mig": "npx prisma migrate dev --name init",
+    "db:gen-mig": "npx prisma generate && npx prisma migrate dev --name init"
   },
   "repository": {
     "type": "git",
@@ -25,6 +28,8 @@
   "dependencies": {
     "@logtail/node": "^0.5.8",
     "@logtail/winston": "^0.5.8",
+    "@prisma/adapter-pg": "^7.7.0",
+    "@prisma/client": "^7.7.0",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
     "ejs": "^5.0.1",
@@ -38,8 +43,9 @@
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/node": "^25.5.0",
-    "@types/pg": "^8.18.0",
+    "@types/pg": "^8.20.0",
     "@types/redis": "^4.0.10",
+    "prisma": "^7.7.0",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   }

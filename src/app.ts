@@ -3,6 +3,8 @@ import cors from "cors";
 // import { connectRedis } from "./configs/cache.config.js";
 // import router from "./modules/user/user.routes.js";
 import errorHandler from "./middleware/errorHandler.js";
+import { prisma } from "./configs/prisma.js"
+import logger from "./configs/logger.config.js";
 import dotenv from "dotenv";
 dotenv.config({
   path: "../.env",
@@ -34,6 +36,17 @@ app.use(cors(corsOptions));
 
 //ROUTES
 /* app.use("/", router); */
+
+process.on('SIGINT', async () => { 
+  logger.info('Shutting down...'); 
+  await prisma.$disconnect(); 
+  process.exit(0); 
+}); 
+
+process.on('SIGTERM', async () => { 
+  await prisma.$disconnect(); 
+  process.exit(0); 
+}); 
 
 //GLOBAL ERROR HANDLER
 app.use(errorHandler);

@@ -9,8 +9,10 @@
     "start": "node dist/index.js",
     "dev": "tsx watch src/index.ts",
     "watch": "npx tsc -w",
+    "seed": "tsx prisma/seed.ts",
     "db:gen": "npx prisma generate",
     "db:mig": "npx prisma migrate dev --name init",
+    "db:mig-prod": "npx prisma migrate deploy",
     "db:gen-mig": "npx prisma generate && npx prisma migrate dev --name init"
   },
   "repository": {
@@ -30,6 +32,7 @@
     "@logtail/winston": "^0.5.8",
     "@prisma/adapter-pg": "^7.7.0",
     "@prisma/client": "^7.7.0",
+    "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
     "ejs": "^5.0.1",
@@ -40,6 +43,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/node": "^25.5.0",

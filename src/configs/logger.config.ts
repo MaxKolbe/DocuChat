@@ -8,9 +8,9 @@ dotenv.config({
 });
 
 // Create a Logtail client
-const logtail = new Logtail(process.env.SOURCE_TOKEN!, {
-  endpoint: `https://${process.env.INGESTING_HOST}`,
-});
+// const logtail = new Logtail(process.env.SOURCE_TOKEN!, {
+//   endpoint: `https://${process.env.INGESTING_HOST}`,
+// });
 const { combine, timestamp, json, errors, align, cli } = winston.format;
 
 const logger = winston.createLogger({

@@ -4,6 +4,7 @@ dotenv.config({
   path: "./.env"
 })
 
+console.log(process.env["PG_DATABASE_DEV_URL"])
 export default defineConfig({
   schema: "prisma/schema.prisma",
   migrations: {

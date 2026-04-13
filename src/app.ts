@@ -1,11 +1,12 @@
 import express from "express";
 import cors from "cors";
-// import { connectRedis } from "./configs/cache.config.js";
-// import router from "./modules/user/user.routes.js";
 import errorHandler from "./middleware/errorHandler.js";
-import { prisma } from "./configs/prisma.js"
+// import router from "./modules/user/user.routes.js";
 import logger from "./configs/logger.config.js";
-import "dotenv/config"
+// import { connectRedis } from "./configs/cache.config.js";
+import { prisma } from "./configs/prisma.js";
+import "./events/auth.events.js"
+import "dotenv/config";
 
 const app = express();
 
@@ -29,21 +30,21 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors(corsOptions));
 
-// connectRedis(); 
+// connectRedis();
 
 //ROUTES
 /* app.use("/", router); */
 
-process.on('SIGINT', async () => { 
-  logger.info('Shutting down...'); 
-  await prisma.$disconnect(); 
-  process.exit(0); 
-}); 
+process.on("SIGINT", async () => {
+  logger.info("Shutting down...");
+  await prisma.$disconnect();
+  process.exit(0);
+});
 
-process.on('SIGTERM', async () => { 
-  await prisma.$disconnect(); 
-  process.exit(0); 
-}); 
+process.on("SIGTERM", async () => {
+  await prisma.$disconnect();
+  process.exit(0);
+});
 
 //GLOBAL ERROR HANDLER
 app.use(errorHandler);

@@ -1,11 +1,7 @@
 import winston from "winston";
-import dotenv from "dotenv";
+import "dotenv/config"
 import { Logtail } from "@logtail/node";
 // import { LogtailTransport } from "@logtail/winston";
-
-dotenv.config({
-  path: "../../.env",
-});
 
 // Create a Logtail client
 // const logtail = new Logtail(process.env.SOURCE_TOKEN!, {

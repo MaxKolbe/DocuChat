@@ -5,10 +5,7 @@ import cors from "cors";
 import errorHandler from "./middleware/errorHandler.js";
 import { prisma } from "./configs/prisma.js"
 import logger from "./configs/logger.config.js";
-import dotenv from "dotenv";
-dotenv.config({
-  path: "../.env",
-});
+import "dotenv/config"
 
 const app = express();
 

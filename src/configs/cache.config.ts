@@ -1,10 +1,6 @@
 import { createClient, RedisClientType } from "redis";
-import dotenv from "dotenv";
+import "dotenv/config"
 import logger from "./logger.config.js";
-
-dotenv.config({
-  path: "../../.env",
-});
 
 const MAX_RETRIES = 5;
 

@@ -1,10 +1,8 @@
 import { Pool } from "pg";
-import dotenv from "dotenv";
+import "dotenv/config"
 import logger from "./logger.config.js";
 
-dotenv.config({
-  path: "../../.env",
-});
+
 
 const dbMap = new Map([
   ["development", process.env.PG_DATABASE_DEV_URL],

@@ -11,9 +11,9 @@
     "watch": "npx tsc -w",
     "seed": "tsx prisma/seed.ts",
     "db:gen": "npx prisma generate",
-    "db:mig": "npx prisma migrate dev --name init",
+    "db:mig": "npx prisma migrate dev --name genericname",
     "db:mig-prod": "npx prisma migrate deploy",
-    "db:gen-mig": "npx prisma generate && npx prisma migrate dev --name init"
+    "db:gen-mig": "npx prisma generate && npx prisma migrate dev --name genericname"
   },
   "repository": {
     "type": "git",

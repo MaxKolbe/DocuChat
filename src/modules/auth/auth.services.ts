@@ -1,8 +1,7 @@
 import { AUTH_EVENTS } from "../../events/auth.events.js";
 import { appEvents } from "../../utils/events.js";
 import { prisma } from "../../configs/prisma.js";
-import bcrypt from "bcryptjs";
-import { email } from "zod";
+import { hashPassword, verifyPassword } from "../../utils/password.js";
 
 export const register = async (data: { email: string; password: string }) => {
   const existing = await prisma.user.findUnique({
@@ -16,7 +15,7 @@ export const register = async (data: { email: string; password: string }) => {
     };
   }
 
-  const passwordHash = await bcrypt.hash(data.password, 10);
+  const passwordHash = await hashPassword(data.password);
   const user = await prisma.user.create({
     data: {
       email: data.email.toLowerCase().trim(),
@@ -51,7 +50,7 @@ export const login = async (data: { email: string; password: string; deviceInfo?
     };
   }
 
-  const valid = await bcrypt.compare(data.password, user.passwordHash);
+  const valid = await verifyPassword(data.password, user.passwordHash);
   if (!valid) {
     appEvents.emit(AUTH_EVENTS.LOGIN_FAILED, {
       email: data.email,

@@ -83,12 +83,6 @@ export const login = async (data: { email: string; password: string; deviceInfo?
     };
   }
 
-  // Emit success event
-  appEvents.emit(AUTH_EVENTS.USER_LOGGED_IN, {
-    userId: user.id,
-    deviceInfo: data.deviceInfo,
-  });
-
   const accessToken = generateAccessToken(user);
   const refreshToken = generateRefreshToken(user);
 
@@ -99,6 +93,12 @@ export const login = async (data: { email: string; password: string; deviceInfo?
       token: tokenHash,
       expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7days
     },
+  });
+
+  // Emit success event
+  appEvents.emit(AUTH_EVENTS.USER_LOGGED_IN, {
+    userId: user.id,
+    deviceInfo: data.deviceInfo,
   });
 
   return {

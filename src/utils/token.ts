@@ -1,6 +1,6 @@
 import "dotenv/config";
 import jwt from "jsonwebtoken";
-import { TokenPayload } from "../types/auth.d.js"
+import { TokenPayload } from "../types/auth.d.js";
 
 const ACCESS_SECRET = process.env.JWT_ACCESS_SECRET!;
 const REFRESH_SECRET = process.env.JWT_REFRESH_SECRET!;
@@ -18,10 +18,9 @@ export const generateRefreshToken = (user: { id: string; tier: string }) => {
 };
 
 export const verifyAccessToken = (token: string): TokenPayload => {
-    return jwt.verify(token, ACCESS_SECRET) as TokenPayload
-}
+  return jwt.verify(token, ACCESS_SECRET) as TokenPayload;
+};
 
-export const verifyRefresgToken = (token: string): TokenPayload => {
-    return jwt.verify(token, REFRESH_SECRET) as TokenPayload
-}
-
+export const verifyRefreshToken = (token: string): TokenPayload => {
+  return jwt.verify(token, REFRESH_SECRET) as TokenPayload;
+};

@@ -49,7 +49,7 @@ appEvents.on(AUTH_EVENTS.USER_REGISTERED, async (user) => {
   }
 });
 
-// Listener 3: Log slogin events (useful for security audits)
+// Listener 3: Log login events (useful for security audits)
 appEvents.on(AUTH_EVENTS.USER_LOGGED_IN, async (data) => {
   try {
     await prisma.usageLog.create({

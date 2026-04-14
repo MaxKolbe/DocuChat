@@ -5,7 +5,6 @@ import { hashPassword, verifyPassword } from "../../utils/password.js";
 import {
   generateAccessToken,
   generateRefreshToken,
-  verifyAccessToken,
   verifyRefreshToken,
 } from "../../utils/token.js";
 import crypto from "crypto";

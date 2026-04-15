@@ -1,5 +1,6 @@
-import { Request, Response, NextFunction } from "express";
 import * as z from "zod";
+import { Request, Response, NextFunction } from "express";
+import { errorResponse } from "../utils/responseHandler.js";
 
 export const validateRequest =
   <T>(schema: z.ZodType<T>) =>
@@ -16,19 +17,12 @@ export const validateRequest =
         message: issue.message,
       }));
 
-      return res.status(400).json({
-        success: false,
-        error: {
-          code: "VALIDATION_ERROR",
-          message: "Request validation failed",
-          details: errors,
-        },
-      });
+      return errorResponse(res, 400, "Request validation failed", errors, "VALIDATION_ERROR");
     }
 
     // Replace req properties with validated (and transformed) data
     req.body = result.data.body ?? req.body;
-    req.query = result.data.query ?? req.query;
+    // req.query = result.data.query ?? req.query;
     req.params = result.data.params ?? req.params;
 
     next();

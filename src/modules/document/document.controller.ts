@@ -14,7 +14,7 @@ export const getController = async (req: Request, res: Response, next: NextFunct
 
 export const postController = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const response = await createService();
+    // const response = await createService();
     successResponse(res, 200, "POST");
   } catch (err) {
     next(err);

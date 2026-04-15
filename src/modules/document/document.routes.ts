@@ -4,11 +4,10 @@ import { validateRequest } from "../../middleware/validate.js";
 import {
   getController,
   postController,
-  putController,
   deleteController,
 } from "./document.controller.js";
 import {
-  createDocumentSchema,
+  createDocumentSchema, 
   listDocumentsSchema,
   documentParamsSchema,
 } from "./document.schema.js";

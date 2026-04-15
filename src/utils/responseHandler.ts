@@ -15,11 +15,14 @@ export const successResponse = (
   });
 };
 
-export const errorResponse = (res: Response, code: number, message: string, error?: any) => {
+export const errorResponse = (res: Response, code: number, message: string, errorDetails?: any, errorType: any = "ERROR") => {
   return res.status(code).json({
     success: false,
-    message,
-    error,
+    error: {
+      errorType,
+      message,
+      details: errorDetails
+    },
   });
 };
 

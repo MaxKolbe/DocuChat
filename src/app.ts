@@ -35,9 +35,9 @@ app.use(cors(corsOptions));
 // connectRedis();
 
 //ROUTES
-app.use("/api/auth", authRouter);
-app.use("/api/documents", documentRouter);
-app.use("/api/conversations", conversationRouter);
+app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/documents", documentRouter);
+app.use("/api/v1/conversations", conversationRouter);
 
 process.on("SIGINT", async () => {
   logger.info("Shutting down...");

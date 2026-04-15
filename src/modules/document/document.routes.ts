@@ -13,6 +13,36 @@ import {
 } from "./document.schema.js";
 const router = express.Router();
 
+/** 
+ * @swagger 
+ * /documents: 
+ *   get: 
+ *     summary: List user's documents 
+ *     tags: [Documents] 
+ *     security: 
+ *       - bearerAuth: [] 
+ *     parameters: 
+ *       - in: query 
+ *         name: page 
+ *         schema: 
+ *           type: integer 
+ *           default: 1 
+ *       - in: query 
+ *         name: limit 
+ *         schema: 
+ *           type: integer 
+ *           default: 20 
+ *       - in: query 
+ *         name: status 
+ *         schema: 
+ *           type: string 
+ *           enum: [pending, processing, ready, failed] 
+ *     responses: 
+ *       200: 
+ *         description: List of documents 
+ *       401: 
+ *         description: Not authenticated 
+ */ 
 router.get("/", validateRequest(listDocumentsSchema), getController);
 router.post("/", validateRequest(createDocumentSchema), postController);
 router.get("/:id", validateRequest(documentParamsSchema), getController);

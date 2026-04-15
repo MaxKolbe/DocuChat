@@ -2,9 +2,7 @@ import { z } from "zod";
 
 export const registerSchema = z.object({
   body: z.object({
-    email: z
-      .email("Must be a valid email")
-      .transform((v) => v.toLowerCase().trim()),
+    email: z.email("Must be a valid email").transform((v) => v.toLowerCase().trim()),
     password: z
       .string()
       .min(8, "Password must be at least 8 characters")
@@ -16,7 +14,7 @@ export const registerSchema = z.object({
 
 export const loginSchema = z.object({
   body: z.object({
-    email: z.string().email(),
+    email: z.email(),
     password: z.string().min(1, "Password is required"),
   }),
 });
@@ -27,6 +25,6 @@ export const refreshSchema = z.object({
   }),
 });
 
-export type Register = z.infer<typeof registerSchema>
-export type Login = z.infer<typeof loginSchema>
-export type Refresh = z.infer<typeof refreshSchema>
+export type Register = z.infer<typeof registerSchema>;
+export type Login = z.infer<typeof loginSchema>;
+export type Refresh = z.infer<typeof refreshSchema>;

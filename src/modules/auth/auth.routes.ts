@@ -1,11 +1,18 @@
-import express from 'express'
-import { registerController, loginController, refreshController, logoutController } from './auth.controller.js'
+import express from "express";
+import { validateRequest } from "../../middleware/validate.js";
+import { registerSchema, loginSchema, refreshSchema } from "./auth.schemas.js";
+import {
+  registerController,
+  loginController,
+  refreshController,
+  logoutController,
+} from "./auth.controller.js";
 
-const router = express.Router()
+const router = express.Router();
 
-router.post("/register", registerController)
-router.post("/login", loginController)
-router.post("/refresh", refreshController)
-router.post("/logout", logoutController)
+router.post("/register", validateRequest(registerSchema), registerController);
+router.post("/login", validateRequest(loginSchema), loginController);
+router.post("/refresh", validateRequest(refreshSchema), refreshController);
+router.post("/logout", logoutController);
 
-export default router
+export default router;

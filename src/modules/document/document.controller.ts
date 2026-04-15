@@ -1,5 +1,5 @@
 //CONTROLLER
-import { Request, Response, NextFunction } from "express"
+import { Request, Response, NextFunction } from "express";
 import { successResponse, errorResponse } from "../../utils/responseHandler.js";
 import { getService, createService, updateService, deleteService } from "./document.services.js";
 

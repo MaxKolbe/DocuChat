@@ -23,16 +23,15 @@ export const errorResponse = (res: Response, code: number, message: string, erro
   });
 };
 
- 
 // Error response Example
-// { 
-//   "success": false, 
-//   "error": { 
-//     "code": "VALIDATION_ERROR", 
-//     "message": "Request validation failed", 
-//     "details": [ 
-//       { "field": "email", "message": "Invalid email format" }, 
-//       { "field": "password", "message": "Must be at least 8 characters" } 
-//     ] 
-//   } 
+// {
+//   "success": false,
+//   "error": {
+//     "code": "VALIDATION_ERROR",
+//     "message": "Request validation failed",
+//     "details": [
+//       { "field": "email", "message": "Invalid email format" },
+//       { "field": "password", "message": "Must be at least 8 characters" }
+//     ]
+//   }
 // }

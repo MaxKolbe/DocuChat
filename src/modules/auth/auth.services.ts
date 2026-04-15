@@ -104,9 +104,9 @@ export const login = async (data: { email: string; password: string; deviceInfo?
     code: 200,
     message: "User logged in successfully",
     data: {
+      user: { id: user.id, email: user.email, tier: user.tier },
       accessToken,
       refreshToken,
-      user: { id: user.id, email: user.email, tier: user.tier },
     },
   };
 };

@@ -69,7 +69,7 @@ appEvents.on(AUTH_EVENTS.USER_LOGGED_IN, async (data) => {
   }
 });
 
-// Listener 4: Track failed login attempts 
+// Listener 4: Track(Log) failed login attempts 
 appEvents.on(AUTH_EVENTS.LOGIN_FAILED, async (data) => {
     try{
         logger.warn(`Failed login attempt for ${data.email} from ${data.deviceInfo}`)

@@ -2,15 +2,15 @@ import { Request, Response, NextFunction } from "express";
 import * as z from "zod";
 
 export const validateRequest =
-   (schema: z.ZodType) => (req: Request, res: Response, next: NextFunction) => {
-    const result = schema.safeParse({
+   <T>(schema: z.ZodType<T>) => (req: Request, res: Response, next: NextFunction) => {
+    const result: any = schema.safeParse({
       body: req.body,
       query: req.query,
       params: req.params,
     });
 
     if (!result.success) {
-      const errors = result.error.issues.map((issue) => ({
+      const errors = result.error.issues.map((issue: any) => ({
         field: issue.path.slice(1).join("."), // Remove 'body'/'query' prefix
         message: issue.message,
       }));
@@ -25,11 +25,10 @@ export const validateRequest =
       });
     }
 
-    console.log(result.data)
     // Replace req properties with validated (and transformed) data
     req.body = result.data.body ?? req.body;
     req.query = result.data.query ?? req.query;
     req.params = result.data.params ?? req.params;
 
     next();
-  };
+  }; 

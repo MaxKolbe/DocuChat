@@ -1,12 +1,12 @@
 import { AUTH_EVENTS } from "../../events/auth.events.js";
-import { appEvents } from "../../utils/events.js";
+import { appEvents } from "../../lib/events.js";
 import { prisma } from "../../configs/prisma.js";
-import { hashPassword, verifyPassword } from "../../utils/password.js";
+import { hashPassword, verifyPassword } from "../../lib/password.js";
 import {
   generateAccessToken,
   generateRefreshToken,
   verifyRefreshToken,
-} from "../../utils/token.js";
+} from "../../lib/token.js";
 import crypto from "crypto";
 
 // Register

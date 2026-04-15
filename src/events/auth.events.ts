@@ -1,5 +1,5 @@
 import logger from "../configs/logger.config.js";
-import { appEvents } from "../utils/events.js";
+import { appEvents } from "../lib/events.js";
 import { prisma } from "../configs/prisma.js";
 
 // DEFINE EVENT NAMES AS CONSTANTS
@@ -69,12 +69,12 @@ appEvents.on(AUTH_EVENTS.USER_LOGGED_IN, async (data) => {
   }
 });
 
-// Listener 4: Track(Log) failed login attempts 
+// Listener 4: Track(Log) failed login attempts
 appEvents.on(AUTH_EVENTS.LOGIN_FAILED, async (data) => {
-    try{
-        logger.warn(`Failed login attempt for ${data.email} from ${data.deviceInfo}`)
-        // In Week 3 we'll add rate limiting based on failed attempts 
-    }catch(error){
-        logger.error(`Failed to log failed login: ${error}`);
-    }
-})
+  try {
+    logger.warn(`Failed login attempt for ${data.email} from ${data.deviceInfo}`);
+    // In Week 3 we'll add rate limiting based on failed attempts
+  } catch (error) {
+    logger.error(`Failed to log failed login: ${error}`);
+  }
+});

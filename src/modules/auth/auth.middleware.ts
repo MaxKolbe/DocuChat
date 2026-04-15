@@ -1,6 +1,6 @@
 // src/middleware/auth.ts
 import { Request, Response, NextFunction } from "express";
-import { verifyAccessToken } from "../../utils/token.js";
+import { verifyAccessToken } from "../../lib/token.js";
 import { errorResponse } from "../../utils/responseHandler.js";
 
 // Extend Express Request to include user

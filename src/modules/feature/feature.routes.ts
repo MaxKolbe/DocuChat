@@ -1,6 +1,6 @@
 //ROUTES
 import express from "express";
-import { validateRequest} from "./feature.validation.js"
+import { validateRequest} from "../../middleware/validate.js"
 import { getController, postController, putController, deleteController } from "./feature.controller.js";
 const router = express.Router();
 

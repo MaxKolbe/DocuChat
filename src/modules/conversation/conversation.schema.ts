@@ -1,23 +1,21 @@
-//SCHEMA
-import * as z from "zod";
+import { z } from "zod";
 
-//ZOD
-export const featureSchema = z.object({
-  string: z.string(),
-  number: z.number(),
-  bigint: z.bigint(),
-  bool: z.boolean(),
-  symbol: z.symbol(),
-  undefined: z.undefined(),
-  null: z.null(),
-  email: z.email(),
-  date: z.iso.date(),
-  time: z.iso.time(),
-  datetime: z.iso.datetime(),
-  array: z.array(
-    z.object({
-      string: z.string().min(1),
-    }),
-  ),
+export const createConversationSchema = z.object({
+  body: z.object({
+    title: z.string().max(200).optional(),
+    documentId: z.string().uuid().optional(),
+  }),
 });
-export type Feature = z.infer<typeof featureSchema>;
+
+export const sendMessageSchema = z.object({
+  params: z.object({
+    id: z.string().uuid("Invalid conversation ID"),
+  }),
+  body: z.object({
+    content: z.string().min(1, "Message cannot be empty").max(10000, "Message too long"),
+    documentId: z.string().uuid().optional(),
+  }),
+});
+
+export type Createconversation = z.infer<typeof createConversationSchema>
+export type Sendmessage = z.infer<typeof sendMessageSchema>

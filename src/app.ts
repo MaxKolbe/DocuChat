@@ -1,11 +1,13 @@
 import express from "express";
 import cors from "cors";
 import errorHandler from "./middleware/errorHandler.js";
-import authRouter from "./modules/auth/auth.routes.js"
+import authRouter from "./modules/auth/auth.routes.js";
+import documentRouter from "./modules/document/document.routes.js";
+import conversationRouter from "./modules/conversation/conversation.routes.js";
 import logger from "./configs/logger.config.js";
 // import { connectRedis } from "./configs/cache.config.js";
 import { prisma } from "./configs/prisma.js";
-import "./events/auth.events.js"
+import "./events/auth.events.js";
 import "dotenv/config";
 
 const app = express();
@@ -33,7 +35,9 @@ app.use(cors(corsOptions));
 // connectRedis();
 
 //ROUTES
-app.use("/api/auth", authRouter); 
+app.use("/api/auth", authRouter);
+app.use("/api/documents", documentRouter);
+app.use("/api/conversations", conversationRouter);
 
 process.on("SIGINT", async () => {
   logger.info("Shutting down...");

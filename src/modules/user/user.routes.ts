@@ -1,6 +1,6 @@
 //ROUTES
 import express from "express";
-import { validateRequest} from "./user.validation.js"
+import { validateRequest} from "../../middleware/validate.js"
 import { getController, postController, putController, deleteController } from "./user.controllers.js";
 const router = express.Router();
 

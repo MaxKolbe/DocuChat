@@ -1,7 +1,7 @@
 //CONTROLLER
 import { Request, Response, NextFunction } from "express"
 import { successResponse, errorResponse } from "../../utils/responseHandler.js";
-import { getService, createService, updateService, deleteService } from "./feature.services.js";
+import { getService, createService, updateService, deleteService } from "./conversation.services.js";
 
 export const getController = async (req: Request, res: Response, next: NextFunction) => {
   try {

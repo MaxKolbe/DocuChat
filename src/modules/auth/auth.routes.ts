@@ -9,7 +9,6 @@ import {
 } from "./auth.controller.js";
 
 const router = express.Router();
-
  
 /** 
  * @swagger 

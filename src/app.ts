@@ -5,11 +5,12 @@ import authRouter from "./modules/auth/auth.routes.js";
 import documentRouter from "./modules/document/document.routes.js";
 import conversationRouter from "./modules/conversation/conversation.routes.js";
 import logger from "./configs/logger.config.js";
-import swaggerUi from 'swagger-ui-express'; 
+import swaggerUi from "swagger-ui-express";
+import { authenticate } from "./modules/auth/auth.middleware.js";
 // import { connectRedis } from "./configs/cache.config.js";
-import { Request, Response } from "express";
-import { swaggerSpec } from './configs/swagger.config.js'; 
+import { swaggerSpec } from "./configs/swagger.config.js";
 import { prisma } from "./configs/prisma.js";
+import { Request, Response } from "express";
 import "./events/auth.events.js";
 import "dotenv/config";
 
@@ -39,13 +40,13 @@ app.use(cors(corsOptions));
 
 //ROUTES
 app.use("/api/v1/auth", authRouter);
-app.use("/api/v1/documents", documentRouter);
-app.use("/api/v1/conversations", conversationRouter);
-// Serve Swagger UI 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec)); 
-// Also serve the raw JSON spec (useful for code generators) 
-app.get('/api-docs.json', (req: Request, res: Response) => { 
-  res.json(swaggerSpec); 
+app.use("/api/v1/documents", authenticate, documentRouter);
+app.use("/api/v1/conversations", authenticate, conversationRouter);
+// SERVE SWAGGER UI
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+// SERVE THE RAW JSON SPEC (useful for code generators)
+app.get("/api-docs.json", (req: Request, res: Response) => {
+  res.json(swaggerSpec);
 });
 
 process.on("SIGINT", async () => {
@@ -57,6 +58,14 @@ process.on("SIGINT", async () => {
 process.on("SIGTERM", async () => {
   await prisma.$disconnect();
   process.exit(0);
+});
+
+// 404 HANDLER FOR UNKNOWN ROUTES
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    error: { code: "NOT_FOUND", message: `Route ${req.path} not found` },
+  });
 });
 
 //GLOBAL ERROR HANDLER

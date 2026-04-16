@@ -10,8 +10,8 @@ export function errorHandler(err: Error, req: Request, res: Response, next: Next
     return res.status(err.statusCode).json({
       success: false,
       error: {
-        code: err.isOperational ? 500 : err.code,
-        Message: err.isOperational ? "Internal server error" : err.message,
+        code: err.isOperational ?  err.code : 500,
+        Message: err.isOperational ?  err.message : "Internal server error",
         ...(err.details && err.isOperational && { details: err.details }),
       },
     });

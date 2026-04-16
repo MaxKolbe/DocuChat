@@ -1,7 +1,7 @@
 // src/middleware/auth.ts
 import { Request, Response, NextFunction } from "express";
 import { verifyAccessToken } from "../../lib/token.js";
-import { errorResponse } from "../../utils/responseHandler.js";
+import { ForbiddenError, UnauthorizedError } from "../../lib/errors.js";
 
 // Extend Express Request to include user
 declare global {
@@ -15,8 +15,8 @@ declare global {
 export const authenticate = (req: Request, res: Response, next: NextFunction) => {
   const header = req.headers.authorization;
 
-  if (!header || !header.startsWith("Bearer ")) {
-    return errorResponse(res, 401, "No token provided");
+  if (!header || !header.startsWith("Bearer")) {
+    throw new UnauthorizedError("No token provided");
   }
 
   const token = header.split(" ")[1];
@@ -26,7 +26,7 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
 
     // Make sure it's an access token, not a refresh token
     if (payload.type !== "access") {
-      return errorResponse(res, 401, "Invalid token type");
+      throw new UnauthorizedError("Invalid token type");
     }
 
     // Attach user context to the request
@@ -34,19 +34,19 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
     next();
   } catch (error: any) {
     if (error.name === "TokenExpiredError") {
-      return errorResponse(res, 401, "Token expired");
+      throw new UnauthorizedError("Token expired");
     }
-    return errorResponse(res, 401, "Invalid token");
+    throw new UnauthorizedError("Invalid token");
   }
 };
 
 export const authorize = (...allowedRoles: string[]) => {
   return (req: Request, res: Response, next: NextFunction) => {
     if (!req.user) {
-      return errorResponse(res, 401, "Not authenticated");
+      throw new UnauthorizedError("Not authenticated");
     }
     if (!allowedRoles.includes(req.user.role)) {
-      return errorResponse(res, 403, "Insufficient permissions");
+      throw new ForbiddenError("Insufficient permissions");
     }
     next();
   };

@@ -1,6 +1,6 @@
 import * as z from "zod";
 import { Request, Response, NextFunction } from "express";
-import { errorResponse } from "../utils/responseHandler.js";
+import { ValidationError } from "../lib/errors.js";
 
 export const validateRequest =
   <T>(schema: z.ZodType<T>) =>
@@ -16,8 +16,7 @@ export const validateRequest =
         field: issue.path.slice(1).join("."), // Remove 'body'/'query' prefix
         message: issue.message,
       }));
-
-      return errorResponse(res, 400, "Request validation failed", errors, "VALIDATION_ERROR");
+      throw new ValidationError("Request validation failed", errors)
     }
 
     // Replace req properties with validated (and transformed) data

@@ -3,6 +3,7 @@ import { appEvents } from "../../lib/events.js";
 import { prisma } from "../../configs/prisma.js";
 import { hashPassword, verifyPassword } from "../../lib/password.js";
 import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from "../../lib/token.js";
+import { ConflictError, UnauthorizedError, ValidationError } from "../../lib/errors.js";
 import crypto from "crypto";
 
 // Register
@@ -12,10 +13,7 @@ export const register = async (data: { email: string; password: string }) => {
   });
 
   if (existing) {
-    return {
-      code: 400,
-      message: `Email already registered`,
-    };
+    throw new ConflictError("Email already registered");
   }
 
   const passwordHash = await hashPassword(data.password);
@@ -58,10 +56,7 @@ export const login = async (data: { email: string; password: string; deviceInfo?
       reason: "user_not_found",
     });
 
-    return {
-      code: 400,
-      message: "Invalid Credentials",
-    };
+    throw new ValidationError("Invalid Credentials");
   }
 
   const valid = await verifyPassword(data.password, user.passwordHash);
@@ -72,10 +67,7 @@ export const login = async (data: { email: string; password: string; deviceInfo?
       reason: "wrong_password",
     });
 
-    return {
-      code: 400,
-      message: "Invalid Credentials",
-    };
+    throw new ValidationError("Invalid Credentials");
   }
 
   const accessToken = generateAccessToken(user);
@@ -114,17 +106,11 @@ export const refresh = async (rawRefreshToken: string) => {
   try {
     payload = verifyRefreshToken(rawRefreshToken);
   } catch (err) {
-    return {
-      code: 401,
-      message: "Invalid refresh token",
-    };
+    throw new UnauthorizedError("Invalid refresh token");
   }
 
   if (payload.type !== "refresh") {
-    return {
-      code: 401,
-      message: "Invalid token type",
-    };
+    throw new UnauthorizedError("Invalid token type");
   }
 
   // Check if this token exists in the database (not revoked)
@@ -132,19 +118,13 @@ export const refresh = async (rawRefreshToken: string) => {
   const stored = await prisma.refreshToken.findUnique({ where: { token: tokenHash } });
 
   if (!stored || stored.expiresAt < new Date()) {
-    return {
-      code: 401,
-      message: "Refreshed token expired or revoked",
-    };
+    throw new UnauthorizedError("Refreshed token expired or revoked")
   }
 
   // Get user
   const user = await prisma.user.findUnique({ where: { id: payload.sub } });
   if (!user || !user.isActive) {
-    return {
-      code: 401,
-      message: "User not found or inactive",
-    };
+    throw new UnauthorizedError("User not found or inactive")
   }
 
   // Rotate: delete the old token, create a new one

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express"
-import { successResponse, errorResponse } from "../../utils/responseHandler.js";
+import { successResponse } from "../../utils/responseHandler.js";
 import { getService, createService, updateService, deleteService } from "./user.services.js";
 
 export const getController = async (req: Request, res: Response, next: NextFunction) => {

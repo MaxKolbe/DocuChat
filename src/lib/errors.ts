@@ -5,7 +5,7 @@ export class AppError extends Error {
   public readonly details?: any;
 
   constructor(message: string, statusCode: number, code: string, details?: any) {
-    super(message);
+    super(message); 
     this.name = this.constructor.name;
     this.statusCode = statusCode;
     this.code = code;

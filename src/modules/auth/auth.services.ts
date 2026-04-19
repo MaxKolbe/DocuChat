@@ -56,7 +56,7 @@ export const login = async (data: { email: string; password: string; deviceInfo?
       reason: "user_not_found",
     });
 
-    throw new ValidationError("Invalid Credentials");
+    throw new ValidationError("Invalid credentials");
   }
 
   const valid = await verifyPassword(data.password, user.passwordHash);
@@ -67,7 +67,7 @@ export const login = async (data: { email: string; password: string; deviceInfo?
       reason: "wrong_password",
     });
 
-    throw new ValidationError("Invalid Credentials");
+    throw new ValidationError("Invalid credentials");
   }
 
   const accessToken = generateAccessToken(user);

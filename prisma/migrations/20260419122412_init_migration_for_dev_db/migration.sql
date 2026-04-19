@@ -97,6 +97,17 @@ CREATE TABLE "aitrace" (
     CONSTRAINT "aitrace_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "refreshtoken" (
+    "id" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
+    "token" TEXT NOT NULL,
+    "expires_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "refreshtoken_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "user_email_key" ON "user"("email");
 
@@ -139,6 +150,15 @@ CREATE INDEX "aitrace_user_id_idx" ON "aitrace"("user_id");
 -- CreateIndex
 CREATE INDEX "aitrace_operation_idx" ON "aitrace"("operation");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "refreshtoken_token_key" ON "refreshtoken"("token");
+
+-- CreateIndex
+CREATE INDEX "refreshtoken_user_id_idx" ON "refreshtoken"("user_id");
+
+-- CreateIndex
+CREATE INDEX "refreshtoken_expires_at_idx" ON "refreshtoken"("expires_at");
+
 -- AddForeignKey
 ALTER TABLE "document" ADD CONSTRAINT "document_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
@@ -156,3 +176,6 @@ ALTER TABLE "message" ADD CONSTRAINT "message_document_id_fkey" FOREIGN KEY ("do
 
 -- AddForeignKey
 ALTER TABLE "usagelog" ADD CONSTRAINT "usagelog_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "refreshtoken" ADD CONSTRAINT "refreshtoken_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;

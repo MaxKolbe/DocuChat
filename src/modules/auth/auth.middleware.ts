@@ -2,6 +2,7 @@
 import { Request, Response, NextFunction } from "express";
 import { verifyAccessToken } from "../../lib/token.js";
 import { ForbiddenError, UnauthorizedError } from "../../lib/errors.js";
+import { getUserPermissions } from "../../utils/rbac.service.js";
 
 // Extend Express Request to include user
 declare global {
@@ -40,14 +41,22 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
   }
 };
 
-export const authorize = (...allowedRoles: string[]) => {
-  return (req: Request, res: Response, next: NextFunction) => {
-    if (!req.user) {
-      throw new UnauthorizedError("Not authenticated");
+export const requirePermission = (...requiredPermissions: string[]) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      if (!req.user) {
+        throw new UnauthorizedError();
+      }
+      const userPermissions = await getUserPermissions(req.user.id);
+      const missing = requiredPermissions.filter((p) => !userPermissions.has(p));
+
+      if (missing.length > 0) {
+        throw new ForbiddenError("You do not have the required permission");
+      }
+
+      next();
+    } catch (err) {
+      next(err);
     }
-    if (!allowedRoles.includes(req.user.role)) {
-      throw new ForbiddenError("Insufficient permissions");
-    }
-    next();
   };
 };

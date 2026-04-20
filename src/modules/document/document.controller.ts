@@ -1,12 +1,12 @@
 //CONTROLLER
 import { Request, Response, NextFunction } from "express";
 import { successResponse } from "../../utils/responseHandler.js";
-import { getService, createService, updateService, deleteService } from "./document.services.js";
+import { getDocument, createService, updateService, deleteService } from "./document.services.js";
 
 export const getController = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const response = await getService();
-    successResponse(res, 200, "GET");
+    const response = await getDocument(req.params.id!.toString(), req.user!.id.toString());
+    successResponse(res, response.code, response.message, response.data);
   } catch (err) {
     next(err);
   }

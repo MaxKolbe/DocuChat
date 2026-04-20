@@ -27,6 +27,7 @@ model User {
   conversations   Conversation[]
   usageLogs       UsageLog[]  
   refreshTokens   RefreshToken[] 
+  roles  UserRole[] 
 
   @@map("user")
 }
@@ -135,7 +136,6 @@ model AITrace {
   @@map("aitrace")
 }
 
- 
 model RefreshToken { 
   id        String   @id @default(uuid()) 
   userId    String   @map("user_id")
@@ -149,3 +149,54 @@ model RefreshToken {
   @@index([expiresAt]) 
   @@map("refreshtoken")
 } 
+
+model Role { 
+  id          String   @id @default(uuid()) 
+  name        String   @unique   // 'admin', 'member', 'viewer' 
+  description String? 
+  isDefault   Boolean  @default(false) @map("is_default") // New users get this role 
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+ 
+  users       UserRole[] 
+  permissions RolePermission[] 
+  @@map("role")
+} 
+ 
+model Permission { 
+  id          String   @id @default(uuid()) 
+  name        String   @unique   // 'documents:create' 
+  description String? 
+  resource    String              // 'documents' 
+  action      String              // 'create' 
+  createdAt   DateTime @default(now()) @map("created_at")
+ 
+  roles       RolePermission[] 
+ 
+  @@unique([resource, action]) 
+  @@map("permission")
+} 
+ 
+model UserRole { 
+  userId    String @map("user_id") 
+  roleId    String @map("role_id") 
+  assignedAt DateTime @default(now()) @map("assigned_at")
+  assignedBy String?  // Who assigned this role (for audit) @map("assigned_by")
+ 
+  user      User @relation(fields: [userId], references: [id], onDelete: Cascade) 
+  role      Role @relation(fields: [roleId], references: [id], onDelete: Cascade) 
+ 
+  @@id([userId, roleId]) 
+  @@map("userrole")
+} 
+ 
+model RolePermission { 
+  roleId       String @map("role_id") 
+  permissionId String @map("permission_id")
+
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade) 
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade) 
+
+  @@id([roleId, permissionId])
+  @@map("rolepermission")
+}

@@ -31,6 +31,21 @@ export const register = async (data: { email: string; password: string }) => {
     tier: user.tier,
   });
 
+  const defaultRole = await prisma.role.findFirst({
+    where: {
+      isDefault: true,
+    },
+  });
+
+  if (defaultRole) {
+    await prisma.userRole.create({
+      data: {
+        userId: user.id,
+        roleId: defaultRole.id,
+      },
+    });
+  }
+
   return {
     code: 201,
     message: "User created successfully",
@@ -118,13 +133,13 @@ export const refresh = async (rawRefreshToken: string) => {
   const stored = await prisma.refreshToken.findUnique({ where: { token: tokenHash } });
 
   if (!stored || stored.expiresAt < new Date()) {
-    throw new UnauthorizedError("Refreshed token expired or revoked")
+    throw new UnauthorizedError("Refreshed token expired or revoked");
   }
 
   // Get user
   const user = await prisma.user.findUnique({ where: { id: payload.sub } });
   if (!user || !user.isActive) {
-    throw new UnauthorizedError("User not found or inactive")
+    throw new UnauthorizedError("User not found or inactive");
   }
 
   // Rotate: delete the old token, create a new one

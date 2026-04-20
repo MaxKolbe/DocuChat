@@ -9,7 +9,7 @@ import {
 } from "./document.schema.js";
 import { requirePermission, authenticate } from "../auth/auth.middleware.js";
 const router = express.Router();
-
+router.use(authenticate); 
 /**
  * @swagger
  * /documents:

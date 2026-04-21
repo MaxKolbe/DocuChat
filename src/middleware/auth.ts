@@ -1,8 +1,8 @@
 // src/middleware/auth.ts
 import { Request, Response, NextFunction } from "express";
-import { verifyAccessToken } from "../../lib/token.js";
-import { ForbiddenError, UnauthorizedError } from "../../lib/errors.js";
-import { getUserPermissions } from "../../utils/rbac.service.js";
+import { verifyAccessToken } from "../lib/token.js";
+import { ForbiddenError, UnauthorizedError } from "../lib/errors.js";
+import { getUserPermissions } from "../utils/rbac.service.js";
 
 // Extend Express Request to include user
 declare global {

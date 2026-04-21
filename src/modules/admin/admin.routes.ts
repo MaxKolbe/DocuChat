@@ -1,7 +1,7 @@
 //ROUTES
 import express from "express";
-import { authenticate } from "../auth/auth.middleware.js";
-import { requirePermission } from "../auth/auth.middleware.js";
+import { authenticate } from "../../middleware/auth.js";
+import { requirePermission } from "../../middleware/auth.js";
 import { prisma } from "../../configs/prisma.js";
 import { appEvents } from "../../lib/events.js";
 import { NotFoundError } from "../../lib/errors.js";
@@ -59,7 +59,7 @@ router.post("/users/:userId/roles", async (req, res, next) => {
     // Audit event
     appEvents.emit("admin:role-assigned", {
       targetUserId: userId,
-      roleName,
+      roleName, 
       assignedBy: req.user!.id,
     });
     successResponse(res, 201, `Role '${roleName}' assigned to user`);
@@ -88,7 +88,7 @@ router.delete("/users/:userId/roles/:roleName", async (req, res, next) => {
       revokedBy: req.user!.id,
     });
 
-    successResponse(res, 204, `Role '${roleName}' revoked`);
+    successResponse(res, 200, `Role '${roleName}' revoked`);
   } catch (error) {
     next(error);
   }

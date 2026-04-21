@@ -4,10 +4,10 @@ import errorHandler from "./middleware/errorHandler.js";
 import authRouter from "./modules/auth/auth.routes.js";
 import documentRouter from "./modules/document/document.routes.js";
 import conversationRouter from "./modules/conversation/conversation.routes.js";
-import adminRouter from "./modules/admin/admin.routes.js"
+import adminRouter from "./modules/admin/admin.routes.js";
 import logger from "./configs/logger.config.js";
 import swaggerUi from "swagger-ui-express";
-import { authenticate } from "./modules/auth/auth.middleware.js";
+import { authenticate } from "./middleware/auth.js";
 // import { connectRedis } from "./configs/cache.config.js";
 import { swaggerSpec } from "./configs/swagger.config.js";
 import { prisma } from "./configs/prisma.js";
@@ -44,7 +44,7 @@ app.use(cors(corsOptions));
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/documents", authenticate, documentRouter);
 app.use("/api/v1/conversations", authenticate, conversationRouter);
-app.use('/api/v1/admin', adminRouter); 
+app.use("/api/v1/admin", adminRouter);
 // SERVE SWAGGER UI
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // SERVE THE RAW JSON SPEC (useful for code generators)

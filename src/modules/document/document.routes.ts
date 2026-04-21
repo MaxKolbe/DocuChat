@@ -7,9 +7,9 @@ import {
   listDocumentsSchema,
   documentParamsSchema,
 } from "./document.schema.js";
-import { requirePermission, authenticate } from "../auth/auth.middleware.js";
+import { requirePermission, authenticate } from "../../middleware/auth.js";
 const router = express.Router();
-router.use(authenticate); 
+router.use(authenticate);
 /**
  * @swagger
  * /documents:

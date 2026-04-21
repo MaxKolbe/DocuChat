@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { register, login, refresh, logout } from "./auth.services.js";
+import { register, login, refresh, logout } from "../../services/auth.services.js";
 import { successResponse } from "../../utils/responseHandler.js";
 
 export const registerController = async (req: Request, res: Response, next: NextFunction) => {

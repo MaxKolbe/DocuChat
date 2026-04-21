@@ -1,3 +1,4 @@
+// User aggregate (RBAC): permissions, role
 export const getService = async () => {
   return null;
 };

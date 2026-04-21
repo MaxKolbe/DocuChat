@@ -6,7 +6,7 @@ import {
   createService,
   updateService,
   deleteService,
-} from "./conversation.services.js";
+} from "../../services/conversation.services.js";
 
 export const getController = async (req: Request, res: Response, next: NextFunction) => {
   try {

@@ -1,7 +1,12 @@
 //CONTROLLER
 import { Request, Response, NextFunction } from "express";
 import { successResponse } from "../../utils/responseHandler.js";
-import { getDocument, createService, updateService, deleteService } from "./document.services.js";
+import {
+  getDocument,
+  createService,
+  updateService,
+  deleteService,
+} from "../../services/document.services.js";
 
 export const getController = async (req: Request, res: Response, next: NextFunction) => {
   try {

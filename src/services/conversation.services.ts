@@ -1,5 +1,4 @@
-//SERVICES
-
+// Conversation aggregate: create, list, sendMessage 
 export const getService = async () => {
   return null;
 };

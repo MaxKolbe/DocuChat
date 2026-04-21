@@ -1,9 +1,10 @@
-import { AUTH_EVENTS } from "../../events/auth.events.js";
-import { appEvents } from "../../lib/events.js";
-import { prisma } from "../../configs/prisma.js";
-import { hashPassword, verifyPassword } from "../../lib/password.js";
-import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from "../../lib/token.js";
-import { ConflictError, UnauthorizedError, ValidationError } from "../../lib/errors.js";
+// User aggregate: register, login, tokens 
+import { AUTH_EVENTS } from "../events/auth.events.js";
+import { appEvents } from "../lib/events.js";
+import { prisma } from "../configs/prisma.js";
+import { hashPassword, verifyPassword } from "../lib/password.js";
+import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from "../lib/token.js";
+import { ConflictError, UnauthorizedError, ValidationError } from "../lib/errors.js";
 import crypto from "crypto";
 
 // Register

@@ -1,7 +1,7 @@
-//SERVICES
-import { prisma } from "../../configs/prisma.js";
-import { NotFoundError } from "../../lib/errors.js";
-import { getUserPermissions } from "../../utils/rbac.service.js";
+// Document aggregate: upload, list, get, delete
+import { prisma } from "../configs/prisma.js";
+import { NotFoundError } from "../lib/errors.js";
+import { getUserPermissions } from "../utils/rbac.service.js";
 
 export const getDocument = async (docId: string, userId: string) => {
   const doc = await prisma.document.findUnique({

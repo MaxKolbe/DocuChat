@@ -14,6 +14,7 @@ import { prisma } from "./lib/prisma.js";
 import { Request, Response } from "express";
 import "./events/auth.events.js";
 import "./events/admin.events.js";
+import "./events/document.events.js";
 import "dotenv/config";
 
 const app = express();

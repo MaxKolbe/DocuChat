@@ -3,10 +3,15 @@ import { prisma } from "../lib/prisma.js";
 import { NotFoundError } from "../lib/errors.js";
 import { getUserPermissions } from "../utils/rbac.service.js";
 import { Listdocuments } from "../modules/document/document.schema.js"; // type
+import { appEvents } from "../lib/events.js";
+import { DOC_EVENTS } from "../events/document.events.js";
 
 export const getDocument = async (docId: string, userId: string) => {
   const doc = await prisma.document.findUnique({
-    where: { id: docId },
+    where: {
+      id: docId,
+      deletedAt: null /* Soft delete filter */,
+    },
   });
 
   if (!doc) {
@@ -29,7 +34,8 @@ export const getDocument = async (docId: string, userId: string) => {
   };
 };
 
-export const listDocuments = async (userId: string, options: Listdocuments) => {
+// options: Listdocuments
+export const listDocuments = async (userId: string, options: any) => {
   const { page, limit, status, search, sortBy, sortOrder } = options.query;
   const sortby = sortBy as string;
 
@@ -64,19 +70,47 @@ export const listDocuments = async (userId: string, options: Listdocuments) => {
   ]);
 
   return {
+    code: 200,
+    message: "Documents listed succcessfully",
     data: documents,
     meta: { page, limit, total },
   };
 };
 
-export const createService = async () => {
-  return null;
+export const deleteDocument = async (documentId: string, userId: string) => {
+  const doc = await prisma.document.findUnique({
+    where: { id: documentId },
+  });
+
+  if (!doc || doc.deletedAt) {
+    throw new NotFoundError("Document not found");
+  }
+
+  // Ownership check
+  if (doc.userId !== userId) {
+    throw new NotFoundError("Document not found");
+  }
+
+  // Event emitter
+  appEvents.emit(DOC_EVENTS.DELETED, {
+    deletedBy: userId,
+    documentId: doc.id,
+    title: doc.title,
+  });
+
+  return prisma.document.update({
+    where: { id: documentId },
+    data: {
+      deletedAt: new Date(),
+      deletedBy: userId,
+    },
+  });
 };
 
-export const updateService = async () => {
-  return null;
-};
-
-export const deleteService = async () => {
-  return null;
-};
+// for createDocument function
+// appEvents.emit(DOC_EVENTS.CREATED, {
+//   userId: user.id,
+//   documentId: doc.id,
+//   title: doc.title,
+//   fileSizeBytes: doc.fileSizeBytes,
+// });

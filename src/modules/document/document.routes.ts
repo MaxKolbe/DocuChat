@@ -1,15 +1,22 @@
 //ROUTES
 import express from "express";
 import { validateRequest } from "../../middleware/validate.js";
-import { getController, postController, deleteController } from "./document.controller.js";
+import { requirePermission, authenticate } from "../../middleware/auth.js";
+import {
+  getDocumentController,
+  postController,
+  listDocumentsController,
+  deleteDocumentController,
+} from "./document.controller.js";
 import {
   createDocumentSchema,
   listDocumentsSchema,
   documentParamsSchema,
 } from "./document.schema.js";
-import { requirePermission, authenticate } from "../../middleware/auth.js";
+
 const router = express.Router();
 router.use(authenticate);
+
 /**
  * @swagger
  * /documents:
@@ -41,28 +48,29 @@ router.use(authenticate);
  *         description: Not authenticated
  */
 router.get(
-  "/",
+  "/:id",
   requirePermission("documents:read"),
   validateRequest(listDocumentsSchema),
-  getController,
-);
-router.post(
-  "/",
-  requirePermission("documents:create"),
-  validateRequest(createDocumentSchema),
-  postController,
+  listDocumentsController,
 );
 router.get(
   "/:id",
   requirePermission("documents:read"),
   validateRequest(documentParamsSchema),
-  getController,
+  getDocumentController,
 );
 router.delete(
-  "/:id",
+  "/:documentId/:userId",
   requirePermission("documents:delete", "admin:documents:delete"),
   validateRequest(documentParamsSchema),
-  deleteController,
+  deleteDocumentController,
+);
+
+router.post(
+  "/",
+  requirePermission("documents:create"),
+  validateRequest(createDocumentSchema),
+  postController,
 );
 
 export default router;

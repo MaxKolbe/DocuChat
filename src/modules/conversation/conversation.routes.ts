@@ -1,18 +1,16 @@
 //ROUTES
 import express from "express";
+import { authenticate } from "../../middleware/auth.js";
 import { validateRequest } from "../../middleware/validate.js";
 import { createConversationSchema, sendMessageSchema } from "./conversation.schema.js";
-import { getController, postController } from "./conversation.controller.js";
+import { listConversationsController, sendMessageController } from "./conversation.controller.js";
+
 const router = express.Router();
+router.use(authenticate);
 
-router.get("/", getController);
-router.post("/", validateRequest(createConversationSchema), postController);
-router.get("/:id/messages", getController);
-router.post("/:id/messages", validateRequest(sendMessageSchema), postController);
-
-/* //request validation with zod 
-import {featureSchema} from "./user.schema.js"
-router.get("/", validatRequest(featureSchema), getController)
-*/
+router.get("/:userId", listConversationsController);
+router.post("/:userId/:conversationId/messages/:documentId", validateRequest(sendMessageSchema), sendMessageController);
+// router.post("/", validateRequest(createConversationSchema), );
+// router.get("/:id/messages", );
 
 export default router;

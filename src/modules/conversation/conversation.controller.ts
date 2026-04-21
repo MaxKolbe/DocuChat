@@ -1,44 +1,33 @@
 //CONTROLLER
 import { Request, Response, NextFunction } from "express";
 import { successResponse } from "../../utils/responseHandler.js";
-import {
-  getService,
-  createService,
-  updateService,
-  deleteService,
-} from "../../services/conversation.services.js";
+import { listConversations, sendMessage } from "../../services/conversation.services.js";
 
-export const getController = async (req: Request, res: Response, next: NextFunction) => {
+export const listConversationsController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const userId = req.params.userId!.toString();
+  const page = Number(req.query.page);
+  const limit = Number(req.query.page);
+
   try {
-    const response = await getService();
-    successResponse(res, 200, "GET");
+    const response = await listConversations(userId, { page, limit });
+    successResponse(res, 200, response.message, response.data, response.meta);
   } catch (err) {
     next(err);
   }
 };
 
-export const postController = async (req: Request, res: Response, next: NextFunction) => {
+export const sendMessageController = async (req: Request, res: Response, next: NextFunction) => {
+  const userId = req.params.userId!.toString();
+  const conversationId = req.params.conversationId!.toString();
+  const documentId = req.params.documentId!.toString();
+  const {content} = req.body
   try {
-    const response = await createService();
-    successResponse(res, 200, "POST");
-  } catch (err) {
-    next(err);
-  }
-};
-
-export const putController = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const response = await updateService();
-    successResponse(res, 200, "PUT");
-  } catch (err) {
-    next(err);
-  }
-};
-
-export const deleteController = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const response = await deleteService();
-    successResponse(res, 200, "DELETE");
+    const response = await sendMessage(conversationId, userId, content, documentId);
+    successResponse(res, 200, "Message sent successfully", response.data);
   } catch (err) {
     next(err);
   }

@@ -32,6 +32,20 @@ model User {
   @@map("user")
 }
 
+model RefreshToken { 
+  id        String   @id @default(uuid()) 
+  userId    String   @map("user_id")
+  token     String   @unique 
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+ 
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade) 
+ 
+  @@index([userId]) 
+  @@index([expiresAt]) 
+  @@map("refreshtoken")
+} 
+
 model Document {
   id            String      @id @default(uuid())
   userId        String      @map("user_id")
@@ -45,6 +59,8 @@ model Document {
   error         String?
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
+  deletedAt     DateTime?   // null = active, timestamp = soft-deleted 
+  deletedBy     String?     // Who deleted it (for audit)
 
   user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   chunks        Chunk[]
@@ -136,20 +152,6 @@ model AITrace {
   @@map("aitrace")
 }
 
-model RefreshToken { 
-  id        String   @id @default(uuid()) 
-  userId    String   @map("user_id")
-  token     String   @unique 
-  expiresAt DateTime @map("expires_at")
-  createdAt DateTime @default(now()) @map("created_at")
- 
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade) 
- 
-  @@index([userId]) 
-  @@index([expiresAt]) 
-  @@map("refreshtoken")
-} 
-
 model Role { 
   id          String   @id @default(uuid()) 
   name        String   @unique   // 'admin', 'member', 'viewer' 
@@ -161,20 +163,6 @@ model Role {
   users       UserRole[] 
   permissions RolePermission[] 
   @@map("role")
-} 
- 
-model Permission { 
-  id          String   @id @default(uuid()) 
-  name        String   @unique   // 'documents:create' 
-  description String? 
-  resource    String              // 'documents' 
-  action      String              // 'create' 
-  createdAt   DateTime @default(now()) @map("created_at")
- 
-  roles       RolePermission[] 
- 
-  @@unique([resource, action]) 
-  @@map("permission")
 } 
  
 model UserRole { 
@@ -200,3 +188,17 @@ model RolePermission {
   @@id([roleId, permissionId])
   @@map("rolepermission")
 }
+
+model Permission { 
+  id          String   @id @default(uuid()) 
+  name        String   @unique   // 'documents:create' 
+  description String? 
+  resource    String              // 'documents' 
+  action      String              // 'create' 
+  createdAt   DateTime @default(now()) @map("created_at")
+ 
+  roles       RolePermission[] 
+ 
+  @@unique([resource, action]) 
+  @@map("permission")
+} 

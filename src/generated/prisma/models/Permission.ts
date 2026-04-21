@@ -308,6 +308,11 @@ export type PermissionUncheckedUpdateManyInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+export type PermissionScalarRelationFilter = {
+  is?: Prisma.PermissionWhereInput
+  isNot?: Prisma.PermissionWhereInput
+}
+
 export type PermissionResourceActionCompoundUniqueInput = {
   resource: string
   action: string
@@ -338,11 +343,6 @@ export type PermissionMinOrderByAggregateInput = {
   resource?: Prisma.SortOrder
   action?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
-}
-
-export type PermissionScalarRelationFilter = {
-  is?: Prisma.PermissionWhereInput
-  isNot?: Prisma.PermissionWhereInput
 }
 
 export type PermissionCreateNestedOneWithoutRolesInput = {

@@ -47,6 +47,11 @@ export { Prisma }
  */
 export type User = Prisma.UserModel
 /**
+ * Model RefreshToken
+ * 
+ */
+export type RefreshToken = Prisma.RefreshTokenModel
+/**
  * Model Document
  * 
  */
@@ -77,20 +82,10 @@ export type UsageLog = Prisma.UsageLogModel
  */
 export type AITrace = Prisma.AITraceModel
 /**
- * Model RefreshToken
- * 
- */
-export type RefreshToken = Prisma.RefreshTokenModel
-/**
  * Model Role
  * 
  */
 export type Role = Prisma.RoleModel
-/**
- * Model Permission
- * 
- */
-export type Permission = Prisma.PermissionModel
 /**
  * Model UserRole
  * 
@@ -101,3 +96,8 @@ export type UserRole = Prisma.UserRoleModel
  * 
  */
 export type RolePermission = Prisma.RolePermissionModel
+/**
+ * Model Permission
+ * 
+ */
+export type Permission = Prisma.PermissionModel

@@ -49,6 +49,8 @@ export type DocumentMinAggregateOutputType = {
   error: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
+  deletedBy: string | null
 }
 
 export type DocumentMaxAggregateOutputType = {
@@ -64,6 +66,8 @@ export type DocumentMaxAggregateOutputType = {
   error: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
+  deletedBy: string | null
 }
 
 export type DocumentCountAggregateOutputType = {
@@ -79,6 +83,8 @@ export type DocumentCountAggregateOutputType = {
   error: number
   createdAt: number
   updatedAt: number
+  deletedAt: number
+  deletedBy: number
   _all: number
 }
 
@@ -106,6 +112,8 @@ export type DocumentMinAggregateInputType = {
   error?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
 }
 
 export type DocumentMaxAggregateInputType = {
@@ -121,6 +129,8 @@ export type DocumentMaxAggregateInputType = {
   error?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
 }
 
 export type DocumentCountAggregateInputType = {
@@ -136,6 +146,8 @@ export type DocumentCountAggregateInputType = {
   error?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
+  deletedBy?: true
   _all?: true
 }
 
@@ -238,6 +250,8 @@ export type DocumentGroupByOutputType = {
   error: string | null
   createdAt: Date
   updatedAt: Date
+  deletedAt: Date | null
+  deletedBy: string | null
   _count: DocumentCountAggregateOutputType | null
   _avg: DocumentAvgAggregateOutputType | null
   _sum: DocumentSumAggregateOutputType | null
@@ -276,6 +290,8 @@ export type DocumentWhereInput = {
   error?: Prisma.StringNullableFilter<"Document"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Document"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Document"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"Document"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"Document"> | string | null
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   chunks?: Prisma.ChunkListRelationFilter
   messages?: Prisma.MessageListRelationFilter
@@ -294,6 +310,8 @@ export type DocumentOrderByWithRelationInput = {
   error?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
   chunks?: Prisma.ChunkOrderByRelationAggregateInput
   messages?: Prisma.MessageOrderByRelationAggregateInput
@@ -315,6 +333,8 @@ export type DocumentWhereUniqueInput = Prisma.AtLeast<{
   error?: Prisma.StringNullableFilter<"Document"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Document"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Document"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"Document"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"Document"> | string | null
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   chunks?: Prisma.ChunkListRelationFilter
   messages?: Prisma.MessageListRelationFilter
@@ -333,6 +353,8 @@ export type DocumentOrderByWithAggregationInput = {
   error?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.DocumentCountOrderByAggregateInput
   _avg?: Prisma.DocumentAvgOrderByAggregateInput
   _max?: Prisma.DocumentMaxOrderByAggregateInput
@@ -356,6 +378,8 @@ export type DocumentScalarWhereWithAggregatesInput = {
   error?: Prisma.StringNullableWithAggregatesFilter<"Document"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Document"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Document"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Document"> | Date | string | null
+  deletedBy?: Prisma.StringNullableWithAggregatesFilter<"Document"> | string | null
 }
 
 export type DocumentCreateInput = {
@@ -370,6 +394,8 @@ export type DocumentCreateInput = {
   error?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   user: Prisma.UserCreateNestedOneWithoutDocumentsInput
   chunks?: Prisma.ChunkCreateNestedManyWithoutDocumentInput
   messages?: Prisma.MessageCreateNestedManyWithoutDocumentInput
@@ -388,6 +414,8 @@ export type DocumentUncheckedCreateInput = {
   error?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   chunks?: Prisma.ChunkUncheckedCreateNestedManyWithoutDocumentInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutDocumentInput
 }
@@ -404,6 +432,8 @@ export type DocumentUpdateInput = {
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutDocumentsNestedInput
   chunks?: Prisma.ChunkUpdateManyWithoutDocumentNestedInput
   messages?: Prisma.MessageUpdateManyWithoutDocumentNestedInput
@@ -422,6 +452,8 @@ export type DocumentUncheckedUpdateInput = {
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chunks?: Prisma.ChunkUncheckedUpdateManyWithoutDocumentNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutDocumentNestedInput
 }
@@ -439,6 +471,8 @@ export type DocumentCreateManyInput = {
   error?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type DocumentUpdateManyMutationInput = {
@@ -453,6 +487,8 @@ export type DocumentUpdateManyMutationInput = {
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type DocumentUncheckedUpdateManyInput = {
@@ -468,6 +504,8 @@ export type DocumentUncheckedUpdateManyInput = {
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type DocumentListRelationFilter = {
@@ -493,6 +531,8 @@ export type DocumentCountOrderByAggregateInput = {
   error?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type DocumentAvgOrderByAggregateInput = {
@@ -513,6 +553,8 @@ export type DocumentMaxOrderByAggregateInput = {
   error?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type DocumentMinOrderByAggregateInput = {
@@ -528,6 +570,8 @@ export type DocumentMinOrderByAggregateInput = {
   error?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  deletedBy?: Prisma.SortOrder
 }
 
 export type DocumentSumOrderByAggregateInput = {
@@ -599,6 +643,10 @@ export type NullableIntFieldUpdateOperationsInput = {
   divide?: number
 }
 
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
+}
+
 export type DocumentCreateNestedOneWithoutChunksInput = {
   create?: Prisma.XOR<Prisma.DocumentCreateWithoutChunksInput, Prisma.DocumentUncheckedCreateWithoutChunksInput>
   connectOrCreate?: Prisma.DocumentCreateOrConnectWithoutChunksInput
@@ -641,6 +689,8 @@ export type DocumentCreateWithoutUserInput = {
   error?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   chunks?: Prisma.ChunkCreateNestedManyWithoutDocumentInput
   messages?: Prisma.MessageCreateNestedManyWithoutDocumentInput
 }
@@ -657,6 +707,8 @@ export type DocumentUncheckedCreateWithoutUserInput = {
   error?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   chunks?: Prisma.ChunkUncheckedCreateNestedManyWithoutDocumentInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutDocumentInput
 }
@@ -703,6 +755,8 @@ export type DocumentScalarWhereInput = {
   error?: Prisma.StringNullableFilter<"Document"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Document"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Document"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"Document"> | Date | string | null
+  deletedBy?: Prisma.StringNullableFilter<"Document"> | string | null
 }
 
 export type DocumentCreateWithoutChunksInput = {
@@ -717,6 +771,8 @@ export type DocumentCreateWithoutChunksInput = {
   error?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   user: Prisma.UserCreateNestedOneWithoutDocumentsInput
   messages?: Prisma.MessageCreateNestedManyWithoutDocumentInput
 }
@@ -734,6 +790,8 @@ export type DocumentUncheckedCreateWithoutChunksInput = {
   error?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutDocumentInput
 }
 
@@ -765,6 +823,8 @@ export type DocumentUpdateWithoutChunksInput = {
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutDocumentsNestedInput
   messages?: Prisma.MessageUpdateManyWithoutDocumentNestedInput
 }
@@ -782,6 +842,8 @@ export type DocumentUncheckedUpdateWithoutChunksInput = {
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   messages?: Prisma.MessageUncheckedUpdateManyWithoutDocumentNestedInput
 }
 
@@ -797,6 +859,8 @@ export type DocumentCreateWithoutMessagesInput = {
   error?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   user: Prisma.UserCreateNestedOneWithoutDocumentsInput
   chunks?: Prisma.ChunkCreateNestedManyWithoutDocumentInput
 }
@@ -814,6 +878,8 @@ export type DocumentUncheckedCreateWithoutMessagesInput = {
   error?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
   chunks?: Prisma.ChunkUncheckedCreateNestedManyWithoutDocumentInput
 }
 
@@ -845,6 +911,8 @@ export type DocumentUpdateWithoutMessagesInput = {
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutDocumentsNestedInput
   chunks?: Prisma.ChunkUpdateManyWithoutDocumentNestedInput
 }
@@ -862,6 +930,8 @@ export type DocumentUncheckedUpdateWithoutMessagesInput = {
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chunks?: Prisma.ChunkUncheckedUpdateManyWithoutDocumentNestedInput
 }
 
@@ -877,6 +947,8 @@ export type DocumentCreateManyUserInput = {
   error?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  deletedBy?: string | null
 }
 
 export type DocumentUpdateWithoutUserInput = {
@@ -891,6 +963,8 @@ export type DocumentUpdateWithoutUserInput = {
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chunks?: Prisma.ChunkUpdateManyWithoutDocumentNestedInput
   messages?: Prisma.MessageUpdateManyWithoutDocumentNestedInput
 }
@@ -907,6 +981,8 @@ export type DocumentUncheckedUpdateWithoutUserInput = {
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chunks?: Prisma.ChunkUncheckedUpdateManyWithoutDocumentNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutDocumentNestedInput
 }
@@ -923,6 +999,8 @@ export type DocumentUncheckedUpdateManyWithoutUserInput = {
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -978,6 +1056,8 @@ export type DocumentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   error?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   chunks?: boolean | Prisma.Document$chunksArgs<ExtArgs>
   messages?: boolean | Prisma.Document$messagesArgs<ExtArgs>
@@ -997,6 +1077,8 @@ export type DocumentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   error?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["document"]>
 
@@ -1013,6 +1095,8 @@ export type DocumentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   error?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["document"]>
 
@@ -1029,9 +1113,11 @@ export type DocumentSelectScalar = {
   error?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
+  deletedBy?: boolean
 }
 
-export type DocumentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "title" | "filename" | "content" | "mimeType" | "fileSizeBytes" | "chunkCount" | "status" | "error" | "createdAt" | "updatedAt", ExtArgs["result"]["document"]>
+export type DocumentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "title" | "filename" | "content" | "mimeType" | "fileSizeBytes" | "chunkCount" | "status" | "error" | "createdAt" | "updatedAt" | "deletedAt" | "deletedBy", ExtArgs["result"]["document"]>
 export type DocumentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   chunks?: boolean | Prisma.Document$chunksArgs<ExtArgs>
@@ -1065,6 +1151,8 @@ export type $DocumentPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     error: string | null
     createdAt: Date
     updatedAt: Date
+    deletedAt: Date | null
+    deletedBy: string | null
   }, ExtArgs["result"]["document"]>
   composites: {}
 }
@@ -1503,6 +1591,8 @@ export interface DocumentFieldRefs {
   readonly error: Prisma.FieldRef<"Document", 'String'>
   readonly createdAt: Prisma.FieldRef<"Document", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Document", 'DateTime'>
+  readonly deletedAt: Prisma.FieldRef<"Document", 'DateTime'>
+  readonly deletedBy: Prisma.FieldRef<"Document", 'String'>
 }
     
 

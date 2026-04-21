@@ -1,6 +1,7 @@
 // Conversation aggregate: create, list, sendMessage
 import { NotFoundError } from "../lib/errors.js";
 import { prisma } from "../lib/prisma.js";
+
 export const listConversations = async (
   userId: string,
   options: {
@@ -62,7 +63,7 @@ export const sendMessage = async (
 
   return prisma.$transaction(async (tx) => {
     // 1. Verify the conversation belongs to this user
-    const conversation = tx.user.findUnique({
+    const conversation = tx.conversation.findUnique({
       where: { id: conversationId, userId },
     });
 
@@ -111,24 +112,10 @@ export const sendMessage = async (
     });
 
     return {
-      userMessage,
-      assistantMessage,
+      data: {
+        userMessage,
+        assistantMessage,
+      },
     };
   });
-};
-
-export const getService = async () => {
-  return null;
-};
-
-export const createService = async () => {
-  return null;
-};
-
-export const updateService = async () => {
-  return null;
-};
-
-export const deleteService = async () => {
-  return null;
 };

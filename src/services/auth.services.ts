@@ -1,7 +1,7 @@
-// User aggregate: register, login, tokens 
+// User aggregate: register, login, tokens
 import { AUTH_EVENTS } from "../events/auth.events.js";
 import { appEvents } from "../lib/events.js";
-import { prisma } from "../configs/prisma.js";
+import { prisma } from "../lib/prisma.js";
 import { hashPassword, verifyPassword } from "../lib/password.js";
 import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from "../lib/token.js";
 import { ConflictError, UnauthorizedError, ValidationError } from "../lib/errors.js";

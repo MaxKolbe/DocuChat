@@ -1,4 +1,4 @@
-import { prisma } from "../configs/prisma.js";
+import { prisma } from "../lib/prisma.js";
 
 export const getUserPermissions = async (userId: string): Promise<Set<string>> => {
   // Cached
@@ -15,7 +15,7 @@ export const getUserPermissions = async (userId: string): Promise<Set<string>> =
     },
   });
 
-  console.log(userRoles)
+  console.log(userRoles);
 
   const permissions = new Set<string>();
   for (const ur of userRoles) {
@@ -23,6 +23,6 @@ export const getUserPermissions = async (userId: string): Promise<Set<string>> =
       permissions.add(rp.permission.name);
     }
   }
-  console.log(permissions)
+  console.log(permissions);
   return permissions;
 };

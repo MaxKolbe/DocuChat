@@ -2,7 +2,7 @@
 import express from "express";
 import { authenticate } from "../../middleware/auth.js";
 import { requirePermission } from "../../middleware/auth.js";
-import { prisma } from "../../configs/prisma.js";
+import { prisma } from "../../lib/prisma.js";
 import { appEvents } from "../../lib/events.js";
 import { NotFoundError } from "../../lib/errors.js";
 import { successResponse } from "../../utils/responseHandler.js";
@@ -59,7 +59,7 @@ router.post("/users/:userId/roles", async (req, res, next) => {
     // Audit event
     appEvents.emit("admin:role-assigned", {
       targetUserId: userId,
-      roleName, 
+      roleName,
       assignedBy: req.user!.id,
     });
     successResponse(res, 201, `Role '${roleName}' assigned to user`);

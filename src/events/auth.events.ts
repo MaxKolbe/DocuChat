@@ -1,6 +1,6 @@
 import logger from "../configs/logger.config.js";
 import { appEvents } from "../lib/events.js";
-import { prisma } from "../configs/prisma.js";
+import { prisma } from "../lib/prisma.js";
 
 // DEFINE EVENT NAMES AS CONSTANTS
 export const AUTH_EVENTS = {

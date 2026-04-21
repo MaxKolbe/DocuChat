@@ -1,7 +1,8 @@
 // Document aggregate: upload, list, get, delete
-import { prisma } from "../configs/prisma.js";
+import { prisma } from "../lib/prisma.js";
 import { NotFoundError } from "../lib/errors.js";
 import { getUserPermissions } from "../utils/rbac.service.js";
+import { Listdocuments } from "../modules/document/document.schema.js"; // type
 
 export const getDocument = async (docId: string, userId: string) => {
   const doc = await prisma.document.findUnique({
@@ -25,6 +26,46 @@ export const getDocument = async (docId: string, userId: string) => {
     code: 200,
     message: "document found successfully",
     data: doc,
+  };
+};
+
+export const listDocuments = async (userId: string, options: Listdocuments) => {
+  const { page, limit, status, search, sortBy, sortOrder } = options.query;
+  const sortby = sortBy as string;
+
+  // Build the where clause dynamically
+  const where: any = {
+    userId,
+    deletedAt: null, // Soft delete filter
+  };
+
+  if (status) {
+    where.title = { contains: search, mode: "insensitive" };
+    where.description = { contains: search, mode: "insensitive" };
+  }
+
+  const [documents, total] = await Promise.all([
+    prisma.document.findMany({
+      where,
+      orderBy: { [sortby]: sortOrder },
+      skip: (page - 1) * limit,
+      take: limit,
+      select: {
+        id: true,
+        title: true,
+        filename: true,
+        status: true,
+        chunkCount: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    }),
+    prisma.document.count({ where }),
+  ]);
+
+  return {
+    data: documents,
+    meta: { page, limit, total },
   };
 };
 

@@ -2,6 +2,7 @@ import * as z from "zod";
 import { Request, Response, NextFunction } from "express";
 import { ValidationError } from "../lib/errors.js";
 
+// maybe declare a global req.params type??
 export const validateRequest =
   <T>(schema: z.ZodType<T>) =>
   (req: Request, res: Response, next: NextFunction) => {

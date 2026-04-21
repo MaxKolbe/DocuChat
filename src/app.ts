@@ -10,7 +10,7 @@ import swaggerUi from "swagger-ui-express";
 import { authenticate } from "./middleware/auth.js";
 // import { connectRedis } from "./configs/cache.config.js";
 import { swaggerSpec } from "./configs/swagger.config.js";
-import { prisma } from "./configs/prisma.js";
+import { prisma } from "./lib/prisma.js";
 import { Request, Response } from "express";
 import "./events/auth.events.js";
 import "./events/admin.events.js";

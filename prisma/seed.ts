@@ -1,4 +1,4 @@
-import { prisma } from "../src/configs/prisma.js";
+import { prisma } from "../src/lib/prisma.js";
 import logger from "../src/configs/logger.config.js";
 import bcrypt from "bcryptjs";
 
@@ -184,7 +184,7 @@ async function main() {
       status: "ready",
       chunkCount: 1,
     },
-  });
+  }); 
   logger.info(`Done. admin: ${admin.email}, user: ${user.email}`);
 }
 main()

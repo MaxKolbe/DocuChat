@@ -20,6 +20,18 @@ export const listConversationsController = async (
   }
 };
 
+// export const createConverationController = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction,
+// ) => { 
+//   try{
+
+//   }catch (err) {
+//     next(err)
+//   }
+// }
+
 export const sendMessageController = async (req: Request, res: Response, next: NextFunction) => {
   const userId = req.params.userId!.toString();
   const conversationId = req.params.conversationId!.toString();

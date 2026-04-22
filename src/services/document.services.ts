@@ -6,6 +6,49 @@ import { Listdocuments } from "../modules/document/document.schema.js"; // type
 import { appEvents } from "../lib/events.js";
 import { DOC_EVENTS } from "../events/document.events.js";
 
+// options: Listdocuments..apparently not a good idea since zod creates literal types from enums
+export const listDocuments = async (userId: string, options: any) => {
+  const { page, limit, status, search, sortBy, sortOrder } = options;
+  // const sortby = sortBy as string;
+
+  // Build the where clause dynamically
+  const where: any = {
+    userId,
+    deletedAt: null, // Soft delete filter
+  };
+
+  if (status) {
+    where.title = { contains: search, mode: "insensitive" };
+    where.description = { contains: search, mode: "insensitive" };
+  }
+
+  const [documents, total] = await Promise.all([
+    prisma.document.findMany({
+      where,
+      orderBy: { [sortBy]: sortOrder },
+      skip: (page - 1) * limit,
+      take: limit,
+      select: {
+        id: true,
+        title: true,
+        filename: true,
+        status: true,
+        chunkCount: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    }),
+    prisma.document.count({ where }),
+  ]);
+
+  return {
+    code: 200,
+    message: "Documents listed succcessfully",
+    data: documents,
+    meta: { page, limit, total },
+  };
+};
+
 export const getDocument = async (docId: string, userId: string) => {
   const doc = await prisma.document.findUnique({
     where: {
@@ -34,52 +77,37 @@ export const getDocument = async (docId: string, userId: string) => {
   };
 };
 
-// options: Listdocuments
-export const listDocuments = async (userId: string, options: any) => {
-  const { page, limit, status, search, sortBy, sortOrder } = options.query;
-  const sortby = sortBy as string;
+export const createDocument = async (userId: string, body: { title: string; content: string }) => {
+  const { title, content } = body;
 
-  // Build the where clause dynamically
-  const where: any = {
+  const newDocument = await prisma.document.create({
+    data: {
+      userId,
+      title,
+      filename: "Test-File-Name.txt", //will be gottten from req.file on later iterations
+      content,
+      // status,
+      // chunkCount,
+    },
+  });
+
+  appEvents.emit(DOC_EVENTS.CREATED, {
     userId,
-    deletedAt: null, // Soft delete filter
-  };
-
-  if (status) {
-    where.title = { contains: search, mode: "insensitive" };
-    where.description = { contains: search, mode: "insensitive" };
-  }
-
-  const [documents, total] = await Promise.all([
-    prisma.document.findMany({
-      where,
-      orderBy: { [sortby]: sortOrder },
-      skip: (page - 1) * limit,
-      take: limit,
-      select: {
-        id: true,
-        title: true,
-        filename: true,
-        status: true,
-        chunkCount: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    }),
-    prisma.document.count({ where }),
-  ]);
+    documentId: newDocument.id,
+    title: newDocument.title,
+    fileSizeBytes: newDocument.fileSizeBytes,
+  });
 
   return {
-    code: 200,
-    message: "Documents listed succcessfully",
-    data: documents,
-    meta: { page, limit, total },
+    code: 201,
+    message: "document created successfully",
+    data: newDocument,
   };
 };
 
-export const deleteDocument = async (documentId: string, userId: string) => {
+export const deleteDocument = async (docId: string, userId: string) => {
   const doc = await prisma.document.findUnique({
-    where: { id: documentId },
+    where: { id: docId },
   });
 
   if (!doc || doc.deletedAt) {
@@ -99,18 +127,10 @@ export const deleteDocument = async (documentId: string, userId: string) => {
   });
 
   return prisma.document.update({
-    where: { id: documentId },
+    where: { id: docId },
     data: {
       deletedAt: new Date(),
       deletedBy: userId,
     },
   });
 };
-
-// for createDocument function
-// appEvents.emit(DOC_EVENTS.CREATED, {
-//   userId: user.id,
-//   documentId: doc.id,
-//   title: doc.title,
-//   fileSizeBytes: doc.fileSizeBytes,
-// });

@@ -22,7 +22,7 @@ export const validateRequest =
 
     // Replace req properties with validated (and transformed) data
     req.body = result.data.body ?? req.body;
-    // req.query = result.data.query ?? req.query;
+    req.qtransformed = result.data.query ?? req.query;
     req.params = result.data.params ?? req.params;
 
     next();

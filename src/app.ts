@@ -47,7 +47,7 @@ connectRedis();
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/documents", authenticate, documentRouter);
 app.use("/api/v1/conversations", authenticate, conversationRouter);
-app.use("/api/v1/admin", adminRouter);
+app.use("/api/v1/admin", authenticate, adminRouter);
 // SERVE SWAGGER UI
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // SERVE THE RAW JSON SPEC (useful for code generators)

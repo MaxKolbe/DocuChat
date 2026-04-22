@@ -16,7 +16,6 @@ import {
 } from "./document.schema.js";
 
 const router = express.Router();
-router.use(authenticate);
 
 /**
  * @swagger

@@ -8,7 +8,6 @@ import { NotFoundError } from "../../lib/errors.js";
 import { successResponse } from "../../utils/responseHandler.js";
 const router = express.Router();
 
-router.use(authenticate);
 router.use(requirePermission("roles:manage"));
 
 // List all roles with their permissions

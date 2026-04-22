@@ -4,9 +4,6 @@ export const createDocumentSchema = z.object({
   body: z.object({
     title: z.string().min(1, "Title is required").max(500),
     content: z.string().min(1, "Content is required"),
-  }),
-  params: z.object({
-    userId: z.uuid("Invalid user ID")
   })
 });
 
@@ -19,16 +16,12 @@ export const listDocumentsSchema = z.object({
     sortBy: z.enum(["createdAt", "title", "chunkCount"]).default("createdAt").optional(),
     sortOrder: z.enum(["asc", "desc"]).default("desc"),
   }),
-  params: z.object({
-    userId: z.uuid("Invalid user ID")
-  })
 });
 
 // document parameter schema
 export const documentParamsSchema = z.object({
   params: z.object({
     docId: z.uuid("Invalid document ID"),
-    userId: z.uuid("Invalid user ID"),
   }),
 });
 

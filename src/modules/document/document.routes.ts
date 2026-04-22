@@ -48,28 +48,28 @@ router.use(authenticate);
  *         description: Not authenticated
  */
 router.get(
-  "/:userId",
+  "/",
   requirePermission("documents:read"),
   validateRequest(listDocumentsSchema),
   listDocumentsController,
 );
 
 router.get(
-  "/:docId/:userId",
+  "/:docId",
   requirePermission("documents:read"),
   validateRequest(documentParamsSchema),
   getDocumentController,
 );
 
 router.post(
-  "/:userId",
+  "/",
   requirePermission("documents:create"),
   validateRequest(createDocumentSchema),
   createDocumentController,
 );
 
 router.delete(
-  "/:docId/:userId",
+  "/:docId",
   requirePermission("documents:delete"/*,"admin:documents:delete"*/),
   validateRequest(documentParamsSchema),
   deleteDocumentController,

@@ -7,12 +7,12 @@ import {
   createDocument,
   deleteDocument,
 } from "../../services/document.services.js";
-import { Listdocuments } from "./document.schema.js";
 
 export const listDocumentsController = async (req: Request, res: Response, next: NextFunction) => {
   const { page, limit, status, search, sortBy, sortOrder } = req.qtransformed;
+  const userId = req.user!.id; 
   try {
-    const response = await listDocuments(req.params.userId!.toString(), {
+    const response = await listDocuments(userId, {
       page,
       limit,
       status,
@@ -28,7 +28,7 @@ export const listDocumentsController = async (req: Request, res: Response, next:
 
 export const getDocumentController = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const response = await getDocument(req.params.docId!.toString(), req.params.userId!.toString());
+    const response = await getDocument(req.params.docId!.toString(), req.user!.id);
     successResponse(res, response.code, response.message, response.data);
   } catch (err) {
     next(err);
@@ -38,7 +38,7 @@ export const getDocumentController = async (req: Request, res: Response, next: N
 export const createDocumentController = async (req: Request, res: Response, next: NextFunction) => {
   const { title, content } = req.body;
   try {
-    const response = await createDocument(req.params.userId!.toString(), {
+    const response = await createDocument(req.user!.id, {
       title,
       content
     });
@@ -50,9 +50,9 @@ export const createDocumentController = async (req: Request, res: Response, next
 
 export const deleteDocumentController = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const response = await deleteDocument(
+    await deleteDocument(
       req.params.docId!.toString(),
-      req.params.userId!.toString(),
+      req.user!.id
     );
     successResponse(res, 200, "Deleted successfully");
   } catch (err) {

@@ -8,7 +8,7 @@ import adminRouter from "./modules/admin/admin.routes.js";
 import logger from "./configs/logger.config.js";
 import swaggerUi from "swagger-ui-express";
 import { authenticate } from "./middleware/auth.js";
-// import { connectRedis } from "./configs/cache.config.js";
+import { connectRedis } from "./configs/cache.config.js";
 import { swaggerSpec } from "./configs/swagger.config.js";
 import { prisma } from "./lib/prisma.js";
 import { Request, Response } from "express";
@@ -35,12 +35,12 @@ const corsOptions = {
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true, //Allow cookies/auth
 };
-
+ 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors(corsOptions));
 
-// connectRedis();
+connectRedis();
 
 //ROUTES
 app.use("/api/v1/auth", authRouter);

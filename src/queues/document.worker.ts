@@ -1,10 +1,11 @@
 import "dotenv/config";
+import logger from "../configs/logger.config.js";
 import { Job, Worker } from "bullmq";
 import { prisma } from "../lib/prisma.js";
 import { appEvents } from "../lib/events.js";
-import logger from "../configs/logger.config.js";
 import { NotFoundError } from "../lib/errors.js";
 import { splitIntoChunks, estimateTokens } from "../utils/chunker.js";
+import { deadLetterQueue } from "./deadletter.queue.js";
 
 const redis_host = process.env.REDIS_HOST! as string;
 const redis_port = Number(process.env.REDIS_PORT!);
@@ -46,14 +47,14 @@ const worker = new Worker(
           where: { documentId: docId },
         });
 
-          // await tx.chunk.createMany({
-          //   data: chunks.map((text, index) => {
-          //       docId,
-          //       index,
-          //       content: text,
-          //       tokenCount: estimateTokens(text)
-          //   })
-          // })
+        // await tx.chunk.createMany({
+        //   data: chunks.map((text, index) => {
+        //       docId,
+        //       index,
+        //       content: text,
+        //       tokenCount: estimateTokens(text)
+        //   })
+        // })
 
         await tx.document.update({
           where: { id: docId },
@@ -107,8 +108,25 @@ worker.on("completed", (job) => {
   logger.info(`Job ${job.id} completed: ${job.returnvalue?.chunks} chunks`);
 });
 
-worker.on("failed", (job, error) => {
-  logger.error(`Job ${job?.id} failed (attempt ${job?.attemptsMade}): ${error.message}`);
+worker.on("failed", async (job, error) => {
+  if (!job) {
+    return;
+  }
+
+  if (job.attemptsMade >= (job.opts.attempts ?? 3)) {
+    logger.error(
+      `Job ${job?.id} failed permanently: ${error.message}. Moving to Dead Letter Queue`,
+    );
+  }
+
+  await deadLetterQueue.add("failed-document", {
+    originalJobId: job.id,
+    originalQueue: "document-processing",
+    data: job.data,
+    error: error.message,
+    failedAt: new Date().toISOString(),
+    attempts: job.attemptsMade,
+  });
 });
 
 worker.on("error", (error) => {

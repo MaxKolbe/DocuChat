@@ -1,21 +1,22 @@
 import express from "express";
 import cors from "cors";
-import errorHandler from "./middleware/errorHandler.js";
 import authRouter from "./modules/auth/auth.routes.js";
+import adminRouter from "./modules/admin/admin.routes.js";
 import documentRouter from "./modules/document/document.routes.js";
 import conversationRouter from "./modules/conversation/conversation.routes.js";
-import adminRouter from "./modules/admin/admin.routes.js";
+import errorHandler from "./middleware/errorHandler.js";
 import logger from "./configs/logger.config.js";
 import swaggerUi from "swagger-ui-express";
+import { prisma } from "./lib/prisma.js";
 import { authenticate } from "./middleware/auth.js";
 import { connectRedis } from "./configs/cache.config.js";
 import { swaggerSpec } from "./configs/swagger.config.js";
-import { prisma } from "./lib/prisma.js";
+import { bullBoardAdapter } from "./configs/bull-board.config.js";
 import { Request, Response } from "express";
 import "./events/auth.events.js";
 import "./events/admin.events.js";
 import "./events/document.events.js";
-import "./queues/document.worker.js"
+import "./queues/document.worker.js";
 import "dotenv/config";
 
 const app = express();
@@ -35,7 +36,7 @@ const corsOptions = {
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true, //Allow cookies/auth
 };
- 
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors(corsOptions));
@@ -53,6 +54,12 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.get("/api-docs.json", (req: Request, res: Response) => {
   res.json(swaggerSpec);
 });
+// MOUNT THE BULL BOARD DASHBOARD (PROTECT WITH AUTH IN PRODUCTION)
+app.use(
+  "/admin/queues",
+  authenticate,
+  /*requirePermission("roles:manage"),*/ bullBoardAdapter.getRouter(),
+);
 
 process.on("SIGINT", async () => {
   logger.info("Shutting down...");

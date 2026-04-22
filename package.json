@@ -29,6 +29,8 @@
   },
   "homepage": "https://github.com/MaxKolbe/ts-node-template#readme",
   "dependencies": {
+    "@bull-board/api": "^7.0.0",
+    "@bull-board/express": "^7.0.0",
     "@logtail/node": "^0.5.8",
     "@logtail/winston": "^0.5.8",
     "@prisma/adapter-pg": "^7.7.0",

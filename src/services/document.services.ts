@@ -5,6 +5,7 @@ import { getUserPermissions } from "../utils/rbac.service.js";
 import { Listdocuments } from "../modules/document/document.schema.js"; // type
 import { appEvents } from "../lib/events.js";
 import { DOC_EVENTS } from "../events/document.events.js";
+import { queueDocumentForProcessing } from "../queues/document.queue.js";
 
 // options: Listdocuments..apparently not a good idea since zod creates literal types from enums
 export const listDocuments = async (userId: string, options: any) => {
@@ -84,24 +85,29 @@ export const createDocument = async (userId: string, body: { title: string; cont
     data: {
       userId,
       title,
-      filename: "Test-File-Name.txt", //will be gottten from req.file on later iterations
+      filename: title.toLowerCase().replace(/\s+/g, '-'),
       content,
-      // status,
-      // chunkCount,
+      status: 'pending',
     },
   });
+
+  // Queue for background processing 
+  const jobId = await queueDocumentForProcessing(newDocument.id, userId);
 
   appEvents.emit(DOC_EVENTS.CREATED, {
     userId,
     documentId: newDocument.id,
     title: newDocument.title,
-    fileSizeBytes: newDocument.fileSizeBytes,
+    // fileSizeBytes: newDocument.fileSizeBytes,
   });
 
   return {
-    code: 201,
-    message: "document created successfully",
-    data: newDocument,
+    code: 202,
+    message: "document Accepted! (still processing)",
+    data: {
+      newDocument,
+      jobId
+    },
   };
 };
 

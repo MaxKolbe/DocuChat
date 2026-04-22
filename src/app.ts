@@ -15,6 +15,7 @@ import { Request, Response } from "express";
 import "./events/auth.events.js";
 import "./events/admin.events.js";
 import "./events/document.events.js";
+import "./queues/document.worker.js"
 import "dotenv/config";
 
 const app = express();

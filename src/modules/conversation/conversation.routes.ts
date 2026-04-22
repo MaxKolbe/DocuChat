@@ -1,16 +1,39 @@
 //ROUTES
 import express from "express";
-import { authenticate } from "../../middleware/auth.js";
+import { authenticate, requirePermission } from "../../middleware/auth.js";
 import { validateRequest } from "../../middleware/validate.js";
-import { createConversationSchema, sendMessageSchema } from "./conversation.schema.js";
-import { listConversationsController, sendMessageController } from "./conversation.controller.js";
+import {
+  listConversationsSchema,
+  createConversationSchema,
+  sendMessageSchema,
+} from "./conversation.schema.js";
+import {
+  listConversationsController,
+  createConverationController,
+  sendMessageController,
+} from "./conversation.controller.js";
 
 const router = express.Router();
 router.use(authenticate);
 
-router.get("/:userId", listConversationsController);
-router.post("/:userId/:conversationId/messages/:documentId", validateRequest(sendMessageSchema), sendMessageController);
-// router.post("/", validateRequest(createConversationSchema), );
-// router.get("/:id/messages", );
+router.get(
+  "/",
+  requirePermission("conversations:read"),
+  validateRequest(listConversationsSchema),
+  listConversationsController,
+);
+
+router.post(
+  "/",
+  requirePermission("conversations:create"),
+  validateRequest(createConversationSchema),
+  createConverationController
+);
+
+router.post(
+  "/:conversationId/messages",
+  validateRequest(sendMessageSchema),
+  sendMessageController,
+);
 
 export default router;

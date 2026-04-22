@@ -25,6 +25,12 @@ export const documentParamsSchema = z.object({
   }),
 });
 
+export const pollParamsSchema = z.object({
+  params: z.object({
+    id: z.uuid(),
+  }),
+});
+
 export type Createdocuments = z.infer<typeof createDocumentSchema>;
 export type Listdocuments = z.infer<typeof listDocumentsSchema>;
 export type Getdocument = z.infer<typeof documentParamsSchema>;

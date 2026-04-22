@@ -6,11 +6,12 @@ import {
   listDocuments,
   createDocument,
   deleteDocument,
+  pollDocument,
 } from "../../services/document.services.js";
 
 export const listDocumentsController = async (req: Request, res: Response, next: NextFunction) => {
   const { page, limit, status, search, sortBy, sortOrder } = req.qtransformed;
-  const userId = req.user!.id; 
+  const userId = req.user!.id;
   try {
     const response = await listDocuments(userId, {
       page,
@@ -40,7 +41,7 @@ export const createDocumentController = async (req: Request, res: Response, next
   try {
     const response = await createDocument(req.user!.id, {
       title,
-      content
+      content,
     });
     successResponse(res, response.code, response.message, response.data);
   } catch (err) {
@@ -50,11 +51,17 @@ export const createDocumentController = async (req: Request, res: Response, next
 
 export const deleteDocumentController = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    await deleteDocument(
-      req.params.docId!.toString(),
-      req.user!.id
-    );
+    await deleteDocument(req.params.docId!.toString(), req.user!.id);
     successResponse(res, 200, "Deleted successfully");
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const pollDocumentController = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const response = await pollDocument(req.params.id!.toString(), req.user!.id);
+    return successResponse(res, response.code, response.message, response.data)
   } catch (err) {
     next(err);
   }

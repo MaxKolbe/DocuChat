@@ -12,6 +12,7 @@ import {
   createDocumentSchema,
   listDocumentsSchema,
   documentParamsSchema,
+  pollParamsSchema
 } from "./document.schema.js";
 
 const router = express.Router();
@@ -73,6 +74,14 @@ router.delete(
   requirePermission("documents:delete"/*,"admin:documents:delete"*/),
   validateRequest(documentParamsSchema),
   deleteDocumentController,
+);
+
+// poll job progress
+router.get(
+  "/:id/processing-status",
+  requirePermission("documents:read"),
+  validateRequest(pollParamsSchema),
+  createDocumentController,
 );
 
 export default router;

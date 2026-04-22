@@ -5,6 +5,8 @@ import { getUserPermissions } from "../utils/rbac.service.js";
 import { Listdocuments } from "../modules/document/document.schema.js"; // type
 import { appEvents } from "../lib/events.js";
 import { DOC_EVENTS } from "../events/document.events.js";
+import { queueDocumentForProcessing, documentQueue } from "../queues/document.queue.js";
+
 
 // options: Listdocuments..apparently not a good idea since zod creates literal types from enums
 export const listDocuments = async (userId: string, options: any) => {
@@ -84,24 +86,29 @@ export const createDocument = async (userId: string, body: { title: string; cont
     data: {
       userId,
       title,
-      filename: "Test-File-Name.txt", //will be gottten from req.file on later iterations
+      filename: title.toLowerCase().replace(/\s+/g, "-"),
       content,
-      // status,
-      // chunkCount,
+      status: "pending",
     },
   });
+
+  // Queue for background processing
+  const jobId = await queueDocumentForProcessing(newDocument.id, userId);
 
   appEvents.emit(DOC_EVENTS.CREATED, {
     userId,
     documentId: newDocument.id,
     title: newDocument.title,
-    fileSizeBytes: newDocument.fileSizeBytes,
+    // fileSizeBytes: newDocument.fileSizeBytes,
   });
 
   return {
-    code: 201,
-    message: "document created successfully",
-    data: newDocument,
+    code: 202,
+    message: "document Accepted! (still processing)",
+    data: {
+      newDocument,
+      jobId,
+    },
   };
 };
 
@@ -133,4 +140,29 @@ export const deleteDocument = async (docId: string, userId: string) => {
       deletedBy: userId,
     },
   });
+};
+
+export const pollDocument = async (docId: string, userId: string) => {
+  const doc = await prisma.document.findUnique({
+    where: { id: docId },
+    select: { id: true, status: true, error: true, userId: true },
+  });
+
+  if (!doc || doc.userId !== userId) {
+    throw new NotFoundError("Document not found");
+  }
+
+  // Try to find the active job for this document
+  const jobs = await documentQueue.getJobs(["active", "waiting"]);
+  const activeJob = jobs.find((j) => j.data.documentId === docId);
+
+  return {
+    code: 200,
+    message: "Returned pool result successfully",
+    data: {
+      status: doc.status,
+      error: doc.error,
+      progress: activeJob ? await activeJob.progress : null,
+    },
+  };
 };

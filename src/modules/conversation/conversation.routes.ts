@@ -14,7 +14,6 @@ import {
 } from "./conversation.controller.js";
 
 const router = express.Router();
-router.use(authenticate);
 
 router.get(
   "/",

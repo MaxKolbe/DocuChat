@@ -4,8 +4,8 @@ import { validateRequest } from "../../middleware/validate.js";
 import { requirePermission, authenticate } from "../../middleware/auth.js";
 import {
   getDocumentController,
-  postController,
   listDocumentsController,
+  createDocumentController,
   deleteDocumentController,
 } from "./document.controller.js";
 import {
@@ -48,29 +48,31 @@ router.use(authenticate);
  *         description: Not authenticated
  */
 router.get(
-  "/:id",
+  "/",
   requirePermission("documents:read"),
   validateRequest(listDocumentsSchema),
   listDocumentsController,
 );
+
 router.get(
-  "/:id",
+  "/:docId",
   requirePermission("documents:read"),
   validateRequest(documentParamsSchema),
   getDocumentController,
-);
-router.delete(
-  "/:documentId/:userId",
-  requirePermission("documents:delete", "admin:documents:delete"),
-  validateRequest(documentParamsSchema),
-  deleteDocumentController,
 );
 
 router.post(
   "/",
   requirePermission("documents:create"),
   validateRequest(createDocumentSchema),
-  postController,
+  createDocumentController,
+);
+
+router.delete(
+  "/:docId",
+  requirePermission("documents:delete"/*,"admin:documents:delete"*/),
+  validateRequest(documentParamsSchema),
+  deleteDocumentController,
 );
 
 export default router;

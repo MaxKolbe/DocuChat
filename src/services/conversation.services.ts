@@ -50,6 +50,21 @@ export const listConversations = async (
   };
 };
 
+export const createConversation = async ( userId: string, title: string) => {  
+  const newConversation = await prisma.conversation.create({
+    data: {
+      userId,
+      title,
+    },
+  });
+
+  return {
+    code: 201,
+    message: "Conversation created successfully", 
+    data: newConversation
+  }
+}
+
 export const sendMessage = async (
   conversationId: string,
   userId: string,
@@ -112,6 +127,8 @@ export const sendMessage = async (
     });
 
     return {
+      code: 200, 
+      message: "Message sent successfully",
       data: {
         userMessage,
         assistantMessage,

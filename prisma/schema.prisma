@@ -202,3 +202,15 @@ model Permission {
   @@unique([resource, action]) 
   @@map("permission")
 } 
+ 
+model WebhookEvent { 
+  id           String   @id  // The provider's event ID 
+  provider     String         // 'stripe', 'github', etc. 
+  eventType    String    @map("event_type")     // 'payment.succeeded', etc. 
+  receivedAt   DateTime @default(now())  @map("received_at") 
+  processedAt  DateTime?  @map("processed_at") 
+  payload      String         // Raw payload for debugging 
+ 
+  @@index([provider, eventType]) 
+  @@map("webhookevent")
+}

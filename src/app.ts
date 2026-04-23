@@ -12,6 +12,7 @@ import { authenticate } from "./middleware/auth.js";
 import { connectRedis } from "./configs/cache.config.js";
 import { swaggerSpec } from "./configs/swagger.config.js";
 import { bullBoardAdapter } from "./configs/bull-board.config.js";
+import { verifyWebhookSignature } from "./middleware/verifyWebhook.js";
 import { Request, Response } from "express";
 import "./events/auth.events.js";
 import "./events/admin.events.js";
@@ -36,6 +37,19 @@ const corsOptions = {
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true, //Allow cookies/auth
 };
+
+ 
+// Capture raw body for webhook routes BEFORE express.json() 
+ 
+const secret = process.env.WEBHOOK_SECRET 
+ 
+app.use('/webhooks', verifyWebhookSignature(secret!, "x-signature"), 
+express.raw({ 
+  type: 'application/json', 
+  verify: (req: any, res, buf) => { 
+    req.rawBody = buf; 
+  }, 
+}));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

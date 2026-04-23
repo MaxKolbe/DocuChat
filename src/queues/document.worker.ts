@@ -34,7 +34,7 @@ const worker = new Worker(
     });
 
     try {
-      await job.updateProgress(10); // not sure what this does
+      await job.updateProgress(10);
 
       // Step 2: Split into chunks
       const chunks = splitIntoChunks(doc.content, 500);
@@ -47,14 +47,14 @@ const worker = new Worker(
           where: { documentId: docId },
         });
 
-        // await tx.chunk.createMany({
-        //   data: chunks.map((text, index) => {
-        //       docId,
-        //       index,
-        //       content: text,
-        //       tokenCount: estimateTokens(text)
-        //   })
-        // })
+        await tx.chunk.createMany({
+          data: chunks.map((text, index) => ({
+            documentId: docId,
+            index,
+            content: text,
+            tokenCount: estimateTokens(text),
+          })),
+        });
 
         await tx.document.update({
           where: { id: docId },
@@ -79,7 +79,7 @@ const worker = new Worker(
       };
     } catch (err) {
       // Only mark as failed on the LAST attempt
-      if (job.attemptsMade >= (job.opts.attempts ?? 3) - 1) {
+      if (job.attemptsMade >= (job.opts.attempts ?? 3)) {
         await prisma.document.update({
           where: { id: docId },
           data: {

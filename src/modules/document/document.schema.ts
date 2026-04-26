@@ -22,7 +22,7 @@ export const listDocumentsSchema = z.object({
 export const documentParamsSchema = z.object({
   params: z.object({
     docId: z.uuid("Invalid document ID"),
-  }),
+  }), 
 });
 
 export const pollParamsSchema = z.object({

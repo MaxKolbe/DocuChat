@@ -1,0 +1,113 @@
+/**
+ * @swagger
+ * /v1/users/{id}:
+ *   get:
+ *     summary: Get a user by ID
+ *     description: Returns a single user with optional related data.
+ *     operationId: getUserById
+ *     tags:
+ *       - Users
+ *
+ *     security:
+ *       - bearerAuth: []
+ *
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: The ID of the user
+ *         schema:
+ *           type: string
+ *
+ *       - name: includeTokens
+ *         in: query
+ *         required: false
+ *         description: Whether to include refresh tokens
+ *         schema:
+ *           type: boolean
+ *
+ *       - name: x-request-id
+ *         in: header
+ *         required: false
+ *         description: Optional request tracking ID
+ *         schema:
+ *           type: string
+ *
+ *     requestBody:
+ *       required: false
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               debug:
+ *                 type: boolean
+ *                 example: false
+ *
+ *     responses:
+ *       200:
+ *         description: User retrieved successfully
+ *         headers:
+ *           x-request-id:
+ *             description: Request ID
+ *             schema:
+ *               type: string
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: string
+ *                   example: "user_123"
+ *                 email:
+ *                   type: string
+ *                   example: "max@test.com"
+ *                 refreshTokens:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/RefreshToken'
+ *
+ *       400:
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *
+ *       401:
+ *         description: Unauthorized
+ *
+ *       404:
+ *         description: User not found
+ *
+ *       500:
+ *         description: Internal server error
+ *
+ * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ *
+ *   schemas:
+ *     RefreshToken:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *         token:
+ *           type: string
+ *         expiresAt:
+ *           type: string
+ *           format: date-time
+ *
+ *     Error:
+ *       type: object
+ *       properties:
+ *         message:
+ *           type: string
+ *         code:
+ *           type: string
+ */

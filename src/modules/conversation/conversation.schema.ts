@@ -15,7 +15,7 @@ export const createConversationSchema = z.object({
 
 export const sendMessageSchema = z.object({
   params: z.object({
-    conversationId: z.uuid("Invalid conversation ID").optional(),
+    conversationId: z.uuid("Invalid conversation ID"),
   }),
   body: z.object({
     content: z.string().min(1, "Message cannot be empty").max(10000, "Message too long"),

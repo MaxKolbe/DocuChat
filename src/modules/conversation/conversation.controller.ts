@@ -27,7 +27,7 @@ export const createConverationController = async (
   res: Response,
   next: NextFunction,
 ) => {
-  const {title} = req.body
+  const { title } = req.body;
   try {
     const response = await createConversation(req.user!.id, title);
     successResponse(res, response.code, response.message, response.data);

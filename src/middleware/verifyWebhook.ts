@@ -23,6 +23,9 @@ export const verifyWebhookSignature =
     const provided = Buffer.from(signature, "hex");
     const expected = Buffer.from(expectedSignature, "hex");
 
+    // A naive string comparison returns false at the first differing character, which leaks timing information that 
+    // an attacker can exploit to figure out the correct signature one character at a time
+    // therefore use crypto.timingSafeEqual
     if (provided.length !== expected.length || !crypto.timingSafeEqual(provided, expected)) {
       return res.status(401).json({ error: "Invalid signature" });
     }

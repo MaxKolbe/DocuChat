@@ -22,7 +22,7 @@ export class ValidationError extends AppError {
 }
 export class UnauthorizedError extends AppError {
   constructor(message = "Authentication required") {
-    super(message, 401, "UNAUTHORZED");
+    super(message, 401, "UNAUTHORIZED");
   }
 }
 export class ForbiddenError extends AppError {

@@ -1,17 +1,31 @@
 //ROUTES
-import express from "express";
-import { authenticate } from "../../middleware/auth.js";
-import { requirePermission } from "../../middleware/auth.js";
+import express, { Request, Response } from "express";
 import { prisma } from "../../lib/prisma.js";
 import { appEvents } from "../../lib/events.js";
 import { NotFoundError } from "../../lib/errors.js";
+import { requirePermission } from "../../middleware/auth.js";
+import { validateRequest } from "../../middleware/validate.js";
 import { successResponse } from "../../utils/responseHandler.js";
+import { createRoleSchema, deleteRoleSchema } from "./admin.schema.js";
 const router = express.Router();
 
 router.use(requirePermission("roles:manage"));
 
-// List all roles with their permissions
-router.get("/roles", async (req, res) => {
+/**
+ * @swagger
+ * /admin/roles:
+ *   get:
+ *     summary: List all roles with their permissions
+ *     tags: [admin]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of roles
+ *       401:
+ *         description: Not authenticated
+ */
+router.get("/roles", async (req: Request, res: Response) => {
   const roles = await prisma.role.findMany({
     include: {
       permissions: { include: { permission: true } },
@@ -34,8 +48,40 @@ router.get("/roles", async (req, res) => {
   );
 });
 
-// Assign a role to a user
-router.post("/users/:userId/roles", async (req, res, next) => {
+/**
+ * @swagger
+ * /admin/users/{userId}/roles:
+ *   post:
+ *     summary: Assign a role to a user
+ *     tags: [admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: userId
+ *         in: path
+ *         required: true
+ *         description: The ID of the user
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               roleName:
+ *                 type: string
+ *                 example: admin
+ *     responses:
+ *       201:
+ *         description: Role assigned to user successfully
+ *       401:
+ *         description: Not authenticated
+ */
+router.post("/users/:userId/roles", 
+  // validateRequest(createRoleSchema), 
+  async (req, res, next) => {
   try {
     const { userId } = req.params;
     const { roleName } = req.body;
@@ -67,30 +113,63 @@ router.post("/users/:userId/roles", async (req, res, next) => {
   }
 });
 
-// Revoke a role from a user
-router.delete("/users/:userId/roles/:roleName", async (req, res, next) => {
-  try {
-    const { userId, roleName } = req.params;
+/**
+ * @swagger
+ * /admin/users/{userId}/roles/{roleName}:
+ *   delete:
+ *     summary: Revoke a role from a user
+ *     tags: [admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: userId
+ *         in: path
+ *         required: true
+ *         description: The ID of the user
+ *         schema:
+ *           type: string
+ *       - name: roleName
+ *         in: path
+ *         required: true
+ *         description: the role to revoke
+ *         schema:
+ *           type: string
+ *           enum: [admin, member, viewer]
+ *     responses:
+ *       200:
+ *         description: Role revoked from user successfully
+ *       401:
+ *         description: Not authenticated
+ *       404:
+ *         description: Role not found
+ */
+router.delete(
+  "/users/:userId/roles/:roleName",
+  // validateRequest(deleteRoleSchema),
+  async (req, res, next) => {
+    try {
+      const { userId, roleName } = req.params;
 
-    const role = await prisma.role.findUnique({
-      where: { name: roleName },
-    });
-    if (!role) throw new NotFoundError("Role not found");
+      const role = await prisma.role.findUnique({
+        where: { name: roleName },
+      });
+      if (!role) throw new NotFoundError("Role not found");
 
-    await prisma.userRole.deleteMany({
-      where: { userId, roleId: role.id },
-    });
+      await prisma.userRole.deleteMany({
+        where: { userId, roleId: role.id },
+      });
 
-    appEvents.emit("admin:role-revoked", {
-      targetUserId: userId,
-      roleName,
-      revokedBy: req.user!.id,
-    });
+      appEvents.emit("admin:role-revoked", {
+        targetUserId: userId,
+        roleName,
+        revokedBy: req.user!.id,
+      });
 
-    successResponse(res, 200, `Role '${roleName}' revoked`);
-  } catch (error) {
-    next(error);
-  }
-});
+      successResponse(res, 200, `Role '${roleName}' revoked`);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
 
 export default router;

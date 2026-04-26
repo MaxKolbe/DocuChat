@@ -1,4 +1,5 @@
 import CircuitBreaker from "opossum";
+import logger from "../../configs/logger.config.js";
 import { openaiClient } from "./openai.client.js";
 import { withRetry } from "./retry.js";
 
@@ -23,15 +24,17 @@ openaiBreaker.fallback(() => {
 
 // Visibility into state changes
 openaiBreaker.on("open", () =>
-  console.warn("⚠ OpenAI circuit breaker OPENED — requests will fail fast"),
+  logger.warn("⚠ OpenAI circuit breaker OPENED — requests will fail fast"),
 );
 openaiBreaker.on("halfOpen", () =>
-  console.warn("⚠ OpenAI circuit breaker HALF-OPEN — testing recovery"),
+  logger.warn("⚠ OpenAI circuit breaker HALF-OPEN — testing recovery"),
 );
-openaiBreaker.on("close", () => console.log("✅ OpenAI circuit breaker CLOSED — normal operation"));
+openaiBreaker.on("close", () => 
+  logger.info("✅ OpenAI circuit breaker CLOSED — normal operation")
+);
 
 //USE IN THE EMBEDDING SERVICE
-// const response = await openaiBreaker.fire('/embeddings', { 
-//   input: text, 
-//   model: 'text-embedding-3-small', 
+// const response = await openaiBreaker.fire('/embeddings', {
+//   input: text,
+//   model: 'text-embedding-3-small',
 // });

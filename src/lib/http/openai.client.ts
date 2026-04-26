@@ -38,8 +38,7 @@ openaiClient.interceptors.response.use(
     if (error.response) {
       // Server responded with error status
       console.error(
-        `✕ OpenAI ${error.response.status} ${error.config?.url} 
-(${duration}ms):`,
+        `✕ OpenAI ${error.response.status} ${error.config?.url} (${duration}ms):`,
         error.response.data,
       );
     } else if (error.request) {

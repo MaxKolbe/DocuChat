@@ -121,13 +121,13 @@ async function seedRBAC() {
       });
     }
   }
-
+ 
   logger.info("RBAC seeded: 3 roles, 9 permissions");
 }
 
 async function main() {
   logger.info("seeding roles..");
-  seedRBAC();
+  await seedRBAC();
   logger.info("Seeding...");
   const adminHash = await bcrypt.hash("Admin123!", 12);
   const admin = await prisma.user.upsert({

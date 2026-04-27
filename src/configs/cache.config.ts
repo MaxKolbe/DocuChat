@@ -30,6 +30,7 @@ const redisClient: RedisClientType = createClient({
     },
   },
 });
+// node redis doesnt have a prefix option. this makes things just a little bit inconvenient for me..sad
 
 redisClient.on("error", (err) => {
   logger.error(`Redis Client Creation Error: ${err}`);

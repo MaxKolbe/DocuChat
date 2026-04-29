@@ -1,8 +1,9 @@
 //ROUTES
 import express from "express";
-import { requirePermission } from "../../middleware/auth.js";
-import { validateRequest } from "../../middleware/validate.js";
 import { conditionalGet } from "../../middleware/etag.js";
+import { requirePermission } from "../../middleware/auth.js";
+import { chatLimiter } from "../../middleware/rateLimiter.js";
+import { validateRequest } from "../../middleware/validate.js";
 import {
   listConversationsSchema,
   createConversationSchema,
@@ -118,6 +119,11 @@ router.post(
  *       400:
  *         description: Validation error
  */
-router.post("/:conversationId/messages", validateRequest(sendMessageSchema), sendMessageController);
+router.post(
+  "/:conversationId/messages",
+  chatLimiter,
+  validateRequest(sendMessageSchema),
+  sendMessageController,
+);
 
 export default router;

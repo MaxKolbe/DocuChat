@@ -8,7 +8,7 @@ import { getUserPermissions } from "../utils/rbac.service.js";
 declare global {
   namespace Express {
     interface Request {
-      user?: { id: string; role: string };
+      user?: { id: string; role: string, tier: string };
       qtransformed: any; // for tranformations made to req.query
     }
   }
@@ -32,7 +32,7 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
     }
 
     // Attach user context to the request
-    req.user = { id: payload.sub, role: payload.role };
+    req.user = { id: payload.sub, role: payload.role, tier: payload.tier };
     next();
   } catch (error: any) {
     if (error.name === "TokenExpiredError") {

@@ -1,5 +1,5 @@
 // src/middleware/etag.ts
-// optional use case- but it could be applied to read-heavy endpoints:
+//it should be applied to read-heavy endpoints:
 import { Request, Response, NextFunction } from "express";
 import crypto from "crypto";
 
@@ -7,25 +7,22 @@ export const conditionalGet = () => (req: Request, res: Response, next: NextFunc
   // Store the OG JSON method
   const originalJson = res.json.bind(res);
 
-  // overide json to add etag
-  res.json = function (body: any) {
-    const content = JSON.stringify(body);
-    const etag = `${crypto.createHash("md5").update(content).digest("hex")}}`;
+    // overide json to add etag
+    res.json = function (body: any) {
+      const content = JSON.stringify(body);
+      const etag = `"${crypto.createHash("md5").update(content).digest("hex")}"`;
 
-    res.setHeader("ETag", etag);
+      res.setHeader("ETag", etag);
 
-    // check of client sent IF-None-Match
-    const clientEtag = req.headers["if-none-match"];
-    if (clientEtag === etag) {
-      res.status(304).end();
-      return res;
-    }
+      // check of client sent IF-None-Match
+      const clientEtag = req.headers["if-none-match"];
+      if (clientEtag === etag) {
+        res.status(304).end();
+        return res;
+      }
+  
+      return originalJson(body); 
+    };
 
-    return originalJson(body);
-  };
   next();
 };
-
-// Could be used in routes like this:
-// router.get('/documents/:id', conditionalGet(), getDocument);
-// router.get('/conversations', conditionalGet(), listConversations);

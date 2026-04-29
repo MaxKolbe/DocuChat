@@ -1,4 +1,3 @@
-import { resolve } from "dns";
 import redisClient from "../configs/cache.config.js";
 import crypto from "crypto";
 
@@ -52,7 +51,7 @@ export const cacheGetOrSet = async <T>(
 
   //2. Try to acquire lock
   const lockKey = `docuchat:lock:${key}`;
-  const acquired = await redisClient.set(lockKey, "1", { EX: 5, condition: "NX" }); // Expires in 5s, set only if not exists
+  const acquired = await redisClient.set(lockKey, "1", { EX: 5, condition: "NX" }); // Expires in 5s, set only if it does NOT already exist
 
   if (acquired) {
     // We got the lock. fetch and cache

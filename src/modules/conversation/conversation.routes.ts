@@ -2,6 +2,7 @@
 import express from "express";
 import { requirePermission } from "../../middleware/auth.js";
 import { validateRequest } from "../../middleware/validate.js";
+import { conditionalGet } from "../../middleware/etag.js";
 import {
   listConversationsSchema,
   createConversationSchema,
@@ -44,6 +45,7 @@ router.get(
   "/",
   requirePermission("conversations:read"),
   validateRequest(listConversationsSchema),
+  conditionalGet(),
   listConversationsController,
 );
 

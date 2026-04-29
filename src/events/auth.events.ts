@@ -85,8 +85,6 @@ appEvents.on(AUTH_EVENTS.LOGIN_FAILED, async (data) => {
       logger.warn(`Security: ${failures} failed logins from ${data.deviceInfo} for ${data.email}`);
       // Could add the IP to a temporary block list here
     }
-    logger.warn(`Failed login attempt for ${data.email} from ${data.deviceInfo}`);
-    // In Week 3 we'll add rate limiting based on failed attempts
   } catch (error) {
     logger.error(`Failed to log failed login: ${error}`);
   }

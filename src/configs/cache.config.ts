@@ -42,6 +42,7 @@ export async function connectRedis() {
     logger.info("Redis Client connected");
   } catch (err) {
     logger.error(`Redis Connection Error: ${err}`);
+    process.exit(1); 
   }
 }
 

@@ -1,3 +1,4 @@
+import redisClient from "../configs/cache.config.js";
 import logger from "../configs/logger.config.js";
 import { appEvents } from "../lib/events.js";
 import { prisma } from "../lib/prisma.js";
@@ -72,8 +73,18 @@ appEvents.on(AUTH_EVENTS.USER_LOGGED_IN, async (data) => {
 // Listener 4: Track(Log) failed login attempts
 appEvents.on(AUTH_EVENTS.LOGIN_FAILED, async (data) => {
   try {
-    logger.warn(`Failed login attempt for ${data.email} from ${data.deviceInfo}`);
-    // In Week 3 we'll add rate limiting based on failed attempts
+    const key = `docuchat:auth:login-failed:${data.deviceInfo}`;
+    const failures = await redisClient.incr(key);
+
+    // set expiry on first failure
+    if (failures === 1) {
+      await redisClient.expire(key, 900); // 15 min window
+    }
+
+    if (failures >= 5) {
+      logger.warn(`Security: ${failures} failed logins from ${data.deviceInfo} for ${data.email}`);
+      // Could add the IP to a temporary block list here
+    }
   } catch (error) {
     logger.error(`Failed to log failed login: ${error}`);
   }

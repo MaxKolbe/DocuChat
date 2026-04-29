@@ -1,20 +1,21 @@
 //ROUTES
 import express from "express";
+import { uploadLimiter } from "../../middleware/rateLimiter.js";
 import { validateRequest } from "../../middleware/validate.js";
-import { conditionalGet } from "../../middleware/etag.js";
 import { requirePermission } from "../../middleware/auth.js";
+import { conditionalGet } from "../../middleware/etag.js";
 import {
   getDocumentController,
   listDocumentsController,
   createDocumentController,
   deleteDocumentController,
-  pollDocumentController
+  pollDocumentController,
 } from "./document.controller.js";
 import {
   createDocumentSchema,
   listDocumentsSchema,
   documentParamsSchema,
-  pollParamsSchema
+  pollParamsSchema,
 } from "./document.schema.js";
 
 const router = express.Router();
@@ -58,7 +59,7 @@ const router = express.Router();
  *         schema:
  *           type: string
  *           enum: [asc, desc]
- *           default: desc 
+ *           default: desc
  *     responses:
  *       200:
  *         description: List of documents
@@ -84,7 +85,7 @@ router.get(
  *       - in: path
  *         name: docId
  *         description: Id of the document
- *         required: true 
+ *         required: true
  *         schema:
  *           type: string
  *     responses:
@@ -135,6 +136,7 @@ router.get(
  */
 router.post(
   "/",
+  uploadLimiter,
   requirePermission("documents:create"),
   validateRequest(createDocumentSchema),
   createDocumentController,
@@ -152,7 +154,7 @@ router.post(
  *       - in: path
  *         name: docId
  *         description: Id of the document
- *         required: true 
+ *         required: true
  *         schema:
  *           type: string
  *     responses:
@@ -167,7 +169,7 @@ router.post(
  */
 router.delete(
   "/:docId",
-  requirePermission("documents:delete"/*,"admin:documents:delete"*/),
+  requirePermission("documents:delete" /*,"admin:documents:delete"*/),
   validateRequest(documentParamsSchema),
   deleteDocumentController,
 );
@@ -184,7 +186,7 @@ router.delete(
  *       - in: path
  *         name: id
  *         description: Id of the document
- *         required: true 
+ *         required: true
  *         schema:
  *           type: string
  *     responses:

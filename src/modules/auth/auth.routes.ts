@@ -27,11 +27,11 @@ const router = express.Router();
  *               email:
  *                 type: string
  *                 format: email
- *                 example: student@example.com
+ *                 example: admin@docuchat.dev
  *               password:
  *                 type: string
  *                 minLength: 8
- *                 example: MyPassword123
+ *                 example: Admin123!
  *     responses:
  *       201:
  *         description: User created successfully.
@@ -59,11 +59,11 @@ router.post("/register", validateRequest(registerSchema), registerController);
  *               email:
  *                 type: string
  *                 format: email
- *                 example: student@example.com
+ *                 example: admin@docuchat.dev
  *               password:
  *                 type: string
  *                 minLength: 8
- *                 example: MyPassword123
+ *                 example: Admin123!
  *     responses:
  *       200:
  *         description: User logged in successfully.

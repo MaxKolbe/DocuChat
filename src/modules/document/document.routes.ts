@@ -1,7 +1,8 @@
 //ROUTES
 import express from "express";
 import { validateRequest } from "../../middleware/validate.js";
-import { requirePermission, authenticate } from "../../middleware/auth.js";
+import { conditionalGet } from "../../middleware/etag.js";
+import { requirePermission } from "../../middleware/auth.js";
 import {
   getDocumentController,
   listDocumentsController,
@@ -98,6 +99,7 @@ router.get(
   "/:docId",
   requirePermission("documents:read"),
   validateRequest(documentParamsSchema),
+  conditionalGet(),
   getDocumentController,
 );
 

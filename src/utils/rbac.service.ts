@@ -1,28 +1,36 @@
+import { cacheGet, cacheSet, CACHE_TTL, cacheGetOrSet } from "../lib/cache.js";
 import { prisma } from "../lib/prisma.js";
 
+// Simpler permissions fetch with stampede protection
 export const getUserPermissions = async (userId: string): Promise<Set<string>> => {
-  // Cached
-  const userRoles = await prisma.userRole.findMany({
-    where: { userId },
-    include: {
-      role: {
-        include: {
-          permissions: {
-            include: { permission: true },
+  const cacheKey = `docuchat:permissions:${userId}`;
+
+  const permissions = await cacheGetOrSet(cacheKey, CACHE_TTL.PERMISSIONS, async () => {
+    const userRoles = await prisma.userRole.findMany({
+      where: { userId },
+      include: {
+        role: {
+          include: {
+            permissions: {
+              include: { permission: true },
+            },
           },
         },
       },
-    },
-  });
+    });
+    // console.log(userRoles);
 
-  // console.log(userRoles);
-
-  const permissions = new Set<string>();
-  for (const ur of userRoles) {
-    for (const rp of ur.role.permissions) {
-      permissions.add(rp.permission.name);
+    const permissions = new Set<string>();
+    for (const ur of userRoles) {
+      for (const rp of ur.role.permissions) {
+        permissions.add(rp.permission.name);
+      }
     }
-  }
+    // console.log(permissions);
+
+    return [...permissions]; // Return as array for serialization
+  });
+ 
   // console.log(permissions);
-  return permissions;
+  return new Set(permissions);
 };

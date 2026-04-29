@@ -17,6 +17,7 @@ import { Request, Response } from "express";
 import "./events/auth.events.js";
 import "./events/admin.events.js";
 import "./events/document.events.js";
+import "./events/cache.events.js";
 import "./queues/document.worker.js";
 import "dotenv/config";
 
@@ -55,13 +56,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors(corsOptions));
 
-connectRedis();
+connectRedis();  
 
 //ROUTES
 app.use("/api/v1/auth", authRouter);
-app.use("/api/v1/documents", authenticate, documentRouter);
+app.use("/api/v1/documents", authenticate, documentRouter); 
 app.use("/api/v1/conversations", authenticate, conversationRouter);
-app.use("/api/v1/admin", authenticate, adminRouter);
+app.use("/api/v1/admin", authenticate, adminRouter); 
 // SERVE SWAGGER UI
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // SERVE THE RAW JSON SPEC (useful for code generators)

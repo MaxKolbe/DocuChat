@@ -4,16 +4,6 @@ import { verifyAccessToken } from "../lib/token.js";
 import { ForbiddenError, UnauthorizedError } from "../lib/errors.js";
 import { getUserPermissions } from "../utils/rbac.service.js";
 
-// Extend Express Request to include user
-declare global {
-  namespace Express {
-    interface Request {
-      user?: { id: string; role: string, tier: string };
-      qtransformed: any; // for tranformations made to req.query
-    }
-  }
-}
-
 export const authenticate = (req: Request, res: Response, next: NextFunction) => {
   const header = req.headers.authorization;
 

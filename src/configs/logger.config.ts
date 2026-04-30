@@ -17,9 +17,8 @@ const logger = winston.createLogger({
       format: "YYYY-MM-DD hh:mm:ss.SSS A",
     }),
     errors({ stack: true }),
-    align(),
     isProduction
-      ? json()
+      ? combine(json(), align())
       : combine(
           cli(),
           printf(({ timestamp, level, message, ...meta }) => {

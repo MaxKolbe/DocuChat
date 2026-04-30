@@ -15,6 +15,7 @@ import { swaggerSpec } from "./configs/swagger.config.js";
 import { bullBoardAdapter } from "./configs/bull-board.config.js";
 import { authLimiter, apiLimiter } from "./middleware/rateLimiter.js";
 import { sanitizeInput } from "./middleware/sanitize.js";
+import { requestLogger } from "./middleware/requestLogger.js";
 import { verifyWebhookSignature } from "./middleware/verifyWebhook.js";
 import { Request, Response } from "express";
 import "./events/auth.events.js";
@@ -60,8 +61,9 @@ app.use(
 );
 
 app.use(express.json());
-app.use(sanitizeInput);
 app.use(express.urlencoded({ extended: true }));
+app.use(requestLogger);
+app.use(sanitizeInput);
 app.use(
   helmet({
     contentSecurityPolicy: {

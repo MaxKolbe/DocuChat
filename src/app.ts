@@ -1,4 +1,5 @@
 import express from "express";
+import helmet from "helmet";
 import cors from "cors";
 import authRouter from "./modules/auth/auth.routes.js";
 import adminRouter from "./modules/admin/admin.routes.js";
@@ -12,6 +13,8 @@ import { authenticate } from "./middleware/auth.js";
 import { connectRedis } from "./configs/cache.config.js";
 import { swaggerSpec } from "./configs/swagger.config.js";
 import { bullBoardAdapter } from "./configs/bull-board.config.js";
+import { authLimiter, apiLimiter } from "./middleware/rateLimiter.js";
+import { sanitizeInput } from "./middleware/sanitize.js";
 import { verifyWebhookSignature } from "./middleware/verifyWebhook.js";
 import { Request, Response } from "express";
 import "./events/auth.events.js";
@@ -32,11 +35,13 @@ const corsOptions = {
     if (whitelist.indexOf(origin || "") !== -1 || !origin) {
       callback(null, true);
     } else {
-      callback(new Error("Not allowed by CORS"));
+      callback(new Error(`Origin ${origin} not allowed by CORS`));
     }
   },
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true, //Allow cookies/auth
+  methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
+  credentials: true, //Allow cookies/auth headers
+  allowedHeaders: ["Content-Type", "Authorization"],
+  maxAge: 86400, // Cache preflight requests for 24 hours
 };
 
 // Capture raw body for webhook routes BEFORE express.json()
@@ -55,21 +60,48 @@ app.use(
 );
 
 app.use(express.json());
+app.use(sanitizeInput);
 app.use(express.urlencoded({ extended: true }));
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'none'"],
+        scriptSrc: ["'none'"],
+        styleSrc: ["'none'"],
+        imgSrc: ["'none'"],
+        connectSrc: ["'self'"],
+      },
+    },
+  }),
+);
 app.use(cors(corsOptions));
 
-await ( async () => {
- await connectRedis();
+await (async () => {
+  await connectRedis();
 })();
 
-import { authLimiter, apiLimiter } from "./middleware/rateLimiter.js";
 //ROUTES
 app.use("/api/v1/auth", authLimiter, authRouter);
 app.use("/api/v1/documents", authenticate, apiLimiter, documentRouter);
 app.use("/api/v1/conversations", authenticate, apiLimiter, conversationRouter);
 app.use("/api/v1/admin", authenticate, apiLimiter, adminRouter);
 // SERVE SWAGGER UI
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use(
+  "/api-docs",
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: ["'self'", "data:"],
+      },
+    },
+  }),
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpec),
+);
 // SERVE THE RAW JSON SPEC (useful for code generators)
 app.get("/api-docs.json", (req: Request, res: Response) => {
   res.json(swaggerSpec);

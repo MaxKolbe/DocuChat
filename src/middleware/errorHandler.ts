@@ -21,7 +21,13 @@ import logger from "../configs/logger.config.js";
 export function errorHandler(err: Error, req: Request, res: Response, next: NextFunction) {
   // Operational error: we created this intentionally
   if (err instanceof AppError) {
-    logger.warn(`[${err.code}] ${err.message}: ${err.details ? { details: err.details } : ""}`);
+    // logger.warn(`[${err.code}] ${err.message}: ${err.details ? { details: err.details } : ""}`);
+    logger.warn("APPERROR INSTANCE", {
+      code: err.code,
+      message: err.message,
+      details: err.details ? err.details  : "",
+      correlationId: req.correlationId,
+    })
 
     return res.status(err.statusCode).json({
       success: false,
@@ -34,7 +40,7 @@ export function errorHandler(err: Error, req: Request, res: Response, next: Next
   }
 
   // Programming error: this is a bug
-  logger.error(`Unhandled error: ${err}`);
+  logger.error(`Unhandled error`, { error: err });
 
   return res.status(500).json({
     success: false,

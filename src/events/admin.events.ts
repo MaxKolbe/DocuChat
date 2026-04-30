@@ -17,7 +17,7 @@ appEvents.on("admin:role-assigned", async (data) => {
       },
     });
   } catch (error) {
-    logger.error(`Failed to log role assignment: ${error}`);
+    logger.error(`Failed to log role assignment`, {error});
   }
 });
 appEvents.on("admin:role-revoked", async (data) => {
@@ -36,6 +36,6 @@ appEvents.on("admin:role-revoked", async (data) => {
       },
     });
   } catch (error) {
-    logger.error(`Failed to log role revocation: ${error}`);
+    logger.error(`Failed to log role revocation`, {error});
   }
 });

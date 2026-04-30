@@ -6,17 +6,22 @@ import logger from "../configs/logger.config.js";
 appEvents.on("admin:role-assigned", async (data) => {
   try {
     await cacheDel(`docuchat:permissions:${data.targetUserId}`);
-    logger.info(`Cache cleared: permissions for ${data.targetUserId}`);
+    logger.info(`Cache cleared: cleared permissions for ${data.targetUserId}`, {
+      targetUserId: data.targetUserId,
+    });
   } catch (err) {
-    logger.error(`'Failed to bust permissions cache: ${err}`);
+    logger.error(`'Failed to bust permissions cache`, { err });
   }
 });
 
 appEvents.on("admin:role-revoked", async (data) => {
   try {
     await cacheDel(`docuchat:permissions:${data.targetUserId}`);
+    logger.info(`Cache cleared: cleared permissions for ${data.targetUserId}`, {
+      targetUserId: data.targetUserId,
+    });
   } catch (err) {
-    logger.error(`Failed to bust permissions cache: ${err}`);
+    logger.error(`Failed to bust permissions cache`, { err });
   }
 });
 
@@ -24,7 +29,10 @@ appEvents.on("admin:role-revoked", async (data) => {
 appEvents.on("doc:deleted", async (data) => {
   try {
     await cacheDel(`docuchat:doc:${data.documentId}`);
+    logger.info(`Cache cleared: cleared document ${data.documentId}`, {
+      documentId: data.documentId,
+    });
   } catch (err) {
-    logger.error(`Failed to bust document cache: ${err}`);
+    logger.error(`Failed to bust document cache`, { err });
   }
 });

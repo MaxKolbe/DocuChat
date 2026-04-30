@@ -1,7 +1,8 @@
 import { Router } from "express";
-import { verifyWebhookSignature } from "../../middleware/verifyWebhook.js";
 import { prisma } from "../../lib/prisma.js";
+import { verifyWebhookSignature } from "../../middleware/verifyWebhook.js";
 import { documentQueue } from "../../queues/document.queue.js";
+import logger from "../../configs/logger.config.js";
 
 const router = Router();
 
@@ -45,7 +46,8 @@ router.post(
         data: { processedAt: new Date() },
       });
     } catch (error) {
-      console.error(`Webhook ${event.id} processing failed:`, error);
+      // console.error(`Webhook ${event.id} processing failed:`, error);
+      logger.error(`Webhook processing failed`, { eventId: event.id, error });
       // Don't mark processedAt. The provider will retry.
     }
   },
@@ -58,7 +60,7 @@ async function processWebhookEvent(event: any) {
       // Queue document processing
       break;
     default:
-      console.log(`Unhandled webhook event type: ${event.type}`);
+      logger.info(`Unhandled webhook event type`, { eventType: event.type });
   }
 }
 

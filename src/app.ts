@@ -35,11 +35,13 @@ const corsOptions = {
     if (whitelist.indexOf(origin || "") !== -1 || !origin) {
       callback(null, true);
     } else {
-      callback(new Error("Not allowed by CORS"));
+      callback(new Error(`Origin ${origin} not allowed by CORS`));
     }
   },
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true, //Allow cookies/auth
+  methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
+  credentials: true, //Allow cookies/auth headers
+  allowedHeaders: ["Content-Type", "Authorization"],
+  maxAge: 86400, // Cache preflight requests for 24 hours
 };
 
 // Capture raw body for webhook routes BEFORE express.json()

@@ -44,6 +44,7 @@ export type UsageLogMinAggregateOutputType = {
   costUsd: number | null
   metadata: string | null
   createdAt: Date | null
+  correlationId: string | null
 }
 
 export type UsageLogMaxAggregateOutputType = {
@@ -54,6 +55,7 @@ export type UsageLogMaxAggregateOutputType = {
   costUsd: number | null
   metadata: string | null
   createdAt: Date | null
+  correlationId: string | null
 }
 
 export type UsageLogCountAggregateOutputType = {
@@ -64,6 +66,7 @@ export type UsageLogCountAggregateOutputType = {
   costUsd: number
   metadata: number
   createdAt: number
+  correlationId: number
   _all: number
 }
 
@@ -86,6 +89,7 @@ export type UsageLogMinAggregateInputType = {
   costUsd?: true
   metadata?: true
   createdAt?: true
+  correlationId?: true
 }
 
 export type UsageLogMaxAggregateInputType = {
@@ -96,6 +100,7 @@ export type UsageLogMaxAggregateInputType = {
   costUsd?: true
   metadata?: true
   createdAt?: true
+  correlationId?: true
 }
 
 export type UsageLogCountAggregateInputType = {
@@ -106,6 +111,7 @@ export type UsageLogCountAggregateInputType = {
   costUsd?: true
   metadata?: true
   createdAt?: true
+  correlationId?: true
   _all?: true
 }
 
@@ -203,6 +209,7 @@ export type UsageLogGroupByOutputType = {
   costUsd: number
   metadata: string | null
   createdAt: Date
+  correlationId: string | null
   _count: UsageLogCountAggregateOutputType | null
   _avg: UsageLogAvgAggregateOutputType | null
   _sum: UsageLogSumAggregateOutputType | null
@@ -236,6 +243,7 @@ export type UsageLogWhereInput = {
   costUsd?: Prisma.FloatFilter<"UsageLog"> | number
   metadata?: Prisma.StringNullableFilter<"UsageLog"> | string | null
   createdAt?: Prisma.DateTimeFilter<"UsageLog"> | Date | string
+  correlationId?: Prisma.StringNullableFilter<"UsageLog"> | string | null
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
 
@@ -247,6 +255,7 @@ export type UsageLogOrderByWithRelationInput = {
   costUsd?: Prisma.SortOrder
   metadata?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  correlationId?: Prisma.SortOrderInput | Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
 }
 
@@ -261,6 +270,7 @@ export type UsageLogWhereUniqueInput = Prisma.AtLeast<{
   costUsd?: Prisma.FloatFilter<"UsageLog"> | number
   metadata?: Prisma.StringNullableFilter<"UsageLog"> | string | null
   createdAt?: Prisma.DateTimeFilter<"UsageLog"> | Date | string
+  correlationId?: Prisma.StringNullableFilter<"UsageLog"> | string | null
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }, "id">
 
@@ -272,6 +282,7 @@ export type UsageLogOrderByWithAggregationInput = {
   costUsd?: Prisma.SortOrder
   metadata?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  correlationId?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.UsageLogCountOrderByAggregateInput
   _avg?: Prisma.UsageLogAvgOrderByAggregateInput
   _max?: Prisma.UsageLogMaxOrderByAggregateInput
@@ -290,6 +301,7 @@ export type UsageLogScalarWhereWithAggregatesInput = {
   costUsd?: Prisma.FloatWithAggregatesFilter<"UsageLog"> | number
   metadata?: Prisma.StringNullableWithAggregatesFilter<"UsageLog"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"UsageLog"> | Date | string
+  correlationId?: Prisma.StringNullableWithAggregatesFilter<"UsageLog"> | string | null
 }
 
 export type UsageLogCreateInput = {
@@ -299,6 +311,7 @@ export type UsageLogCreateInput = {
   costUsd: number
   metadata?: string | null
   createdAt?: Date | string
+  correlationId?: string | null
   user: Prisma.UserCreateNestedOneWithoutUsageLogsInput
 }
 
@@ -310,6 +323,7 @@ export type UsageLogUncheckedCreateInput = {
   costUsd: number
   metadata?: string | null
   createdAt?: Date | string
+  correlationId?: string | null
 }
 
 export type UsageLogUpdateInput = {
@@ -319,6 +333,7 @@ export type UsageLogUpdateInput = {
   costUsd?: Prisma.FloatFieldUpdateOperationsInput | number
   metadata?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  correlationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutUsageLogsNestedInput
 }
 
@@ -330,6 +345,7 @@ export type UsageLogUncheckedUpdateInput = {
   costUsd?: Prisma.FloatFieldUpdateOperationsInput | number
   metadata?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  correlationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type UsageLogCreateManyInput = {
@@ -340,6 +356,7 @@ export type UsageLogCreateManyInput = {
   costUsd: number
   metadata?: string | null
   createdAt?: Date | string
+  correlationId?: string | null
 }
 
 export type UsageLogUpdateManyMutationInput = {
@@ -349,6 +366,7 @@ export type UsageLogUpdateManyMutationInput = {
   costUsd?: Prisma.FloatFieldUpdateOperationsInput | number
   metadata?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  correlationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type UsageLogUncheckedUpdateManyInput = {
@@ -359,6 +377,7 @@ export type UsageLogUncheckedUpdateManyInput = {
   costUsd?: Prisma.FloatFieldUpdateOperationsInput | number
   metadata?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  correlationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type UsageLogListRelationFilter = {
@@ -379,6 +398,7 @@ export type UsageLogCountOrderByAggregateInput = {
   costUsd?: Prisma.SortOrder
   metadata?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  correlationId?: Prisma.SortOrder
 }
 
 export type UsageLogAvgOrderByAggregateInput = {
@@ -394,6 +414,7 @@ export type UsageLogMaxOrderByAggregateInput = {
   costUsd?: Prisma.SortOrder
   metadata?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  correlationId?: Prisma.SortOrder
 }
 
 export type UsageLogMinOrderByAggregateInput = {
@@ -404,6 +425,7 @@ export type UsageLogMinOrderByAggregateInput = {
   costUsd?: Prisma.SortOrder
   metadata?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  correlationId?: Prisma.SortOrder
 }
 
 export type UsageLogSumOrderByAggregateInput = {
@@ -468,6 +490,7 @@ export type UsageLogCreateWithoutUserInput = {
   costUsd: number
   metadata?: string | null
   createdAt?: Date | string
+  correlationId?: string | null
 }
 
 export type UsageLogUncheckedCreateWithoutUserInput = {
@@ -477,6 +500,7 @@ export type UsageLogUncheckedCreateWithoutUserInput = {
   costUsd: number
   metadata?: string | null
   createdAt?: Date | string
+  correlationId?: string | null
 }
 
 export type UsageLogCreateOrConnectWithoutUserInput = {
@@ -516,6 +540,7 @@ export type UsageLogScalarWhereInput = {
   costUsd?: Prisma.FloatFilter<"UsageLog"> | number
   metadata?: Prisma.StringNullableFilter<"UsageLog"> | string | null
   createdAt?: Prisma.DateTimeFilter<"UsageLog"> | Date | string
+  correlationId?: Prisma.StringNullableFilter<"UsageLog"> | string | null
 }
 
 export type UsageLogCreateManyUserInput = {
@@ -525,6 +550,7 @@ export type UsageLogCreateManyUserInput = {
   costUsd: number
   metadata?: string | null
   createdAt?: Date | string
+  correlationId?: string | null
 }
 
 export type UsageLogUpdateWithoutUserInput = {
@@ -534,6 +560,7 @@ export type UsageLogUpdateWithoutUserInput = {
   costUsd?: Prisma.FloatFieldUpdateOperationsInput | number
   metadata?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  correlationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type UsageLogUncheckedUpdateWithoutUserInput = {
@@ -543,6 +570,7 @@ export type UsageLogUncheckedUpdateWithoutUserInput = {
   costUsd?: Prisma.FloatFieldUpdateOperationsInput | number
   metadata?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  correlationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type UsageLogUncheckedUpdateManyWithoutUserInput = {
@@ -552,6 +580,7 @@ export type UsageLogUncheckedUpdateManyWithoutUserInput = {
   costUsd?: Prisma.FloatFieldUpdateOperationsInput | number
   metadata?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  correlationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -564,6 +593,7 @@ export type UsageLogSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   costUsd?: boolean
   metadata?: boolean
   createdAt?: boolean
+  correlationId?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["usageLog"]>
 
@@ -575,6 +605,7 @@ export type UsageLogSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   costUsd?: boolean
   metadata?: boolean
   createdAt?: boolean
+  correlationId?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["usageLog"]>
 
@@ -586,6 +617,7 @@ export type UsageLogSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   costUsd?: boolean
   metadata?: boolean
   createdAt?: boolean
+  correlationId?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["usageLog"]>
 
@@ -597,9 +629,10 @@ export type UsageLogSelectScalar = {
   costUsd?: boolean
   metadata?: boolean
   createdAt?: boolean
+  correlationId?: boolean
 }
 
-export type UsageLogOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "action" | "tokens" | "costUsd" | "metadata" | "createdAt", ExtArgs["result"]["usageLog"]>
+export type UsageLogOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "action" | "tokens" | "costUsd" | "metadata" | "createdAt" | "correlationId", ExtArgs["result"]["usageLog"]>
 export type UsageLogInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -623,6 +656,7 @@ export type $UsageLogPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     costUsd: number
     metadata: string | null
     createdAt: Date
+    correlationId: string | null
   }, ExtArgs["result"]["usageLog"]>
   composites: {}
 }
@@ -1054,6 +1088,7 @@ export interface UsageLogFieldRefs {
   readonly costUsd: Prisma.FieldRef<"UsageLog", 'Float'>
   readonly metadata: Prisma.FieldRef<"UsageLog", 'String'>
   readonly createdAt: Prisma.FieldRef<"UsageLog", 'DateTime'>
+  readonly correlationId: Prisma.FieldRef<"UsageLog", 'String'>
 }
     
 

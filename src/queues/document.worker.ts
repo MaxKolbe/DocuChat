@@ -13,8 +13,13 @@ const redis_port = Number(process.env.REDIS_PORT!);
 const worker = new Worker(
   "document-processing",
   async (job: Job) => {
-    const { docId, userId } = job.data;
-    logger.info(`Processing document ${docId} (attempt ${job.attemptsMade + 1})`);
+    const { docId, userId, correlationId} = job.data;
+    // logger.info(`Processing document ${docId} (attempt ${job.attemptsMade + 1})`)
+    logger.info(`Processing document`, {
+      documentId: docId,
+      attempts: job.attemptsMade + 1,
+      correlationId
+    });
 
     // Step 1: Fetch the document content
     const doc = await prisma.document.findUniqueOrThrow({
@@ -70,6 +75,7 @@ const worker = new Worker(
           docId,
           userId,
           chunkCount: chunks.length,
+          correlationId
         });
       });
 
@@ -105,7 +111,11 @@ const worker = new Worker(
 
 // Event listeners for logging
 worker.on("completed", (job) => {
-  logger.info(`Job ${job.id} completed: ${job.returnvalue?.chunks} chunks`);
+  // logger.info(`Job ${job.id} completed: ${job.returnvalue?.chunks} chunks`);
+  logger.info(`Job completed`, {
+    jobId: job.id,
+    chunkCount: job.returnvalue?.chunks,
+  });
 });
 
 worker.on("failed", async (job, error) => {
@@ -114,9 +124,13 @@ worker.on("failed", async (job, error) => {
   }
 
   if (job.attemptsMade >= (job.opts.attempts ?? 3)) {
-    logger.error(
-      `Job ${job?.id} failed permanently: ${error.message}. Moving to Dead Letter Queue`,
-    );
+    // logger.error(
+    //   `Job ${job?.id} failed permanently: ${error.message}. Moving to Dead Letter Queue`,
+    // );
+    logger.error(`Job failed permanently. Moving to Dead Letter Queue`, {
+      jobId: job?.id,
+      errorMessage: error.message,
+    });
   }
 
   await deadLetterQueue.add("failed-document", {
@@ -130,7 +144,9 @@ worker.on("failed", async (job, error) => {
 });
 
 worker.on("error", (error) => {
-  logger.error("Worker error: ${error}");
+  logger.error("Worker error", {
+    error,
+  });
 });
 
 export { worker };

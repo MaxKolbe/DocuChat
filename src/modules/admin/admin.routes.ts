@@ -16,7 +16,7 @@ router.use(requirePermission("roles:manage"));
  * /admin/roles:
  *   get:
  *     summary: List all roles with their permissions
- *     tags: [admin]
+ *     tags: [Admin]
  *     security:
  *       - bearerAuth: []
  *     responses:
@@ -45,6 +45,7 @@ router.get("/roles", async (req: Request, res: Response) => {
       userCount: role._count.users,
       permissions: role.permissions.map((rp) => rp.permission.name),
     })),
+    {correlationId:  (req as any).correlationId},
   );
 });
 
@@ -53,7 +54,7 @@ router.get("/roles", async (req: Request, res: Response) => {
  * /admin/users/{userId}/roles:
  *   post:
  *     summary: Assign a role to a user
- *     tags: [admin]
+ *     tags: [Admin]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -106,8 +107,9 @@ router.post("/users/:userId/roles",
       targetUserId: userId,
       roleName,
       assignedBy: req.user!.id,
+      correlationId:  (req as any).correlationId
     });
-    successResponse(res, 201, `Role '${roleName}' assigned to user`);
+    successResponse(res, 201, `Role '${roleName}' assigned to user`, null, {correlationId:  (req as any).correlationId},);
   } catch (error) {
     next(error);
   }
@@ -118,7 +120,7 @@ router.post("/users/:userId/roles",
  * /admin/users/{userId}/roles/{roleName}:
  *   delete:
  *     summary: Revoke a role from a user
- *     tags: [admin]
+ *     tags: [Admin]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -163,9 +165,10 @@ router.delete(
         targetUserId: userId,
         roleName,
         revokedBy: req.user!.id,
+        correlationId:  (req as any).correlationId
       });
 
-      successResponse(res, 200, `Role '${roleName}' revoked`);
+      successResponse(res, 200, `Role '${roleName}' revoked`, null, {correlationId:  (req as any).correlationId});
     } catch (error) {
       next(error);
     }

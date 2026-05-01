@@ -23,11 +23,16 @@ export const documentQueue = new Queue("document-processing", {
   },
 });
 
-export const queueDocumentForProcessing = async (docId: string, userId: string) => {
+export const queueDocumentForProcessing = async (
+  docId: string,
+  userId: string,
+  correlationId: string,
+) => {
   const job = await documentQueue.add("process-document", {
     docId,
     userId,
     queuedAt: new Date(Date.now()),
+    correlationId
   });
 
   return job.id;

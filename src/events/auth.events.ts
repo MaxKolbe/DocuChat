@@ -32,7 +32,7 @@ appEvents.on(AUTH_EVENTS.USER_REGISTERED, async (user) => {
     });
   } catch (error) {
     // Log but do not crash
-    logger.error(`Failed to log signup: ${error}`);
+    logger.error(`Failed to log signup:`, { error });
   }
 });
 
@@ -46,7 +46,7 @@ appEvents.on(AUTH_EVENTS.USER_REGISTERED, async (user) => {
       },
     });
   } catch (error) {
-    logger.error(`Failed to create welcome conversation: ${error}`);
+    logger.error(`Failed to create welcome conversation`, { error });
   }
 });
 
@@ -66,7 +66,7 @@ appEvents.on(AUTH_EVENTS.USER_LOGGED_IN, async (data) => {
       },
     });
   } catch (error) {
-    logger.error(`Failed to log login: ${error}`);
+    logger.error(`Failed to log login`, { error });
   }
 });
 
@@ -82,10 +82,15 @@ appEvents.on(AUTH_EVENTS.LOGIN_FAILED, async (data) => {
     }
 
     if (failures >= 5) {
-      logger.warn(`Security: ${failures} failed logins from ${data.deviceInfo} for ${data.email}`);
+      logger.warn(`Security failed logins`, {
+        failures,
+        deviceInfo: data.deviceInfo,
+        email: data.email,
+        correlationId: data.correlationId,
+      });
       // Could add the IP to a temporary block list here
     }
   } catch (error) {
-    logger.error(`Failed to log failed login: ${error}`);
+    logger.error(`Failed to log failed login`, { error });
   }
 });

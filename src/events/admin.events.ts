@@ -1,6 +1,7 @@
 import logger from "../configs/logger.config.js";
 import { appEvents } from "../lib/events.js";
 import { prisma } from "../lib/prisma.js";
+
 appEvents.on("admin:role-assigned", async (data) => {
   try {
     await prisma.usageLog.create({
@@ -14,10 +15,11 @@ appEvents.on("admin:role-assigned", async (data) => {
           roleName: data.roleName,
           assignedAt: new Date().toISOString(),
         }),
+        correlationId: data.correlationId,
       },
     });
   } catch (error) {
-    logger.error(`Failed to log role assignment: ${error}`);
+    logger.error(`Failed to log role assignment`, { error });
   }
 });
 appEvents.on("admin:role-revoked", async (data) => {
@@ -33,9 +35,10 @@ appEvents.on("admin:role-revoked", async (data) => {
           roleName: data.roleName,
           revokedAt: new Date().toISOString(),
         }),
+        correlationId: data.correlationId,
       },
     });
   } catch (error) {
-    logger.error(`Failed to log role revocation: ${error}`);
+    logger.error(`Failed to log role revocation`, { error });
   }
 });

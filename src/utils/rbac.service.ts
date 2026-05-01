@@ -1,5 +1,6 @@
-import { cacheGet, cacheSet, CACHE_TTL, cacheGetOrSet } from "../lib/cache.js";
+import { CACHE_TTL, cacheGetOrSet } from "../lib/cache.js";
 import { prisma } from "../lib/prisma.js";
+import logger from "../configs/logger.config.js";
 
 // Simpler permissions fetch with stampede protection
 export const getUserPermissions = async (userId: string): Promise<Set<string>> => {
@@ -26,7 +27,7 @@ export const getUserPermissions = async (userId: string): Promise<Set<string>> =
         permissions.add(rp.permission.name);
       }
     }
-    // console.log(permissions);
+    logger.debug("User Permissions", {userId, permissions: [...permissions]})
 
     return [...permissions]; // Return as array for serialization
   });

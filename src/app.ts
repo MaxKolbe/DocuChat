@@ -3,6 +3,7 @@ import helmet from "helmet";
 import cors from "cors";
 import authRouter from "./modules/auth/auth.routes.js";
 import adminRouter from "./modules/admin/admin.routes.js";
+import healthRouter from "./modules/health/health.routes.js";
 import documentRouter from "./modules/document/document.routes.js";
 import conversationRouter from "./modules/conversation/conversation.routes.js";
 import errorHandler from "./middleware/errorHandler.js";
@@ -15,6 +16,9 @@ import { swaggerSpec } from "./configs/swagger.config.js";
 import { bullBoardAdapter } from "./configs/bull-board.config.js";
 import { authLimiter, apiLimiter } from "./middleware/rateLimiter.js";
 import { sanitizeInput } from "./middleware/sanitize.js";
+import { requestLogger } from "./middleware/requestLogger.js";
+import { metricsMiddleware } from "./middleware/metricsMiddleware.js";
+import { metricsRegistry } from "./lib/metrics.js";
 import { verifyWebhookSignature } from "./middleware/verifyWebhook.js";
 import { Request, Response } from "express";
 import "./events/auth.events.js";
@@ -60,8 +64,10 @@ app.use(
 );
 
 app.use(express.json());
-app.use(sanitizeInput);
 app.use(express.urlencoded({ extended: true }));
+// app.use(requestLogger);
+app.use(sanitizeInput);
+app.use(metricsMiddleware);
 app.use(
   helmet({
     contentSecurityPolicy: {
@@ -86,6 +92,7 @@ app.use("/api/v1/auth", authLimiter, authRouter);
 app.use("/api/v1/documents", authenticate, apiLimiter, documentRouter);
 app.use("/api/v1/conversations", authenticate, apiLimiter, conversationRouter);
 app.use("/api/v1/admin", authenticate, apiLimiter, adminRouter);
+app.use("/api/v1/health", healthRouter)
 // SERVE SWAGGER UI
 app.use(
   "/api-docs",
@@ -112,6 +119,11 @@ app.use(
   authenticate,
   /*requirePermission("roles:manage"),*/ bullBoardAdapter.getRouter(),
 );
+// Metrics endpoint (no auth — Prometheus needs to scrape it)
+app.get("/metrics", async (req, res) => {
+  res.set("Content-Type", metricsRegistry.contentType);
+  res.send(await metricsRegistry.metrics());
+});
 
 process.on("SIGINT", async () => {
   logger.info("Shutting down...");

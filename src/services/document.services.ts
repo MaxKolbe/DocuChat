@@ -7,9 +7,8 @@ import { appEvents } from "../lib/events.js";
 import { DOC_EVENTS } from "../events/document.events.js";
 import { queueDocumentForProcessing, documentQueue } from "../queues/document.queue.js";
 
-
 // options: Listdocuments..apparently not a good idea since zod creates literal types from enums
-export const listDocuments = async (userId: string, options: any) => {
+export const listDocuments = async (userId: string, options: any, correlationId: string) => {
   const { page, limit, status, search, sortBy, sortOrder } = options;
   // const sortby = sortBy as string;
 
@@ -47,11 +46,11 @@ export const listDocuments = async (userId: string, options: any) => {
     code: 200,
     message: "Documents listed succcessfully",
     data: documents,
-    meta: { page, limit, total },
+    meta: { page, limit, total, correlationId },
   };
 };
 
-export const getDocument = async (docId: string, userId: string) => {
+export const getDocument = async (docId: string, userId: string, correlationId: string) => {
   const doc = await prisma.document.findUnique({
     where: {
       id: docId,
@@ -76,10 +75,15 @@ export const getDocument = async (docId: string, userId: string) => {
     code: 200,
     message: "document found successfully",
     data: doc,
+    meta: { correlationId },
   };
 };
 
-export const createDocument = async (userId: string, body: { title: string; content: string }) => {
+export const createDocument = async (
+  userId: string,
+  body: { title: string; content: string },
+  correlationId: string,
+) => {
   const { title, content } = body;
 
   const newDocument = await prisma.document.create({
@@ -93,13 +97,14 @@ export const createDocument = async (userId: string, body: { title: string; cont
   });
 
   // Queue for background processing
-  const jobId = await queueDocumentForProcessing(newDocument.id, userId);
+  const jobId = await queueDocumentForProcessing(newDocument.id, userId, correlationId);
 
   appEvents.emit(DOC_EVENTS.CREATED, {
     userId,
     documentId: newDocument.id,
     title: newDocument.title,
     // fileSizeBytes: newDocument.fileSizeBytes,
+    correlationId,
   });
 
   return {
@@ -109,10 +114,11 @@ export const createDocument = async (userId: string, body: { title: string; cont
       newDocument,
       jobId,
     },
+    meta: { correlationId },
   };
 };
 
-export const deleteDocument = async (docId: string, userId: string) => {
+export const deleteDocument = async (docId: string, userId: string, correlationId: string) => {
   const doc = await prisma.document.findUnique({
     where: { id: docId },
   });
@@ -131,6 +137,7 @@ export const deleteDocument = async (docId: string, userId: string) => {
     deletedBy: userId,
     documentId: doc.id,
     title: doc.title,
+    correlationId,
   });
 
   return prisma.document.update({
@@ -142,7 +149,7 @@ export const deleteDocument = async (docId: string, userId: string) => {
   });
 };
 
-export const pollDocument = async (docId: string, userId: string) => {
+export const pollDocument = async (docId: string, userId: string, correlationId: string) => {
   const doc = await prisma.document.findUnique({
     where: { id: docId },
     select: { id: true, status: true, error: true, userId: true },
@@ -164,5 +171,6 @@ export const pollDocument = async (docId: string, userId: string) => {
       error: doc.error,
       progress: activeJob ? await activeJob.progress : null,
     },
+    meta: { correlationId },
   };
 };

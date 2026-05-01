@@ -15,7 +15,7 @@ export const listConversationsController = async (
   const { page, limit } = req.qtransformed;
 
   try {
-    const response = await listConversations(req.user!.id, { page, limit });
+    const response = await listConversations(req.user!.id, { page, limit }, (req as any).correlationId);
     successResponse(res, 200, response.message, response.data, response.meta);
   } catch (err) {
     next(err);
@@ -29,8 +29,8 @@ export const createConverationController = async (
 ) => {
   const { title } = req.body;
   try {
-    const response = await createConversation(req.user!.id, title);
-    successResponse(res, response.code, response.message, response.data);
+    const response = await createConversation(req.user!.id, title, (req as any).correlationId);
+    successResponse(res, response.code, response.message, response.data, response.meta);
   } catch (err) {
     next(err);
   }
@@ -40,8 +40,8 @@ export const sendMessageController = async (req: Request, res: Response, next: N
   const conversationId = req.params.conversationId!.toString();
   const { content, documentId } = req.body;
   try {
-    const response = await sendMessage(conversationId, req.user!.id, content, documentId);
-    successResponse(res, response.code, response.message, response.data);
+    const response = await sendMessage(conversationId, req.user!.id, content, documentId, (req as any).correlationId);
+    successResponse(res, response.code, response.message, response.data, response.meta);
   } catch (err) {
     next(err);
   }

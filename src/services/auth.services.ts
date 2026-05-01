@@ -8,7 +8,10 @@ import { ConflictError, UnauthorizedError, ValidationError } from "../lib/errors
 import crypto from "crypto";
 
 // Register
-export const register = async (data: { email: string; password: string }) => {
+export const register = async (
+  data: { email: string; password: string },
+  correlationId: string,
+) => {
   const existing = await prisma.user.findUnique({
     where: { email: data.email.toLowerCase().trim() },
   });
@@ -30,6 +33,7 @@ export const register = async (data: { email: string; password: string }) => {
     id: user.id,
     email: user.email,
     tier: user.tier,
+    correlationId,
   });
 
   const defaultRole = await prisma.role.findFirst({
@@ -55,11 +59,15 @@ export const register = async (data: { email: string; password: string }) => {
       email: user.email,
       tier: user.tier,
     },
+    meta: {correlationId},
   };
 };
 
 // Login
-export const login = async (data: { email: string; password: string; deviceInfo?: string }) => {
+export const login = async (
+  data: { email: string; password: string; deviceInfo?: string },
+  correlationId: string,
+) => {
   const user = await prisma.user.findUnique({
     where: { email: data.email.toLowerCase().trim() },
   });
@@ -70,6 +78,7 @@ export const login = async (data: { email: string; password: string; deviceInfo?
       email: data.email,
       deviceInfo: data.deviceInfo,
       reason: "user_not_found",
+      correlationId,
     });
 
     throw new ValidationError("Invalid credentials");
@@ -81,6 +90,7 @@ export const login = async (data: { email: string; password: string; deviceInfo?
       email: data.email,
       deviceInfo: data.deviceInfo,
       reason: "wrong_password",
+      correlationId,
     });
 
     throw new ValidationError("Invalid credentials");
@@ -102,6 +112,7 @@ export const login = async (data: { email: string; password: string; deviceInfo?
   appEvents.emit(AUTH_EVENTS.USER_LOGGED_IN, {
     userId: user.id,
     deviceInfo: data.deviceInfo,
+    correlationId,
   });
 
   return {
@@ -112,11 +123,12 @@ export const login = async (data: { email: string; password: string; deviceInfo?
       accessToken,
       refreshToken,
     },
+    meta: {correlationId},
   };
 };
 
 // Refresh
-export const refresh = async (rawRefreshToken: string) => {
+export const refresh = async (rawRefreshToken: string, correlationId: string) => {
   // Verify the JWT signature and expiration
   let payload;
   try {
@@ -165,6 +177,7 @@ export const refresh = async (rawRefreshToken: string) => {
       accessToken: newAccessToken,
       refreshToken: newRefreshToken,
     },
+    meta: {correlationId},
   };
 };
 

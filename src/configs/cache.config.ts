@@ -33,7 +33,7 @@ const redisClient: RedisClientType = createClient({
 // node redis doesnt have a prefix option. this makes things just a little bit inconvenient for me..sad
 
 redisClient.on("error", (err) => {
-  logger.error(`Redis Client Creation Error: ${err}`);
+  logger.error(`Redis Client Creation Error`, {error: err});
 });
 
 export async function connectRedis() {
@@ -41,7 +41,7 @@ export async function connectRedis() {
     await redisClient.connect();
     logger.info("Redis Client connected");
   } catch (err) {
-    logger.error(`Redis Connection Error: ${err}`);
+    logger.error(`Redis Connection Error`, {error: err});
     process.exit(1); 
   }
 }

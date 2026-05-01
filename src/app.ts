@@ -3,6 +3,7 @@ import helmet from "helmet";
 import cors from "cors";
 import authRouter from "./modules/auth/auth.routes.js";
 import adminRouter from "./modules/admin/admin.routes.js";
+import healthRouter from "./modules/health/health.routes.js";
 import documentRouter from "./modules/document/document.routes.js";
 import conversationRouter from "./modules/conversation/conversation.routes.js";
 import errorHandler from "./middleware/errorHandler.js";
@@ -91,6 +92,7 @@ app.use("/api/v1/auth", authLimiter, authRouter);
 app.use("/api/v1/documents", authenticate, apiLimiter, documentRouter);
 app.use("/api/v1/conversations", authenticate, apiLimiter, conversationRouter);
 app.use("/api/v1/admin", authenticate, apiLimiter, adminRouter);
+app.use("/api/v1/health", healthRouter)
 // SERVE SWAGGER UI
 app.use(
   "/api-docs",

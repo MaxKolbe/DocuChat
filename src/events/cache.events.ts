@@ -8,9 +8,10 @@ appEvents.on("admin:role-assigned", async (data) => {
     await cacheDel(`docuchat:permissions:${data.targetUserId}`);
     logger.info(`Cache cleared: cleared permissions for ${data.targetUserId}`, {
       targetUserId: data.targetUserId,
+      correlationId: data.correlationId,
     });
   } catch (err) {
-    logger.error(`'Failed to bust permissions cache`, { err });
+    logger.error(`'Failed to bust permissions cache`, { err, correlationId: data.correlationId });
   }
 });
 
@@ -19,9 +20,10 @@ appEvents.on("admin:role-revoked", async (data) => {
     await cacheDel(`docuchat:permissions:${data.targetUserId}`);
     logger.info(`Cache cleared: cleared permissions for ${data.targetUserId}`, {
       targetUserId: data.targetUserId,
+      correlationId: data.correlationId,
     });
   } catch (err) {
-    logger.error(`Failed to bust permissions cache`, { err });
+    logger.error(`Failed to bust permissions cache`, { err, correlationId: data.correlationId });
   }
 });
 
@@ -31,8 +33,9 @@ appEvents.on("doc:deleted", async (data) => {
     await cacheDel(`docuchat:doc:${data.documentId}`);
     logger.info(`Cache cleared: cleared document ${data.documentId}`, {
       documentId: data.documentId,
+      correlationId: data.correlationId,
     });
   } catch (err) {
-    logger.error(`Failed to bust document cache`, { err });
+    logger.error(`Failed to bust document cache`, { err, correlationId: data.correlationId });
   }
 });

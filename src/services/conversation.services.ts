@@ -8,6 +8,7 @@ export const listConversations = async (
     page: number;
     limit: number;
   },
+  correlationId: string
 ) => {
   const { page, limit } = options;
 
@@ -46,11 +47,12 @@ export const listConversations = async (
       page,
       limit,
       total,
+      correlationId
     },
   };
 };
 
-export const createConversation = async (userId: string, title: string) => {
+export const createConversation = async (userId: string, title: string, correlationId: string) => {
   const newConversation = await prisma.conversation.create({
     data: {
       userId,
@@ -62,6 +64,7 @@ export const createConversation = async (userId: string, title: string) => {
     code: 201,
     message: "Conversation created successfully",
     data: newConversation,
+    meta: {correlationId}
   };
 };
 
@@ -70,6 +73,7 @@ export const sendMessage = async (
   userId: string,
   content: string,
   documentId: string,
+  correlationId: string
 ) => {
   const doc = await prisma.document.findUnique({ where: { id: documentId, deletedAt: null } });
   if (!doc) {
@@ -133,6 +137,7 @@ export const sendMessage = async (
         userMessage,
         assistantMessage,
       },
+      meta: {correlationId}
     };
   });
 };

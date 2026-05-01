@@ -13,11 +13,12 @@ const redis_port = Number(process.env.REDIS_PORT!);
 const worker = new Worker(
   "document-processing",
   async (job: Job) => {
-    const { docId, userId } = job.data;
+    const { docId, userId, correlationId} = job.data;
     // logger.info(`Processing document ${docId} (attempt ${job.attemptsMade + 1})`)
     logger.info(`Processing document`, {
       documentId: docId,
       attempts: job.attemptsMade + 1,
+      correlationId
     });
 
     // Step 1: Fetch the document content
@@ -74,6 +75,7 @@ const worker = new Worker(
           docId,
           userId,
           chunkCount: chunks.length,
+          correlationId
         });
       });
 

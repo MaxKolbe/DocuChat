@@ -176,7 +176,8 @@ export const UsageLogScalarFieldEnum = {
   tokens: 'tokens',
   costUsd: 'costUsd',
   metadata: 'metadata',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  correlationId: 'correlationId'
 } as const
 
 export type UsageLogScalarFieldEnum = (typeof UsageLogScalarFieldEnum)[keyof typeof UsageLogScalarFieldEnum]

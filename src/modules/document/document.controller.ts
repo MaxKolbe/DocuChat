@@ -13,14 +13,18 @@ export const listDocumentsController = async (req: Request, res: Response, next:
   const { page, limit, status, search, sortBy, sortOrder } = req.qtransformed;
   const userId = req.user!.id;
   try {
-    const response = await listDocuments(userId, {
-      page,
-      limit,
-      status,
-      search,
-      sortBy,
-      sortOrder,
-    });
+    const response = await listDocuments(
+      userId,
+      {
+        page,
+        limit,
+        status,
+        search,
+        sortBy,
+        sortOrder,
+      },
+      (req as any).correlationId,
+    );
     successResponse(res, response.code, response.message, response.data, response.meta);
   } catch (err) {
     next(err);
@@ -29,8 +33,12 @@ export const listDocumentsController = async (req: Request, res: Response, next:
 
 export const getDocumentController = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const response = await getDocument(req.params.docId!.toString(), req.user!.id);
-    successResponse(res, response.code, response.message, response.data);
+    const response = await getDocument(
+      req.params.docId!.toString(),
+      req.user!.id,
+      (req as any).correlationId,
+    );
+    successResponse(res, response.code, response.message, response.data, response.meta);
   } catch (err) {
     next(err);
   }
@@ -39,11 +47,15 @@ export const getDocumentController = async (req: Request, res: Response, next: N
 export const createDocumentController = async (req: Request, res: Response, next: NextFunction) => {
   const { title, content } = req.body;
   try {
-    const response = await createDocument(req.user!.id, {
-      title,
-      content,
-    });
-    successResponse(res, response.code, response.message, response.data);
+    const response = await createDocument(
+      req.user!.id,
+      {
+        title,
+        content,
+      },
+      (req as any).correlationId,
+    );
+    successResponse(res, response.code, response.message, response.data, response.meta);
   } catch (err) {
     next(err);
   }
@@ -51,8 +63,8 @@ export const createDocumentController = async (req: Request, res: Response, next
 
 export const deleteDocumentController = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    await deleteDocument(req.params.docId!.toString(), req.user!.id);
-    successResponse(res, 200, "Deleted successfully");
+    await deleteDocument(req.params.docId!.toString(), req.user!.id, (req as any).correlationId);
+    successResponse(res, 200, "Deleted successfully", null, (req as any).correlationId);
   } catch (err) {
     next(err);
   }
@@ -60,8 +72,8 @@ export const deleteDocumentController = async (req: Request, res: Response, next
 
 export const pollDocumentController = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const response = await pollDocument(req.params.id!.toString(), req.user!.id);
-    return successResponse(res, response.code, response.message, response.data)
+    const response = await pollDocument(req.params.id!.toString(), req.user!.id, (req as any).correlationId);
+    return successResponse(res, response.code, response.message, response.data, response.meta);
   } catch (err) {
     next(err);
   }

@@ -45,6 +45,7 @@ router.get("/roles", async (req: Request, res: Response) => {
       userCount: role._count.users,
       permissions: role.permissions.map((rp) => rp.permission.name),
     })),
+    {correlationId:  (req as any).correlationId},
   );
 });
 
@@ -106,8 +107,9 @@ router.post("/users/:userId/roles",
       targetUserId: userId,
       roleName,
       assignedBy: req.user!.id,
+      correlationId:  (req as any).correlationId
     });
-    successResponse(res, 201, `Role '${roleName}' assigned to user`);
+    successResponse(res, 201, `Role '${roleName}' assigned to user`, null, {correlationId:  (req as any).correlationId},);
   } catch (error) {
     next(error);
   }
@@ -163,9 +165,10 @@ router.delete(
         targetUserId: userId,
         roleName,
         revokedBy: req.user!.id,
+        correlationId:  (req as any).correlationId
       });
 
-      successResponse(res, 200, `Role '${roleName}' revoked`);
+      successResponse(res, 200, `Role '${roleName}' revoked`, null, {correlationId:  (req as any).correlationId});
     } catch (error) {
       next(error);
     }

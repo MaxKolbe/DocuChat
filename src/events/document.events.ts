@@ -21,10 +21,11 @@ appEvents.on(DOC_EVENTS.CREATED, async (data) => {
           title: data.title,
           fileSizeBytes: data.fileSizeBytes,
         }),
+        correlationId: data.correlationId,
       },
     });
   } catch (err) {
-    logger.error(`Failed to log document creation}`, {err});
+    logger.error(`Failed to log document creation}`, { err });
   }
 });
 
@@ -41,6 +42,7 @@ appEvents.on(DOC_EVENTS.PROCESSED, async (data) => {
           title: data.title,
           fileSizeBytes: data.fileSizeBytes,
         }),
+        correlationId: data.correlationId,
       },
     });
   } catch (err) {}
@@ -62,6 +64,6 @@ appEvents.on(DOC_EVENTS.DELETED, async (data) => {
       },
     });
   } catch (err) {
-    logger.error(`Failed to log document deletion`, {err});
+    logger.error(`Failed to log document deletion`, { err });
   }
 });

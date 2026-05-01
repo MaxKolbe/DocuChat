@@ -123,13 +123,14 @@ model Message {
 }
 
 model UsageLog { 
-  id        String   @id @default(uuid()) 
-  userId    String 
-  action    String   // "embed", "chat", "upload" 
-  tokens    Int 
-  costUsd   Float    @map("cost_usd")
-  metadata  String?  // JSON 
-  createdAt DateTime @default(now()) @map("created_at")
+  id            String   @id @default(uuid()) 
+  userId        String 
+  action        String   // "embed", "chat", "upload" 
+  tokens        Int 
+  costUsd       Float    @map("cost_usd")
+  metadata      String?  // JSON 
+  createdAt     DateTime @default(now()) @map("created_at")
+  correlationId String?
  
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade) 
  

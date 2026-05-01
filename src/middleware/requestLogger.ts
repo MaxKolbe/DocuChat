@@ -13,7 +13,7 @@ export const requestLogger = (req: Request, res: Response, next: NextFunction) =
   res.setHeader("X-Correlation-Id", correlationId);
 
   const startTime = Date.now();
-
+    
   // Log incoming request
   logger.http(`Request Received`, {
     correlationId,

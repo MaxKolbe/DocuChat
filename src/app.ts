@@ -16,6 +16,8 @@ import { bullBoardAdapter } from "./configs/bull-board.config.js";
 import { authLimiter, apiLimiter } from "./middleware/rateLimiter.js";
 import { sanitizeInput } from "./middleware/sanitize.js";
 import { requestLogger } from "./middleware/requestLogger.js";
+import { metricsMiddleware } from "./middleware/metricsMiddleware.js";
+import { metricsRegistry } from "./lib/metrics.js";
 import { verifyWebhookSignature } from "./middleware/verifyWebhook.js";
 import { Request, Response } from "express";
 import "./events/auth.events.js";
@@ -62,8 +64,9 @@ app.use(
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(requestLogger);
+// app.use(requestLogger);
 app.use(sanitizeInput);
+app.use(metricsMiddleware);
 app.use(
   helmet({
     contentSecurityPolicy: {
@@ -114,6 +117,11 @@ app.use(
   authenticate,
   /*requirePermission("roles:manage"),*/ bullBoardAdapter.getRouter(),
 );
+// Metrics endpoint (no auth — Prometheus needs to scrape it)
+app.get("/metrics", async (req, res) => {
+  res.set("Content-Type", metricsRegistry.contentType);
+  res.send(await metricsRegistry.metrics());
+});
 
 process.on("SIGINT", async () => {
   logger.info("Shutting down...");

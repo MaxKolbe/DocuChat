@@ -16,7 +16,7 @@ router.use(requirePermission("roles:manage"));
  * /admin/roles:
  *   get:
  *     summary: List all roles with their permissions
- *     tags: [admin]
+ *     tags: [Admin]
  *     security:
  *       - bearerAuth: []
  *     responses:
@@ -53,7 +53,7 @@ router.get("/roles", async (req: Request, res: Response) => {
  * /admin/users/{userId}/roles:
  *   post:
  *     summary: Assign a role to a user
- *     tags: [admin]
+ *     tags: [Admin]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -118,7 +118,7 @@ router.post("/users/:userId/roles",
  * /admin/users/{userId}/roles/{roleName}:
  *   delete:
  *     summary: Revoke a role from a user
- *     tags: [admin]
+ *     tags: [Admin]
  *     security:
  *       - bearerAuth: []
  *     parameters:

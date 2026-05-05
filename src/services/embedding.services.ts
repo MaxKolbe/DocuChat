@@ -34,6 +34,17 @@ export const generateEmbedding = async (text: string): Promise<number[]> => {
     cached: false,
   });
 
+  // After a successful embedding call, emit for usage tracking:
+  appEvents.emit("ai:embedding-generated", {
+    //   userId,
+    //   documentId,
+    model: EMBEDDING_MODEL,
+    tokensUsed: response.data.usage.total_tokens,
+    // Approximate cost: $0.02 per 1M tokens
+    costUsd: (response.data.usage.total_tokens / 1_000_000) * 0.02,
+    cached: false,
+  });
+
   return embedding;
 };
 
@@ -95,15 +106,15 @@ export const generateEmbeddings = async (texts: string[]): Promise<number[][]> =
       tokensUsed: response.data.usage?.total_tokens,
     });
 
-    // appEvents.emit("ai:embedding-generated", {
+    appEvents.emit("ai:embedding-generated", {
     //   userId,
     //   documentId,
-    //   model: EMBEDDING_MODEL,
-    //   tokensUsed: response.data.usage.total_tokens,
-    //   // Approximate cost: $0.02 per 1M tokens
-    //   costUsd: (response.data.usage.total_tokens / 1_000_000) * 0.02,
-    //   cached: false,
-    // });
+      model: EMBEDDING_MODEL,
+      tokensUsed: response.data.usage.total_tokens,
+      // Approximate cost: $0.02 per 1M tokens
+      costUsd: (response.data.usage.total_tokens / 1_000_000) * 0.02,
+      cached: false,
+    });
   }
 
   return allEmbeddings;

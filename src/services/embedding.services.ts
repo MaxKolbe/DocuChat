@@ -1,9 +1,16 @@
+import { cacheGet, cacheSet, CACHE_TTL, hashKey } from "../lib/cache.js";
 import { openaiBreaker } from "../lib/http/openai.breaker.js";
 import { prisma } from "../lib/prisma.js";
+import { appEvents } from "../lib/events.js";
 import logger from "../configs/logger.config.js";
+import crypto from "crypto";
 
 const EMBEDDING_MODEL = "text-embedding-3-small";
 const EMBEDDING_DIMENSIONS = 1536;
+
+function contentHash(text: string): string {
+  return crypto.createHash("sha256").update(text).digest("hex");
+}
 
 export const generateEmbedding = async (text: string): Promise<number[]> => {
   const startTime = Date.now();
@@ -22,10 +29,42 @@ export const generateEmbedding = async (text: string): Promise<number[]> => {
     dimensions: embedding.length,
     durationMs: duration,
     tokensUsed: response.data.usage?.total_tokens,
+    //  Approximate cost: $0.02 per 1M tokens
+    costUsd: (response.data.usage.total_tokens / 1_000_000) * 0.02,
+    cached: false,
   });
 
   return embedding;
 };
+
+export async function generateEmbeddingCached(text: string): Promise<number[]> {
+  const hash = contentHash(text);
+  const cacheKey = `embed:${hash}`;
+  // Check cache
+  const cached = await cacheGet<number[]>(cacheKey);
+  if (cached) {
+    logger.debug("Embedding cache hit", { hash: hash.substring(0, 12) });
+    return cached;
+  }
+  // Cache miss — generate
+  const embedding = await generateEmbedding(text);
+
+  appEvents.emit("ai:embedding-generated", {
+    //   userId,
+    //   documentId,
+    model: EMBEDDING_MODEL,
+    //   tokensUsed: response.data.usage.total_tokens,
+    // Approximate cost: $0.02 per 1M tokens
+    //   costUsd: (response.data.usage.total_tokens / 1_000_000) * 0.02,
+    cached: false,
+  });
+
+  // Cache for 7 days (embeddings don't change for the same input)
+  await cacheSet(cacheKey, embedding, CACHE_TTL.EMBEDDING);
+
+  logger.debug("Embedding cached", { hash: hash.substring(0, 12) });
+  return embedding;
+}
 
 export const generateEmbeddings = async (texts: string[]): Promise<number[][]> => {
   if (texts.length === 0) return [];

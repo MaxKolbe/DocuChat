@@ -14,7 +14,7 @@ import { authenticate } from "./middleware/auth.js";
 import { connectRedis } from "./configs/cache.config.js";
 import { swaggerSpec } from "./configs/swagger.config.js";
 import { bullBoardAdapter } from "./configs/bull-board.config.js";
-import { authLimiter, apiLimiter } from "./middleware/rateLimiter.js";
+import { authLimiter, apiLimiter } from "./middleware/rateLimiter.js"; 
 import { sanitizeInput } from "./middleware/sanitize.js";
 import { requestLogger } from "./middleware/requestLogger.js";
 import { metricsMiddleware } from "./middleware/metricsMiddleware.js";

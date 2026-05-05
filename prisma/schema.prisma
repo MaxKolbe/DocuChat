@@ -6,10 +6,12 @@
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
+  previewFeatures = ["postgresqlExtensions"] 
 }
 
 datasource db {
   provider = "postgresql"
+  extensions = [vector] 
 }
 
 model User {
@@ -77,6 +79,7 @@ model Chunk {
   index       Int 
   content     String 
   tokenCount  Int      @map("token_count")
+  embedding   Unsupported("vector(1536)")? 
   createdAt   DateTime @default(now()) @map("created_at")
  
   document    Document @relation(fields: [documentId], references: [id], onDelete: Cascade) 

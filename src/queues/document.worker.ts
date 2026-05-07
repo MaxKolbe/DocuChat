@@ -2,14 +2,14 @@ import "dotenv/config";
 import { Job, Worker } from "bullmq";
 import { prisma } from "../lib/prisma.js";
 import { appEvents } from "../lib/events.js";
-import { NotFoundError } from "../lib/errors.js";
 import {
   generateEmbeddingsBatchCached,
   storeChunkEmbeddingsBatch,
 } from "../services/embedding.services.js";
-import { chunkDocument, splitIntoChunks, estimateTokens } from "../utils/chunker.js";
+import { chunkDocument } from "../utils/chunker.js";
 import { extractText, detectFormat } from "../lib/documentExtractor.js";
 import { deadLetterQueue } from "./deadletter.queue.js";
+import { ingestionDuration, chunksPerDocument } from "../lib/metrics.js";
 import logger from "../configs/logger.config.js";
 
 const redis_host = process.env.REDIS_HOST! as string;
@@ -139,6 +139,10 @@ const worker = new Worker(
         chunkCount: chunks.length,
         durationMs: duration,
       });
+
+      // metrics
+      ingestionDuration.observe({ format }, (Date.now() - startTime) / 1000);
+      chunksPerDocument.observe(chunks.length);
 
       return {
         success: true,

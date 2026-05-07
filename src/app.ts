@@ -25,6 +25,7 @@ import "./events/auth.events.js";
 import "./events/admin.events.js";
 import "./events/document.events.js";
 import "./events/cache.events.js";
+import "./events/embedding.events.js"
 import "./queues/document.worker.js";
 import "dotenv/config";
 

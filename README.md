@@ -30,28 +30,42 @@ npm install
 Create a `.env` file in the project root (see [Environment Variables](#environment-variables) for the full list):
 
 ```env
+# Don't add this in hosting service
+# development || production || test
 NODE_ENV=development
 
-# PostgreSQL
-PG_DATABASE_DEV_URL=postgresql://postgres:password@localhost:5432/devdb
-PG_DATABASE_TEST_URL=postgresql://postgres:password@localhost:5432/testdb
-PG_DATABASE_PROD_URL=<your-production-database-url>
-
-# Redis
-REDIS_DEV_URL=redis://localhost:6379
-REDIS_TEST_URL=redis://localhost:6379
-REDIS_PROD_URL=<your-production-redis-url>
-
-# Logging
-LOG_LEVEL=debug
-SOURCE_TOKEN=<your-logtail-source-token>
-INGESTING_HOST=<your-logtail-ingesting-host>
-
-# JWT SECRETS
-JWT_ACCESS_SECRET=<your-jwt-access-secret>
-JWT_REFRESH_SECRET=<your-jwt-refresh-secret>
-
+##
 PORT=3000
+
+##
+### use external url && host is string after @dpg- ending in .com
+PG_DATABASE_PROD_URL=postgresql://user:password@dpg-host.com/database?sslmode=verify-full&connection_limit=10&pool_timeout=10 #pool config for prod
+PG_DATABASE_DEV_URL=postgresql://user:password@host:port/database
+PG_DATABASE_TEST_URL=postgresql://user:password@host:port/database
+
+## REDIS
+REDIS_PROD_URL=
+REDIS_DEV_URL=
+REDIS_TEST_URL=
+REDIS_HOST=127.0.0.1
+REDIS_PORT=6379 
+
+
+## LOG LEVELS
+# {  error: 0, warn: 1, info: 2, http: 3, verbose: 4, debug: 5, silly: 6 }
+LOG_LEVEL=
+SOURCE_TOKEN=
+INGESTING_HOST=
+
+## JWT SECRETS
+JWT_ACCESS_SECRET=
+JWT_REFRESH_SECRET=
+
+## OPEN AI 
+OPENAI_API_KEY=
+
+## WEBHOOK SECRET
+WEBHOOK_SECRET=
 ```
 
 ### 4. Run Database Migrations

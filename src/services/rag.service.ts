@@ -22,8 +22,17 @@ export const assembleContext = (searchResults: SearchResult[]): AssembledContext
   const selected: SearchResult[] = [];
   let totalTokens = 0;
 
+  function isRedundant(candidate: SearchResult, selected: SearchResult[]): boolean {
+    return selected.some(
+      (s) =>
+        s.documentId === candidate.documentId && Math.abs(s.chunkIndex - candidate.chunkIndex) <= 1,
+    );
+  }
+
   // Results are already sorted by score (descending)
   for (const result of searchResults) {
+    if (isRedundant(result, selected)) continue; 
+    
     if (totalTokens + result.tokenCount > CONTEXT_TOKEN_BUDGET) {
       break; // Budget exhausted
     }

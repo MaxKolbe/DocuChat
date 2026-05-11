@@ -1,5 +1,5 @@
-import axios, { AxiosInstance } from "axios";
 import "dotenv/config";
+import axios, { AxiosInstance } from "axios";
 import logger from "../../configs/logger.config.js";
 
 export const openaiClient: AxiosInstance = axios.create({

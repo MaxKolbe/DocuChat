@@ -12,9 +12,9 @@
     "dev": "tsx watch src/index.ts",
     "watch": "npx tsc -w",
     "seed": "tsx prisma/seed.ts",
-    "db:gen": "npx prisma generate",
-    "db:mig": "npx prisma migrate dev --name genericname",
-    "db:mig-prod": "npx prisma migrate deploy"
+    "db:gen": "prisma generate",
+    "db:mig": "prisma migrate dev --name genericname",
+    "db:mig-prod": "prisma migrate deploy"
   },
   "repository": {
     "type": "git",

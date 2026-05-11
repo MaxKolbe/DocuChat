@@ -2,7 +2,7 @@ import { prisma } from "../lib/prisma.js";
 import { generateEmbeddingCached } from "./embedding.services.js";
 import logger from "../configs/logger.config.js";
 
-interface SearchResult {
+export interface SearchResult {
   chunkId: string;
   documentId: string;
   documentTitle: string;
@@ -28,15 +28,15 @@ export const semanticSearch = async (options: {
   const vectorStr = `[${queryEmbedding.join(",")}]`;
 
   // Step 2: Search pgvector with ownership filter
-  // check is _ affects naming
+  // check is _ affects naming: AS documentId AS tokenCount
   const results = await prisma.$queryRaw<SearchResult[]>`
     SELECT
         c.id AS "chunkId",
-        c."document_id",
+        c."document_id" AS "documentId",
         d.title AS "documentTitle",
         c.content,
         c.index AS "chunkIndex",
-        c."token_count",
+        c."token_count" AS "tokenCount",
         1 - (c.embedding <=> ${vectorStr}::vector) AS score 
     FROM "chunk" c 
     JOIN "document" d ON d.id = c."document_id" 

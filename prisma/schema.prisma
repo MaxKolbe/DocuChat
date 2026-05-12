@@ -115,6 +115,7 @@ model Message {
   completionTokens Int?         @map("completion_tokens")
   costUsd          Float?       @map("cost_usd")
   latencyMs        Int?         @map("latency_ms")
+  metadata         String?      // JSON 
   createdAt        DateTime     @default(now()) @map("created_at")
  
   conversation     Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade) 

@@ -52,6 +52,7 @@ export type MessageMinAggregateOutputType = {
   completionTokens: number | null
   costUsd: number | null
   latencyMs: number | null
+  metadata: string | null
   createdAt: Date | null
 }
 
@@ -67,6 +68,7 @@ export type MessageMaxAggregateOutputType = {
   completionTokens: number | null
   costUsd: number | null
   latencyMs: number | null
+  metadata: string | null
   createdAt: Date | null
 }
 
@@ -82,6 +84,7 @@ export type MessageCountAggregateOutputType = {
   completionTokens: number
   costUsd: number
   latencyMs: number
+  metadata: number
   createdAt: number
   _all: number
 }
@@ -113,6 +116,7 @@ export type MessageMinAggregateInputType = {
   completionTokens?: true
   costUsd?: true
   latencyMs?: true
+  metadata?: true
   createdAt?: true
 }
 
@@ -128,6 +132,7 @@ export type MessageMaxAggregateInputType = {
   completionTokens?: true
   costUsd?: true
   latencyMs?: true
+  metadata?: true
   createdAt?: true
 }
 
@@ -143,6 +148,7 @@ export type MessageCountAggregateInputType = {
   completionTokens?: true
   costUsd?: true
   latencyMs?: true
+  metadata?: true
   createdAt?: true
   _all?: true
 }
@@ -245,6 +251,7 @@ export type MessageGroupByOutputType = {
   completionTokens: number | null
   costUsd: number | null
   latencyMs: number | null
+  metadata: string | null
   createdAt: Date
   _count: MessageCountAggregateOutputType | null
   _avg: MessageAvgAggregateOutputType | null
@@ -283,6 +290,7 @@ export type MessageWhereInput = {
   completionTokens?: Prisma.IntNullableFilter<"Message"> | number | null
   costUsd?: Prisma.FloatNullableFilter<"Message"> | number | null
   latencyMs?: Prisma.IntNullableFilter<"Message"> | number | null
+  metadata?: Prisma.StringNullableFilter<"Message"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Message"> | Date | string
   conversation?: Prisma.XOR<Prisma.ConversationScalarRelationFilter, Prisma.ConversationWhereInput>
   document?: Prisma.XOR<Prisma.DocumentNullableScalarRelationFilter, Prisma.DocumentWhereInput> | null
@@ -300,6 +308,7 @@ export type MessageOrderByWithRelationInput = {
   completionTokens?: Prisma.SortOrderInput | Prisma.SortOrder
   costUsd?: Prisma.SortOrderInput | Prisma.SortOrder
   latencyMs?: Prisma.SortOrderInput | Prisma.SortOrder
+  metadata?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   conversation?: Prisma.ConversationOrderByWithRelationInput
   document?: Prisma.DocumentOrderByWithRelationInput
@@ -320,6 +329,7 @@ export type MessageWhereUniqueInput = Prisma.AtLeast<{
   completionTokens?: Prisma.IntNullableFilter<"Message"> | number | null
   costUsd?: Prisma.FloatNullableFilter<"Message"> | number | null
   latencyMs?: Prisma.IntNullableFilter<"Message"> | number | null
+  metadata?: Prisma.StringNullableFilter<"Message"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Message"> | Date | string
   conversation?: Prisma.XOR<Prisma.ConversationScalarRelationFilter, Prisma.ConversationWhereInput>
   document?: Prisma.XOR<Prisma.DocumentNullableScalarRelationFilter, Prisma.DocumentWhereInput> | null
@@ -337,6 +347,7 @@ export type MessageOrderByWithAggregationInput = {
   completionTokens?: Prisma.SortOrderInput | Prisma.SortOrder
   costUsd?: Prisma.SortOrderInput | Prisma.SortOrder
   latencyMs?: Prisma.SortOrderInput | Prisma.SortOrder
+  metadata?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.MessageCountOrderByAggregateInput
   _avg?: Prisma.MessageAvgOrderByAggregateInput
@@ -360,6 +371,7 @@ export type MessageScalarWhereWithAggregatesInput = {
   completionTokens?: Prisma.IntNullableWithAggregatesFilter<"Message"> | number | null
   costUsd?: Prisma.FloatNullableWithAggregatesFilter<"Message"> | number | null
   latencyMs?: Prisma.IntNullableWithAggregatesFilter<"Message"> | number | null
+  metadata?: Prisma.StringNullableWithAggregatesFilter<"Message"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Message"> | Date | string
 }
 
@@ -373,6 +385,7 @@ export type MessageCreateInput = {
   completionTokens?: number | null
   costUsd?: number | null
   latencyMs?: number | null
+  metadata?: string | null
   createdAt?: Date | string
   conversation: Prisma.ConversationCreateNestedOneWithoutMessagesInput
   document?: Prisma.DocumentCreateNestedOneWithoutMessagesInput
@@ -390,6 +403,7 @@ export type MessageUncheckedCreateInput = {
   completionTokens?: number | null
   costUsd?: number | null
   latencyMs?: number | null
+  metadata?: string | null
   createdAt?: Date | string
 }
 
@@ -403,6 +417,7 @@ export type MessageUpdateInput = {
   completionTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   costUsd?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   latencyMs?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  metadata?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   conversation?: Prisma.ConversationUpdateOneRequiredWithoutMessagesNestedInput
   document?: Prisma.DocumentUpdateOneWithoutMessagesNestedInput
@@ -420,6 +435,7 @@ export type MessageUncheckedUpdateInput = {
   completionTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   costUsd?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   latencyMs?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  metadata?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -435,6 +451,7 @@ export type MessageCreateManyInput = {
   completionTokens?: number | null
   costUsd?: number | null
   latencyMs?: number | null
+  metadata?: string | null
   createdAt?: Date | string
 }
 
@@ -448,6 +465,7 @@ export type MessageUpdateManyMutationInput = {
   completionTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   costUsd?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   latencyMs?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  metadata?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -463,6 +481,7 @@ export type MessageUncheckedUpdateManyInput = {
   completionTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   costUsd?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   latencyMs?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  metadata?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -488,6 +507,7 @@ export type MessageCountOrderByAggregateInput = {
   completionTokens?: Prisma.SortOrder
   costUsd?: Prisma.SortOrder
   latencyMs?: Prisma.SortOrder
+  metadata?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -510,6 +530,7 @@ export type MessageMaxOrderByAggregateInput = {
   completionTokens?: Prisma.SortOrder
   costUsd?: Prisma.SortOrder
   latencyMs?: Prisma.SortOrder
+  metadata?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -525,6 +546,7 @@ export type MessageMinOrderByAggregateInput = {
   completionTokens?: Prisma.SortOrder
   costUsd?: Prisma.SortOrder
   latencyMs?: Prisma.SortOrder
+  metadata?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -637,6 +659,7 @@ export type MessageCreateWithoutDocumentInput = {
   completionTokens?: number | null
   costUsd?: number | null
   latencyMs?: number | null
+  metadata?: string | null
   createdAt?: Date | string
   conversation: Prisma.ConversationCreateNestedOneWithoutMessagesInput
 }
@@ -652,6 +675,7 @@ export type MessageUncheckedCreateWithoutDocumentInput = {
   completionTokens?: number | null
   costUsd?: number | null
   latencyMs?: number | null
+  metadata?: string | null
   createdAt?: Date | string
 }
 
@@ -696,6 +720,7 @@ export type MessageScalarWhereInput = {
   completionTokens?: Prisma.IntNullableFilter<"Message"> | number | null
   costUsd?: Prisma.FloatNullableFilter<"Message"> | number | null
   latencyMs?: Prisma.IntNullableFilter<"Message"> | number | null
+  metadata?: Prisma.StringNullableFilter<"Message"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Message"> | Date | string
 }
 
@@ -709,6 +734,7 @@ export type MessageCreateWithoutConversationInput = {
   completionTokens?: number | null
   costUsd?: number | null
   latencyMs?: number | null
+  metadata?: string | null
   createdAt?: Date | string
   document?: Prisma.DocumentCreateNestedOneWithoutMessagesInput
 }
@@ -724,6 +750,7 @@ export type MessageUncheckedCreateWithoutConversationInput = {
   completionTokens?: number | null
   costUsd?: number | null
   latencyMs?: number | null
+  metadata?: string | null
   createdAt?: Date | string
 }
 
@@ -764,6 +791,7 @@ export type MessageCreateManyDocumentInput = {
   completionTokens?: number | null
   costUsd?: number | null
   latencyMs?: number | null
+  metadata?: string | null
   createdAt?: Date | string
 }
 
@@ -777,6 +805,7 @@ export type MessageUpdateWithoutDocumentInput = {
   completionTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   costUsd?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   latencyMs?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  metadata?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   conversation?: Prisma.ConversationUpdateOneRequiredWithoutMessagesNestedInput
 }
@@ -792,6 +821,7 @@ export type MessageUncheckedUpdateWithoutDocumentInput = {
   completionTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   costUsd?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   latencyMs?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  metadata?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -806,6 +836,7 @@ export type MessageUncheckedUpdateManyWithoutDocumentInput = {
   completionTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   costUsd?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   latencyMs?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  metadata?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -820,6 +851,7 @@ export type MessageCreateManyConversationInput = {
   completionTokens?: number | null
   costUsd?: number | null
   latencyMs?: number | null
+  metadata?: string | null
   createdAt?: Date | string
 }
 
@@ -833,6 +865,7 @@ export type MessageUpdateWithoutConversationInput = {
   completionTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   costUsd?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   latencyMs?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  metadata?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   document?: Prisma.DocumentUpdateOneWithoutMessagesNestedInput
 }
@@ -848,6 +881,7 @@ export type MessageUncheckedUpdateWithoutConversationInput = {
   completionTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   costUsd?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   latencyMs?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  metadata?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -862,6 +896,7 @@ export type MessageUncheckedUpdateManyWithoutConversationInput = {
   completionTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   costUsd?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   latencyMs?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  metadata?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -879,6 +914,7 @@ export type MessageSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   completionTokens?: boolean
   costUsd?: boolean
   latencyMs?: boolean
+  metadata?: boolean
   createdAt?: boolean
   conversation?: boolean | Prisma.ConversationDefaultArgs<ExtArgs>
   document?: boolean | Prisma.Message$documentArgs<ExtArgs>
@@ -896,6 +932,7 @@ export type MessageSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   completionTokens?: boolean
   costUsd?: boolean
   latencyMs?: boolean
+  metadata?: boolean
   createdAt?: boolean
   conversation?: boolean | Prisma.ConversationDefaultArgs<ExtArgs>
   document?: boolean | Prisma.Message$documentArgs<ExtArgs>
@@ -913,6 +950,7 @@ export type MessageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   completionTokens?: boolean
   costUsd?: boolean
   latencyMs?: boolean
+  metadata?: boolean
   createdAt?: boolean
   conversation?: boolean | Prisma.ConversationDefaultArgs<ExtArgs>
   document?: boolean | Prisma.Message$documentArgs<ExtArgs>
@@ -930,10 +968,11 @@ export type MessageSelectScalar = {
   completionTokens?: boolean
   costUsd?: boolean
   latencyMs?: boolean
+  metadata?: boolean
   createdAt?: boolean
 }
 
-export type MessageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "conversationId" | "documentId" | "role" | "content" | "sources" | "confidence" | "promptTokens" | "completionTokens" | "costUsd" | "latencyMs" | "createdAt", ExtArgs["result"]["message"]>
+export type MessageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "conversationId" | "documentId" | "role" | "content" | "sources" | "confidence" | "promptTokens" | "completionTokens" | "costUsd" | "latencyMs" | "metadata" | "createdAt", ExtArgs["result"]["message"]>
 export type MessageInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   conversation?: boolean | Prisma.ConversationDefaultArgs<ExtArgs>
   document?: boolean | Prisma.Message$documentArgs<ExtArgs>
@@ -965,6 +1004,7 @@ export type $MessagePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     completionTokens: number | null
     costUsd: number | null
     latencyMs: number | null
+    metadata: string | null
     createdAt: Date
   }, ExtArgs["result"]["message"]>
   composites: {}
@@ -1402,6 +1442,7 @@ export interface MessageFieldRefs {
   readonly completionTokens: Prisma.FieldRef<"Message", 'Int'>
   readonly costUsd: Prisma.FieldRef<"Message", 'Float'>
   readonly latencyMs: Prisma.FieldRef<"Message", 'Int'>
+  readonly metadata: Prisma.FieldRef<"Message", 'String'>
   readonly createdAt: Prisma.FieldRef<"Message", 'DateTime'>
 }
     

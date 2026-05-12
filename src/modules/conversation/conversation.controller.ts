@@ -15,7 +15,11 @@ export const listConversationsController = async (
   const { page, limit } = req.qtransformed;
 
   try {
-    const response = await listConversations(req.user!.id, { page, limit }, (req as any).correlationId);
+    const response = await listConversations(
+      req.user!.id,
+      { page, limit },
+      (req as any).correlationId,
+    );
     successResponse(res, 200, response.message, response.data, response.meta);
   } catch (err) {
     next(err);
@@ -39,8 +43,16 @@ export const createConverationController = async (
 export const sendMessageController = async (req: Request, res: Response, next: NextFunction) => {
   const conversationId = req.params.conversationId!.toString();
   const { content, documentId } = req.body;
+  const userId = req.user!.id;
+  const correlationId = (req as any).correlationId;
   try {
-    const response = await sendMessage(conversationId, req.user!.id, content, documentId, (req as any).correlationId);
+    const response = await sendMessage({
+      conversationId,
+      userId,
+      content,
+      documentId,
+      correlationId,
+    });
     successResponse(res, response.code, response.message, response.data, response.meta);
   } catch (err) {
     next(err);

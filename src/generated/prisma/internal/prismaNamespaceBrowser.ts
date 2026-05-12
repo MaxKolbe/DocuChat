@@ -163,6 +163,7 @@ export const MessageScalarFieldEnum = {
   completionTokens: 'completionTokens',
   costUsd: 'costUsd',
   latencyMs: 'latencyMs',
+  metadata: 'metadata',
   createdAt: 'createdAt'
 } as const
 

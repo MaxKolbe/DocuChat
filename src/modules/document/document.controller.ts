@@ -45,16 +45,8 @@ export const getDocumentController = async (req: Request, res: Response, next: N
 };
 
 export const createDocumentController = async (req: Request, res: Response, next: NextFunction) => {
-  const { title, content } = req.body;
   try {
-    const response = await createDocument(
-      req.user!.id,
-      {
-        title,
-        content,
-      },
-      (req as any).correlationId,
-    );
+    const response = await createDocument(req, req.user!.id, (req as any).correlationId);
     successResponse(res, response.code, response.message, response.data, response.meta);
   } catch (err) {
     next(err);
@@ -72,7 +64,11 @@ export const deleteDocumentController = async (req: Request, res: Response, next
 
 export const pollDocumentController = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const response = await pollDocument(req.params.id!.toString(), req.user!.id, (req as any).correlationId);
+    const response = await pollDocument(
+      req.params.id!.toString(),
+      req.user!.id,
+      (req as any).correlationId,
+    );
     return successResponse(res, response.code, response.message, response.data, response.meta);
   } catch (err) {
     next(err);

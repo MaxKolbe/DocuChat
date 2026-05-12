@@ -1,11 +1,12 @@
 // Document aggregate: upload, list, get, delete
 import { prisma } from "../lib/prisma.js";
-import { NotFoundError } from "../lib/errors.js";
+import { NotFoundError, ValidationError } from "../lib/errors.js";
 import { getUserPermissions } from "../utils/rbac.service.js";
-import { Listdocuments } from "../modules/document/document.schema.js"; // type
 import { appEvents } from "../lib/events.js";
 import { DOC_EVENTS } from "../events/document.events.js";
+import { detectFormat, extractText } from "../lib/documentExtractor.js";
 import { queueDocumentForProcessing, documentQueue } from "../queues/document.queue.js";
+import { Request } from "express";
 
 // options: Listdocuments..apparently not a good idea since zod creates literal types from enums
 export const listDocuments = async (userId: string, options: any, correlationId: string) => {
@@ -79,25 +80,25 @@ export const getDocument = async (docId: string, userId: string, correlationId: 
   };
 };
 
-export const createDocument = async (
-  userId: string,
-  body: { title: string; content: string },
-  correlationId: string,
-) => {
-  const { title, content } = body;
+export const createDocument = async (req: Request, userId: string, correlationId: string) => {
+  if (!req.file) {
+    throw new ValidationError("Document not provided");
+  }
 
+  const content = await extractText(req.file.buffer, detectFormat(req.file.originalname)); 
+  
   const newDocument = await prisma.document.create({
     data: {
       userId,
-      title,
-      filename: title.toLowerCase().replace(/\s+/g, "-"),
-      content,
+      title: req.file.originalname.split(".")[0]!,
+      filename: req.file.originalname.toLowerCase().replace(/\s+/g, "-"),
+      content: content.text,
       status: "pending",
     },
   });
 
   // Queue for background processing
-  const jobId = await queueDocumentForProcessing(newDocument.id, userId, correlationId);
+  const jobId = await queueDocumentForProcessing(newDocument.id, userId, correlationId, content.text, content.pageCount);
 
   appEvents.emit(DOC_EVENTS.CREATED, {
     userId,

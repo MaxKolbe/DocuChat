@@ -27,12 +27,16 @@ export const queueDocumentForProcessing = async (
   docId: string,
   userId: string,
   correlationId: string,
+  text: string,
+  pageCount?: number,
 ) => {
   const job = await documentQueue.add("process-document", {
     docId,
     userId,
     queuedAt: new Date(Date.now()),
-    correlationId
+    correlationId,
+    text,
+    pageCount,
   });
 
   return job.id;

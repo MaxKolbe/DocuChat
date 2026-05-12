@@ -14,7 +14,7 @@ import { authenticate } from "./middleware/auth.js";
 import { connectRedis } from "./configs/cache.config.js";
 import { swaggerSpec } from "./configs/swagger.config.js";
 import { bullBoardAdapter } from "./configs/bull-board.config.js";
-import { authLimiter, apiLimiter } from "./middleware/rateLimiter.js"; 
+import { authLimiter, apiLimiter } from "./middleware/rateLimiter.js";
 import { sanitizeInput } from "./middleware/sanitize.js";
 import { requestLogger } from "./middleware/requestLogger.js";
 import { metricsMiddleware } from "./middleware/metricsMiddleware.js";
@@ -25,6 +25,8 @@ import "./events/auth.events.js";
 import "./events/admin.events.js";
 import "./events/document.events.js";
 import "./events/cache.events.js";
+import "./events/embedding.events.js";
+import "./events/ingestion.events.js";
 import "./queues/document.worker.js";
 import "dotenv/config";
 
@@ -92,7 +94,7 @@ app.use("/api/v1/auth", authLimiter, authRouter);
 app.use("/api/v1/documents", authenticate, apiLimiter, documentRouter);
 app.use("/api/v1/conversations", authenticate, apiLimiter, conversationRouter);
 app.use("/api/v1/admin", authenticate, apiLimiter, adminRouter);
-app.use("/api/v1/health", healthRouter)
+app.use("/api/v1/health", healthRouter);
 // SERVE SWAGGER UI
 app.use(
   "/api-docs",

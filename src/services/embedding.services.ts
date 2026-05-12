@@ -60,16 +60,6 @@ export const generateEmbeddingCached = async (text: string): Promise<number[]> =
   // Cache miss — generate
   const embedding = await generateEmbedding(text);
 
-  //   appEvents.emit("ai:embedding-generated", {
-  //   userId,
-  //   documentId,
-  //   model: EMBEDDING_MODEL,
-  //   tokensUsed: response.data.usage.total_tokens,
-  //   Approximate cost: $0.02 per 1M tokens
-  //   costUsd: (response.data.usage.total_tokens / 1_000_000) * 0.02,
-  //   cached: false,
-  //   });
-
   // Cache for 7 days (embeddings don't change for the same input)
   await cacheSet(cacheKey, embedding, CACHE_TTL.EMBEDDING);
 
@@ -77,7 +67,7 @@ export const generateEmbeddingCached = async (text: string): Promise<number[]> =
   return embedding;
 };
 
-export const generateEmbeddings = async (texts: string[]): Promise<number[][]> => {
+export const generateEmbeddings = async (texts: string[], userId?: string): Promise<number[][]> => {
   if (texts.length === 0) return [];
 
   // OpenAI supports up to 2048 inputs per request
@@ -107,8 +97,8 @@ export const generateEmbeddings = async (texts: string[]): Promise<number[][]> =
     });
 
     appEvents.emit("ai:embedding-generated", {
-    //   userId,
-    //   documentId,
+      userId,
+      //   documentId,
       model: EMBEDDING_MODEL,
       tokensUsed: response.data.usage.total_tokens,
       // Approximate cost: $0.02 per 1M tokens
@@ -116,6 +106,8 @@ export const generateEmbeddings = async (texts: string[]): Promise<number[][]> =
       cached: false,
     });
   }
+
+  logger.debug("Embeddings were created successfully (cacheset)", {allEmbeddings})
 
   return allEmbeddings;
 };
@@ -138,7 +130,7 @@ export const storeChunkEmbeddingsBatch = async (
     chunks.map((chunk) => {
       const vectorStr = `[${chunk.embedding.join(",")}]`;
       return prisma.$executeRaw` 
-        UPDATE "Chunk" 
+        UPDATE "chunk" 
         SET embedding = ${vectorStr}::vector 
         WHERE id = ${chunk.id} 
       `;
@@ -146,7 +138,10 @@ export const storeChunkEmbeddingsBatch = async (
   );
 };
 
-export const generateEmbeddingsBatchCached = async (texts: string[]): Promise<number[][]> => {
+export const generateEmbeddingsBatchCached = async (
+  texts: string[],
+  userId?: string,
+): Promise<number[][]> => {
   const results: (number[] | null)[] = new Array(texts.length).fill(null);
   const uncached: { index: number; text: string }[] = [];
 
@@ -169,17 +164,10 @@ export const generateEmbeddingsBatchCached = async (texts: string[]): Promise<nu
 
   // 2. Generate embeddings only for uncached texts
   if (uncached.length > 0) {
-    const newEmbeddings = await generateEmbeddings(uncached.map((u) => u.text));
-
-    // appEvents.emit("ai:embedding-generated", {
-    //   //   userId,
-    //   //   documentId,
-    //   model: EMBEDDING_MODEL,
-    //   //   tokensUsed: response.data.usage.total_tokens,
-    //   // Approximate cost: $0.02 per 1M tokens
-    //   //   costUsd: (response.data.usage.total_tokens / 1_000_000) * 0.02,
-    //   cached: false,
-    // });
+    const newEmbeddings = await generateEmbeddings(
+      uncached.map((u) => u.text),
+      userId,
+    );
 
     // 3. Cache the new embeddings and fill in results
     for (let i = 0; i < uncached.length; i++) {
@@ -188,6 +176,8 @@ export const generateEmbeddingsBatchCached = async (texts: string[]): Promise<nu
       results[uncached[i]!.index] = newEmbeddings[i]!;
     }
   }
-
+  
+  logger.debug("Embeddings were created successfully", {results})
   return results as number[][];
 };
+ 

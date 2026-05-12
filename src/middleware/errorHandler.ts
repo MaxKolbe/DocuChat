@@ -40,7 +40,8 @@ export function errorHandler(err: Error, req: Request, res: Response, next: Next
   }
 
   // Programming error: this is a bug
-  logger.error(`Unhandled error`, { error: err });
+  logger.error(`Unhandled error`, { error: err.stack });
+  console.log(err.name, "\n", err.message, "\n", err.cause, "\n", err.stack)
 
   return res.status(500).json({
     success: false,

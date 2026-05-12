@@ -18,6 +18,6 @@ appEvents.on("ai:embedding-generated", async (data) => {
       },
     });
   } catch (error) {
-    logger.error(`Failed to log role assignment`, { error });
+    logger.error(`Failed to log embed action to usagelogs`, { error });
   }
 });

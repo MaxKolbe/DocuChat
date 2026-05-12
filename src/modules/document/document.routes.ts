@@ -1,5 +1,6 @@
 //ROUTES
 import express from "express";
+import { upload } from "../../configs/multer.config.js";
 import { uploadLimiter } from "../../middleware/rateLimiter.js";
 import { validateRequest } from "../../middleware/validate.js";
 import { requirePermission } from "../../middleware/auth.js";
@@ -115,17 +116,13 @@ router.get(
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
- *             required: [title, content]
  *             properties:
- *               title:
+ *               uploaded_file:
  *                 type: string
- *                 example: The Great Catsby
- *               content:
- *                 type: string
- *                 example: Behold this is the famous story of cat
+ *                 format: binary
  *     responses:
  *       202:
  *         description: Document accepted for creation
@@ -136,9 +133,10 @@ router.get(
  */
 router.post(
   "/",
-  uploadLimiter,
+  // uploadLimiter,
+  upload.single('uploaded_file'),
   requirePermission("documents:create"),
-  validateRequest(createDocumentSchema),
+  // validateRequest(createDocumentSchema),
   createDocumentController,
 );
 

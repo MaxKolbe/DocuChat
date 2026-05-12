@@ -18,7 +18,7 @@ const redis_port = Number(process.env.REDIS_PORT!);
 const worker = new Worker(
   "document-processing",
   async (job: Job) => {
-    const { docId, userId, correlationId } = job.data;
+    const { docId, userId, correlationId, text, pageCount } = job.data;
     const startTime = Date.now();
 
     // logger.info(`Processing document ${docId} (attempt ${job.attemptsMade + 1})`)
@@ -36,7 +36,7 @@ const worker = new Worker(
       },
     });
 
-    try {
+    try { 
       // Step 1: Fetch the document
       const doc = await prisma.document.findUniqueOrThrow({
         where: { id: docId },
@@ -50,7 +50,6 @@ const worker = new Worker(
 
       // Step 2: Extract text
       const format = detectFormat(doc.filename);
-      const { text, pageCount } = await extractText(doc.content, format);
 
       logger.info(`Text extracted`, {
         documentId: docId,
@@ -95,10 +94,10 @@ const worker = new Worker(
 
       // Step 5: Generate embeddings (the expensive step)
       const chunkTexts = chunks.map((c) => c.text);
-      const embeddings = await generateEmbeddingsBatchCached(chunkTexts);
+      const embeddings = await generateEmbeddingsBatchCached(chunkTexts, userId);
       await job.updateProgress(85);
 
-      // Step 6: Store embeddings
+      // Step 6: Store embeddings 
       const storedChunks = await prisma.chunk.findMany({
         where: { documentId: docId },
         orderBy: { index: "asc" },

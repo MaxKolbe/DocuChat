@@ -1,4 +1,5 @@
 import { prisma } from "../lib/prisma.js";
+import { Prisma } from "../generated/prisma/client.js";
 import { generateEmbeddingCached } from "./embedding.services.js";
 import logger from "../configs/logger.config.js";
 
@@ -44,7 +45,7 @@ export const semanticSearch = async (options: {
       AND d."deletedAt" IS NULL 
       AND d.status = 'ready' 
       AND c.embedding IS NOT NULL 
-      ${documentId ? prisma.$queryRaw`AND d.id = ${documentId}` : prisma.$queryRaw``} 
+      ${documentId ? Prisma.sql`AND d.id = ${documentId}` : Prisma.empty}
     ORDER BY c.embedding <=> ${vectorStr}::vector 
     LIMIT ${topK} 
   `;

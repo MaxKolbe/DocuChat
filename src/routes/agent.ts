@@ -7,8 +7,35 @@ import { runAgent } from "../agents/executor.js";
 const router = express.Router();
 router.use(authenticate);
 
+/**
+ * @swagger
+ * /research:
+ *   post:
+ *     summary: Researches
+ *     tags: [Research]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               question:
+ *                 type: string
+ *                 example: This is a new question
+ *                 required: true
+ *     responses:
+ *       200:
+ *         description: Message sent successfully
+ *       401:
+ *         description: Not authenticated
+ *       400:
+ *         description: Validation error
+ */
 router.post(
-  "/research",
+  "/",
   chatLimiter,
   requirePermission("conversations:create"),
   async (req, res, next) => {

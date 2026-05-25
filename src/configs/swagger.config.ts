@@ -26,6 +26,7 @@ const options: swaggerJsdoc.Options = {
     "./src/modules/conversation/*.ts", 
     "./src/modules/admin/*.ts",
     "./src/modules/health/*.ts",
+     "./src/routes/*.ts",
   ],
 };
 

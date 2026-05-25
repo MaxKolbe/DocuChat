@@ -1,6 +1,7 @@
 import express from "express";
 import helmet from "helmet";
 import cors from "cors";
+import reasearchRouter from "./routes/agent.js";
 import authRouter from "./modules/auth/auth.routes.js";
 import adminRouter from "./modules/admin/admin.routes.js";
 import healthRouter from "./modules/health/health.routes.js";
@@ -14,7 +15,7 @@ import { authenticate } from "./middleware/auth.js";
 import { connectRedis } from "./configs/cache.config.js";
 import { swaggerSpec } from "./configs/swagger.config.js";
 import { bullBoardAdapter } from "./configs/bull-board.config.js";
-import { authLimiter, apiLimiter } from "./middleware/rateLimiter.js";
+import { authLimiter, apiLimiter, chatLimiter } from "./middleware/rateLimiter.js";
 import { sanitizeInput } from "./middleware/sanitize.js";
 import { requestLogger } from "./middleware/requestLogger.js";
 import { metricsMiddleware } from "./middleware/metricsMiddleware.js";
@@ -94,6 +95,7 @@ app.use("/api/v1/auth", authLimiter, authRouter);
 app.use("/api/v1/documents", authenticate, apiLimiter, documentRouter);
 app.use("/api/v1/conversations", authenticate, apiLimiter, conversationRouter);
 app.use("/api/v1/admin", authenticate, apiLimiter, adminRouter);
+app.use("/api/v1/research", authenticate, chatLimiter, reasearchRouter);
 app.use("/api/v1/health", healthRouter);
 // SERVE SWAGGER UI
 app.use(

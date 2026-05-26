@@ -82,3 +82,8 @@ export type Permission = Prisma.PermissionModel
  * 
  */
 export type WebhookEvent = Prisma.WebhookEventModel
+/**
+ * Model PromptTemplate
+ * 
+ */
+export type PromptTemplate = Prisma.PromptTemplateModel

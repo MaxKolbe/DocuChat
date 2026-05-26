@@ -209,13 +209,29 @@ model Permission {
 } 
  
 model WebhookEvent { 
-  id           String   @id  // The provider's event ID 
-  provider     String         // 'stripe', 'github', etc. 
-  eventType    String    @map("event_type")     // 'payment.succeeded', etc. 
-  receivedAt   DateTime @default(now())  @map("received_at") 
+  id           String     @id  // The provider's event ID 
+  provider     String          // 'stripe', 'github', etc. 
+  eventType    String     @map("event_type")     // 'payment.succeeded', etc. 
+  receivedAt   DateTime   @default(now())  @map("received_at") 
   processedAt  DateTime?  @map("processed_at") 
   payload      String         // Raw payload for debugging 
  
   @@index([provider, eventType]) 
   @@map("webhookevent")
+}
+
+ 
+model PromptTemplate { 
+  id        String   @id @default(uuid()) 
+  taskType  String   @map("task_type")         // 'chat', 'agent', 'summary' 
+  version   String               // 'v1', 'v2', 'v3' 
+  name      String               // Human-readable name 
+  content   String               // The actual prompt text 
+  isActive  Boolean  @default(false) @map("is_active") 
+  metadata  String?              // JSON: notes, author, changelog 
+  createdAt DateTime @default(now()) @map("created_at") 
+ 
+  @@unique([taskType, version]) 
+  @@index([taskType, isActive]) 
+  @@map("prompttemplate") 
 }

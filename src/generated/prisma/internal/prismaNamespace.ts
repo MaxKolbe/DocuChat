@@ -396,7 +396,8 @@ export const ModelName = {
   UserRole: 'UserRole',
   RolePermission: 'RolePermission',
   Permission: 'Permission',
-  WebhookEvent: 'WebhookEvent'
+  WebhookEvent: 'WebhookEvent',
+  PromptTemplate: 'PromptTemplate'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -412,7 +413,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "refreshToken" | "document" | "chunk" | "conversation" | "message" | "usageLog" | "aITrace" | "role" | "userRole" | "rolePermission" | "permission" | "webhookEvent"
+    modelProps: "user" | "refreshToken" | "document" | "chunk" | "conversation" | "message" | "usageLog" | "aITrace" | "role" | "userRole" | "rolePermission" | "permission" | "webhookEvent" | "promptTemplate"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1378,6 +1379,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    PromptTemplate: {
+      payload: Prisma.$PromptTemplatePayload<ExtArgs>
+      fields: Prisma.PromptTemplateFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PromptTemplateFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PromptTemplatePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PromptTemplateFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PromptTemplatePayload>
+        }
+        findFirst: {
+          args: Prisma.PromptTemplateFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PromptTemplatePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PromptTemplateFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PromptTemplatePayload>
+        }
+        findMany: {
+          args: Prisma.PromptTemplateFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PromptTemplatePayload>[]
+        }
+        create: {
+          args: Prisma.PromptTemplateCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PromptTemplatePayload>
+        }
+        createMany: {
+          args: Prisma.PromptTemplateCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PromptTemplateCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PromptTemplatePayload>[]
+        }
+        delete: {
+          args: Prisma.PromptTemplateDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PromptTemplatePayload>
+        }
+        update: {
+          args: Prisma.PromptTemplateUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PromptTemplatePayload>
+        }
+        deleteMany: {
+          args: Prisma.PromptTemplateDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PromptTemplateUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PromptTemplateUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PromptTemplatePayload>[]
+        }
+        upsert: {
+          args: Prisma.PromptTemplateUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PromptTemplatePayload>
+        }
+        aggregate: {
+          args: Prisma.PromptTemplateAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePromptTemplate>
+        }
+        groupBy: {
+          args: Prisma.PromptTemplateGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PromptTemplateGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PromptTemplateCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PromptTemplateCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1583,6 +1658,20 @@ export const WebhookEventScalarFieldEnum = {
 } as const
 
 export type WebhookEventScalarFieldEnum = (typeof WebhookEventScalarFieldEnum)[keyof typeof WebhookEventScalarFieldEnum]
+
+
+export const PromptTemplateScalarFieldEnum = {
+  id: 'id',
+  taskType: 'taskType',
+  version: 'version',
+  name: 'name',
+  content: 'content',
+  isActive: 'isActive',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
+} as const
+
+export type PromptTemplateScalarFieldEnum = (typeof PromptTemplateScalarFieldEnum)[keyof typeof PromptTemplateScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1800,6 +1889,7 @@ export type GlobalOmitConfig = {
   rolePermission?: Prisma.RolePermissionOmit
   permission?: Prisma.PermissionOmit
   webhookEvent?: Prisma.WebhookEventOmit
+  promptTemplate?: Prisma.PromptTemplateOmit
 }
 
 /* Types for Logging */

@@ -1,5 +1,6 @@
 import logger from "../configs/logger.config.js";
-
+import { prisma } from "../lib/prisma.js";
+import { cacheGet, cacheDel, CACHE_TTL, cacheSet } from "../lib/cache.js";
 export type TaskType = "chat" | "embedding" | "agent" | "summary";
 
 export interface MCPRequest {
@@ -69,3 +70,62 @@ export interface MCPResponse {
 //     fallbackUsed: result.fallbackUsed,
 //   };
 // }
+
+/** THE RAG SERVICE SHOULD MOVE FROM 
+ * this: 
+// Before: direct call 
+const response = await openaiBreaker.fire('/chat/completions', { 
+    model: 'gpt-4o', 
+    messages, 
+    temperature: 0.1, 
+}); 
+To this: 
+// After: through MCP 
+const response = await mcpComplete({ 
+    taskType: 'chat', 
+    messages, 
+    userId, 
+    correlationId, 
+    temperature: 0.1, 
+});
+ */
+
+async function resolvePrompt(taskType: TaskType): Promise<{ content: string; version: string }> {
+  // Check cache first
+  const cacheKey = `prompt:${taskType}:active`;
+  const cached = await cacheGet<{ content: string; version: string }>(cacheKey);
+  if (cached) return cached;
+  // Load from database
+  const prompt = await prisma.promptTemplate.findFirst({
+    where: { taskType, isActive: true },
+    orderBy: { createdAt: "desc" },
+  });
+  if (!prompt) {
+    throw new Error(`No active prompt for task type: ${taskType}`);
+  }
+  const result = { content: prompt.content, version: prompt.version };
+  await cacheSet(cacheKey, result, 300); // Cache for 5 minutes
+  return result;
+}
+
+// Use to test two prompt versions
+async function resolvePromptAB( 
+  taskType: TaskType, 
+  userId: string 
+): Promise<{ content: string; version: string }> { 
+  const prompts = await prisma.promptTemplate.findMany({ 
+    where: { taskType, isActive: true }, 
+    orderBy: { version: 'asc' }, 
+  }); 
+ 
+  if (prompts.length <= 1) { 
+    return resolvePrompt(taskType); // No A/B test running 
+  } 
+ 
+  // Deterministic split: hash the user ID to get a consistent bucket 
+  const hash = userId.charCodeAt(0) + userId.charCodeAt(userId.length - 1); 
+  const index = hash % prompts.length; 
+ 
+  const selected = prompts[index]; 
+  return { content: selected!.content, version: selected!.version }; 
+}

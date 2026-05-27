@@ -132,7 +132,7 @@ export const sendMessage = async (data: {
       conversationId: data.conversationId,
       correlationId: data.correlationId,
     });
-
+    
     // 7. Save assistant message with metadata
     const assistantMessage = await tx.message.create({
       data: {
@@ -168,8 +168,8 @@ export const sendMessage = async (data: {
         },
       },
       meta: {
-        correlationId: data.correlationId
-      }
+        correlationId: data.correlationId,
+      },
     };
   });
 };

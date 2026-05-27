@@ -1,7 +1,8 @@
-import { SearchResult } from "./search.service.js";
 import { RAG_SYSTEM_PROMPT } from "../configs/prompts.config.js";
-import { appEvents } from "../lib/events.js";
 import { openaiBreaker } from "../lib/http/openai.breaker.js";
+import { SearchResult } from "./search.service.js";
+import { mcpComplete } from "./mcp.services.js";
+import { appEvents } from "../lib/events.js";
 import logger from "../configs/logger.config.js";
 
 interface Citation {
@@ -84,7 +85,7 @@ interface RAGResponse {
   model: string;
 }
 
-const CHAT_MODEL = "gpt-4o";
+// const CHAT_MODEL = "gpt-4o";
 
 export async function generateRAGResponse(options: {
   question: string;
@@ -134,30 +135,45 @@ export async function generateRAGResponse(options: {
   const startTime = Date.now();
 
   // Call the LLM through the circuit breaker
-  const response = await openaiBreaker.fire("/chat/completions", {
-    model: CHAT_MODEL,
+  // const response = await openaiBreaker.fire("/chat/completions", {
+  //   model: CHAT_MODEL,
+  //   messages,
+  //   temperature: 0.1, // Low temperature for factual answers
+  //   max_tokens: 1500,
+  // });
+
+  // Call the LLM through the mcp
+  const response = await mcpComplete({
+    taskType: "chat",
     messages,
+    userId,
+    correlationId,
     temperature: 0.1, // Low temperature for factual answers
-    max_tokens: 1500,
+    maxTokens: 1500,
   });
 
-  const result = response.data;
-  const answer = result.choices[0].message.content;
-  const usage = result.usage;
+  const answer = response.content;
   const duration = Date.now() - startTime;
+  const costUsd = response.costUsd;
+  // const result = response.data;
+  // const answer = result.choices[0].message.content;
+  // const usage = result.usage;
 
   // Calculate cost (GPT-4o pricing)
-  const costUsd =
-    (usage.prompt_tokens / 1_000_000) * 2.5 + // Input
-    (usage.completion_tokens / 1_000_000) * 10.0; // Output
+  // const costUsd =
+  //   (usage.prompt_tokens / 1_000_000) * 2.5 + // Input
+  //   (usage.completion_tokens / 1_000_000) * 10.0; // Output
 
   logger.info("RAG response generated", {
     correlationId,
     conversationId,
-    model: CHAT_MODEL,
+    // model: CHAT_MODEL,
+    model: response.model,
     contextChunks: context.chunks.length,
-    promptTokens: usage.prompt_tokens,
-    completionTokens: usage.completion_tokens,
+    // promptTokens: usage.prompt_tokens,
+    // completionTokens: usage.completion_tokens,
+    promptTokens: response.tokensUsed.prompt,
+    completionTokens: response.tokensUsed.completion,
     costUsd: costUsd.toFixed(6),
     durationMs: duration,
   });
@@ -167,9 +183,12 @@ export async function generateRAGResponse(options: {
     userId,
     conversationId,
     correlationId,
-    model: CHAT_MODEL,
-    promptTokens: usage.prompt_tokens,
-    completionTokens: usage.completion_tokens,
+    // model: CHAT_MODEL,
+    // promptTokens: usage.prompt_tokens,
+    // completionTokens: usage.completion_tokens,
+    model: response.model,
+    promptTokens: response.tokensUsed.prompt,
+    completionTokens: response.tokensUsed.completion,
     costUsd,
   });
 
@@ -177,11 +196,15 @@ export async function generateRAGResponse(options: {
     answer,
     citations: context.citations,
     tokensUsed: {
-      prompt: usage.prompt_tokens,
-      completion: usage.completion_tokens,
-      total: usage.total_tokens,
+      // prompt: usage.prompt_tokens,
+      // completion: usage.completion_tokens,
+      // total: usage.total_tokens,
+      prompt: response.tokensUsed.prompt,
+      completion: response.tokensUsed.completion,
+      total: response.tokensUsed.total,
     },
     costUsd,
-    model: CHAT_MODEL,
+    model: response.model,
+    // model: CHAT_MODEL,
   };
 }

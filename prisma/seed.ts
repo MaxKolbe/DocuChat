@@ -199,6 +199,7 @@ async function main() {
       isActive: true,
     },
   });
+
   await prisma.promptTemplate.upsert({
     where: { taskType_version: { taskType: "agent", version: "v1" } },
     update: {},

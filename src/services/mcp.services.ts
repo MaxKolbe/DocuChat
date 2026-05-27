@@ -1,31 +1,10 @@
 import logger from "../configs/logger.config.js";
-import { prisma } from "../lib/prisma.js";
-import { cacheGet, cacheDel, CACHE_TTL, cacheSet } from "../lib/cache.js";
-export type TaskType = "chat" | "embedding" | "agent" | "summary";
-import { AppError } from "../lib/errors.js";
 import redisClient from "../configs/cache.config.js";
+export type TaskType = "chat" | "embedding" | "agent" | "summary";
+import { cacheGet, cacheDel, CACHE_TTL, cacheSet } from "../lib/cache.js";
 import { openaiBreaker } from "../lib/http/openai.breaker.js";
-
-export interface MCPRequest {
-  taskType: TaskType;
-  messages: { role: string; content: string }[];
-  userId: string;
-  correlationId: string;
-  tools?: any[];
-  maxTokens?: number;
-  temperature?: number;
-}
-
-export interface MCPResponse {
-  content: string;
-  toolCalls?: any[];
-  model: string;
-  promptVersion: string;
-  tokensUsed: { prompt: number; completion: number; total: number };
-  costUsd: number;
-  latencyMs: number;
-  fallbackUsed: boolean;
-}
+import { AppError } from "../lib/errors.js";
+import { prisma } from "../lib/prisma.js";
 
 // 1. Check budget
 const MONTHLY_BUDGETS: Record<string, number> = {
@@ -277,6 +256,27 @@ async function auditLog(data: {
 }
 
 /****************************************************************************/
+export interface MCPRequest {
+  taskType: TaskType;
+  messages: { role: string; content: string }[];
+  userId: string;
+  correlationId: string;
+  tools?: any[];
+  maxTokens?: number;
+  temperature?: number;
+}
+
+export interface MCPResponse {
+  content: string;
+  toolCalls?: any[];
+  model: string;
+  promptVersion: string;
+  tokensUsed: { prompt: number; completion: number; total: number };
+  costUsd: number;
+  latencyMs: number;
+  fallbackUsed: boolean;
+}
+
 export async function mcpComplete(request: MCPRequest): Promise<MCPResponse> {
   const startTime = Date.now();
 
@@ -311,13 +311,19 @@ export async function mcpComplete(request: MCPRequest): Promise<MCPResponse> {
   if (request.taskType === "chat") {
     // Track Confidence level metric
   }
-
+  // prompt_tokens: 734,
+  //     completion_tokens: 57,
+  //     total_tokens: 791,
   return {
     content: result.content,
     toolCalls: result.toolCalls,
     model: result.model,
     promptVersion: prompt.version,
-    tokensUsed: result.usage,
+    tokensUsed: {
+      prompt: result.usage.prompt_tokens,
+      completion: result.usage.completion_tokens,
+      total: result.usage.total_tokens,
+    },
     costUsd,
     latencyMs: Date.now() - startTime,
     fallbackUsed: result.fallbackUsed,

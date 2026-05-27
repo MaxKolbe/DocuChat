@@ -82,3 +82,13 @@ export type Permission = Prisma.PermissionModel
  * 
  */
 export type WebhookEvent = Prisma.WebhookEventModel
+/**
+ * Model PromptTemplate
+ * 
+ */
+export type PromptTemplate = Prisma.PromptTemplateModel
+/**
+ * Model AIAuditLog
+ * 
+ */
+export type AIAuditLog = Prisma.AIAuditLogModel

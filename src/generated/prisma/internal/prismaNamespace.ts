@@ -396,7 +396,9 @@ export const ModelName = {
   UserRole: 'UserRole',
   RolePermission: 'RolePermission',
   Permission: 'Permission',
-  WebhookEvent: 'WebhookEvent'
+  WebhookEvent: 'WebhookEvent',
+  PromptTemplate: 'PromptTemplate',
+  AIAuditLog: 'AIAuditLog'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -412,7 +414,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "refreshToken" | "document" | "chunk" | "conversation" | "message" | "usageLog" | "aITrace" | "role" | "userRole" | "rolePermission" | "permission" | "webhookEvent"
+    modelProps: "user" | "refreshToken" | "document" | "chunk" | "conversation" | "message" | "usageLog" | "aITrace" | "role" | "userRole" | "rolePermission" | "permission" | "webhookEvent" | "promptTemplate" | "aIAuditLog"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1378,6 +1380,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    PromptTemplate: {
+      payload: Prisma.$PromptTemplatePayload<ExtArgs>
+      fields: Prisma.PromptTemplateFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PromptTemplateFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PromptTemplatePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PromptTemplateFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PromptTemplatePayload>
+        }
+        findFirst: {
+          args: Prisma.PromptTemplateFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PromptTemplatePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PromptTemplateFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PromptTemplatePayload>
+        }
+        findMany: {
+          args: Prisma.PromptTemplateFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PromptTemplatePayload>[]
+        }
+        create: {
+          args: Prisma.PromptTemplateCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PromptTemplatePayload>
+        }
+        createMany: {
+          args: Prisma.PromptTemplateCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PromptTemplateCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PromptTemplatePayload>[]
+        }
+        delete: {
+          args: Prisma.PromptTemplateDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PromptTemplatePayload>
+        }
+        update: {
+          args: Prisma.PromptTemplateUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PromptTemplatePayload>
+        }
+        deleteMany: {
+          args: Prisma.PromptTemplateDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PromptTemplateUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PromptTemplateUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PromptTemplatePayload>[]
+        }
+        upsert: {
+          args: Prisma.PromptTemplateUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PromptTemplatePayload>
+        }
+        aggregate: {
+          args: Prisma.PromptTemplateAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePromptTemplate>
+        }
+        groupBy: {
+          args: Prisma.PromptTemplateGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PromptTemplateGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PromptTemplateCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PromptTemplateCountAggregateOutputType> | number
+        }
+      }
+    }
+    AIAuditLog: {
+      payload: Prisma.$AIAuditLogPayload<ExtArgs>
+      fields: Prisma.AIAuditLogFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AIAuditLogFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AIAuditLogPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AIAuditLogFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AIAuditLogPayload>
+        }
+        findFirst: {
+          args: Prisma.AIAuditLogFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AIAuditLogPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AIAuditLogFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AIAuditLogPayload>
+        }
+        findMany: {
+          args: Prisma.AIAuditLogFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AIAuditLogPayload>[]
+        }
+        create: {
+          args: Prisma.AIAuditLogCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AIAuditLogPayload>
+        }
+        createMany: {
+          args: Prisma.AIAuditLogCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AIAuditLogCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AIAuditLogPayload>[]
+        }
+        delete: {
+          args: Prisma.AIAuditLogDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AIAuditLogPayload>
+        }
+        update: {
+          args: Prisma.AIAuditLogUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AIAuditLogPayload>
+        }
+        deleteMany: {
+          args: Prisma.AIAuditLogDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AIAuditLogUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AIAuditLogUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AIAuditLogPayload>[]
+        }
+        upsert: {
+          args: Prisma.AIAuditLogUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AIAuditLogPayload>
+        }
+        aggregate: {
+          args: Prisma.AIAuditLogAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAIAuditLog>
+        }
+        groupBy: {
+          args: Prisma.AIAuditLogGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AIAuditLogGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AIAuditLogCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AIAuditLogCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1583,6 +1733,40 @@ export const WebhookEventScalarFieldEnum = {
 } as const
 
 export type WebhookEventScalarFieldEnum = (typeof WebhookEventScalarFieldEnum)[keyof typeof WebhookEventScalarFieldEnum]
+
+
+export const PromptTemplateScalarFieldEnum = {
+  id: 'id',
+  taskType: 'taskType',
+  version: 'version',
+  name: 'name',
+  content: 'content',
+  isActive: 'isActive',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
+} as const
+
+export type PromptTemplateScalarFieldEnum = (typeof PromptTemplateScalarFieldEnum)[keyof typeof PromptTemplateScalarFieldEnum]
+
+
+export const AIAuditLogScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  correlationId: 'correlationId',
+  taskType: 'taskType',
+  model: 'model',
+  promptVersion: 'promptVersion',
+  inputTokens: 'inputTokens',
+  outputTokens: 'outputTokens',
+  costUsd: 'costUsd',
+  latencyMs: 'latencyMs',
+  fallbackUsed: 'fallbackUsed',
+  inputSummary: 'inputSummary',
+  outputSummary: 'outputSummary',
+  createdAt: 'createdAt'
+} as const
+
+export type AIAuditLogScalarFieldEnum = (typeof AIAuditLogScalarFieldEnum)[keyof typeof AIAuditLogScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1800,6 +1984,8 @@ export type GlobalOmitConfig = {
   rolePermission?: Prisma.RolePermissionOmit
   permission?: Prisma.PermissionOmit
   webhookEvent?: Prisma.WebhookEventOmit
+  promptTemplate?: Prisma.PromptTemplateOmit
+  aIAuditLog?: Prisma.AIAuditLogOmit
 }
 
 /* Types for Logging */

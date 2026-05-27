@@ -209,13 +209,51 @@ model Permission {
 } 
  
 model WebhookEvent { 
-  id           String   @id  // The provider's event ID 
-  provider     String         // 'stripe', 'github', etc. 
-  eventType    String    @map("event_type")     // 'payment.succeeded', etc. 
-  receivedAt   DateTime @default(now())  @map("received_at") 
+  id           String     @id  // The provider's event ID 
+  provider     String          // 'stripe', 'github', etc. 
+  eventType    String     @map("event_type")     // 'payment.succeeded', etc. 
+  receivedAt   DateTime   @default(now())  @map("received_at") 
   processedAt  DateTime?  @map("processed_at") 
   payload      String         // Raw payload for debugging 
  
   @@index([provider, eventType]) 
   @@map("webhookevent")
+}
+
+ 
+model PromptTemplate { 
+  id        String   @id @default(uuid()) 
+  taskType  String   @map("task_type")         // 'chat', 'agent', 'summary' 
+  version   String               // 'v1', 'v2', 'v3' 
+  name      String               // Human-readable name 
+  content   String               // The actual prompt text 
+  isActive  Boolean  @default(false) @map("is_active") 
+  metadata  String?              // JSON: notes, author, changelog 
+  createdAt DateTime @default(now()) @map("created_at") 
+ 
+  @@unique([taskType, version]) 
+  @@index([taskType, isActive]) 
+  @@map("prompttemplate") 
+}
+
+model AIAuditLog { 
+  id             String   @id @default(uuid()) 
+  userId         String   @map("user_id") 
+  correlationId  String   @map("correlation_id") 
+  taskType       String   @map("task_type") 
+  model          String 
+  promptVersion  String   @map("prompt_version") 
+  inputTokens    Int      @map("input_tokens") 
+  outputTokens   Int      @map("output_tokens") 
+  costUsd        Float    @map("cost_usd") 
+  latencyMs      Int      @map("latency_ms")   
+  fallbackUsed   Boolean  @default(false) @map("fallback_used") 
+  inputSummary   String   @map("input_summary") 
+  outputSummary  String   @map("output_summary") 
+  createdAt      DateTime @default(now()) @map("created_at") 
+
+  @@index([userId, createdAt]) 
+  @@index([taskType, createdAt]) 
+  @@index([model, createdAt]) 
+  @@map("aiauditlog")
 }

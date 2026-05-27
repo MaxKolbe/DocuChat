@@ -1,4 +1,5 @@
 import { prisma } from "../src/lib/prisma.js";
+import { RAG_SYSTEM_PROMPT, AGENT_SYSTEM_PROMPT} from "../src/configs/prompts.config.js"
 import logger from "../src/configs/logger.config.js";
 import bcrypt from "bcryptjs";
 
@@ -121,7 +122,7 @@ async function seedRBAC() {
       });
     }
   }
- 
+
   logger.info("RBAC seeded: 3 roles, 9 permissions");
 }
 
@@ -184,8 +185,32 @@ async function main() {
       status: "ready",
       chunkCount: 1,
     },
-  }); 
+  });
   logger.info(`Done. admin: ${admin.email}, user: ${user.email}`);
+
+  await prisma.promptTemplate.upsert({
+    where: { taskType_version: { taskType: "chat", version: "v1" } },
+    update: {},
+    create: {
+      taskType: "chat",
+      version: "v1",
+      name: "RAG Chat - Initial",
+      content: RAG_SYSTEM_PROMPT, // From prompts.config.ts
+      isActive: true,
+    },
+  });
+
+  await prisma.promptTemplate.upsert({
+    where: { taskType_version: { taskType: "agent", version: "v1" } },
+    update: {},
+    create: {
+      taskType: "agent",
+      version: "v1",
+      name: "Research Agent - Initial",
+      content: AGENT_SYSTEM_PROMPT,
+      isActive: true,
+    },
+  });
 }
 main()
   .then(() => prisma.$disconnect())

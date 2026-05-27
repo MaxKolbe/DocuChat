@@ -63,7 +63,9 @@ export const ModelName = {
   UserRole: 'UserRole',
   RolePermission: 'RolePermission',
   Permission: 'Permission',
-  WebhookEvent: 'WebhookEvent'
+  WebhookEvent: 'WebhookEvent',
+  PromptTemplate: 'PromptTemplate',
+  AIAuditLog: 'AIAuditLog'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -248,6 +250,40 @@ export const WebhookEventScalarFieldEnum = {
 } as const
 
 export type WebhookEventScalarFieldEnum = (typeof WebhookEventScalarFieldEnum)[keyof typeof WebhookEventScalarFieldEnum]
+
+
+export const PromptTemplateScalarFieldEnum = {
+  id: 'id',
+  taskType: 'taskType',
+  version: 'version',
+  name: 'name',
+  content: 'content',
+  isActive: 'isActive',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
+} as const
+
+export type PromptTemplateScalarFieldEnum = (typeof PromptTemplateScalarFieldEnum)[keyof typeof PromptTemplateScalarFieldEnum]
+
+
+export const AIAuditLogScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  correlationId: 'correlationId',
+  taskType: 'taskType',
+  model: 'model',
+  promptVersion: 'promptVersion',
+  inputTokens: 'inputTokens',
+  outputTokens: 'outputTokens',
+  costUsd: 'costUsd',
+  latencyMs: 'latencyMs',
+  fallbackUsed: 'fallbackUsed',
+  inputSummary: 'inputSummary',
+  outputSummary: 'outputSummary',
+  createdAt: 'createdAt'
+} as const
+
+export type AIAuditLogScalarFieldEnum = (typeof AIAuditLogScalarFieldEnum)[keyof typeof AIAuditLogScalarFieldEnum]
 
 
 export const SortOrder = {

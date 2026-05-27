@@ -4,6 +4,7 @@
 import { TOOL_REGISTRY, getToolSchemas } from "./tools/registry.js";
 import { AGENT_SYSTEM_PROMPT } from "../configs/prompts.config.js";
 import { openaiBreaker } from "../lib/http/openai.breaker.js";
+import { mcpComplete } from "../services/mcp.services.js";
 import { appEvents } from "../lib/events.js";
 import logger from "../configs/logger.config.js";
 
@@ -22,7 +23,7 @@ interface AgentResult {
   totalCostUsd: number;
   terminationReason: "completed" | "iteration_limit" | "timeout" | "cost_limit" | "error";
   trace: TraceStep[];
-}
+} 
 
 interface TraceStep {
   step: number;
@@ -92,21 +93,34 @@ export async function runAgent(options: {
     const stepStart = Date.now();
 
     // ── THINK: Ask the model what to do ──
-    const response = await openaiBreaker.fire("/chat/completions", {
-      model: config.model,
+    // const response = await openaiBreaker.fire("/chat/completions", {
+    //   model: config.model,
+    //   messages,
+    //   tools: toolSchemas,
+    //   tool_choice: "auto",
+    //   temperature: 0.1,
+    // });
+    const response = await mcpComplete({
+      taskType: "agent",
       messages,
+      userId,
+      correlationId,
       tools: toolSchemas,
-      tool_choice: "auto",
       temperature: 0.1,
     });
 
-    const usage = response.data.usage;
-    const stepCost =
-      (usage.prompt_tokens / 1_000_000) * 2.5 + (usage.completion_tokens / 1_000_000) * 10.0;
+    // const usage = response.data.usage;
+    // const stepCost =
+    //   (usage.prompt_tokens / 1_000_000) * 2.5 + (usage.completion_tokens / 1_000_000) * 10.0;
+    // totalCostUsd += stepCost;
+
+    const stepCost = (response.tokensUsed.prompt / 1_000_000) * 2.5 + (response.tokensUsed.completion / 1_000_000) * 10.0;
     totalCostUsd += stepCost;
 
-    const choice = response.data.choices[0];
-    const assistantMessage = choice.message;
+    // const choice = response.data.choices[0];
+    // const assistantMessage = choice.message;
+
+    const assistantMessage = response.assistantMessage;
 
     // Add the assistant's response to conversation
     messages.push(assistantMessage);
@@ -261,7 +275,7 @@ export async function runAgent(options: {
   return buildResult("iteration_limit", trace, totalCostUsd, iteration);
 }
 
-function buildResult(
+function buildResult( 
   reason: AgentResult["terminationReason"],
   trace: TraceStep[],
   costUsd: number,

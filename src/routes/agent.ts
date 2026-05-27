@@ -36,7 +36,7 @@ router.use(authenticate);
  */
 router.post(
   "/",
-  chatLimiter,
+  // chatLimiter,
   requirePermission("conversations:create"),
   async (req, res, next) => {
     try {

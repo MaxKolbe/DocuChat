@@ -3,6 +3,7 @@ import { prisma } from "../lib/prisma.js";
 import { cacheGet, cacheDel, CACHE_TTL, cacheSet } from "../lib/cache.js";
 export type TaskType = "chat" | "embedding" | "agent" | "summary";
 import { AppError } from "../lib/errors.js";
+import redisClient from "../configs/cache.config.js";
 
 export interface MCPRequest {
   taskType: TaskType;
@@ -112,6 +113,22 @@ async function resolvePromptAB(
 
   const selected = prompts[index];
   return { content: selected!.content, version: selected!.version };
+}
+
+function daysRemainingInMonth(): number {
+  const now = new Date();
+  const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  return lastDay.getDate() - now.getDate();
+}
+
+async function trackCost(userId: string, costUsd: number): Promise<void> {
+  // Atomic increment in Redis for fast budget checks
+  const monthKey = `budget:${userId}:${new Date().toISOString().slice(0, 7)}`;
+  await redisClient.incrByFloat(monthKey, costUsd);
+
+  // Set expiry: auto-cleanup after the month ends
+  const daysLeft = daysRemainingInMonth();
+  await redisClient.expire(monthKey, (daysLeft + 1) * 86400);
 }
 
 // export async function mcpComplete(request: MCPRequest): Promise<MCPResponse> {

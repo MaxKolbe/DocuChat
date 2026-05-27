@@ -4,6 +4,7 @@ import { cacheGet, cacheDel, CACHE_TTL, cacheSet } from "../lib/cache.js";
 export type TaskType = "chat" | "embedding" | "agent" | "summary";
 import { AppError } from "../lib/errors.js";
 import redisClient from "../configs/cache.config.js";
+import { openaiBreaker } from "../lib/http/openai.breaker.js";
 
 export interface MCPRequest {
   taskType: TaskType;
@@ -153,6 +154,60 @@ async function routeModel(taskType: TaskType, messages: any[]): Promise<ModelCon
   return MODELS[modelName] || MODELS["gpt-4o-mini"]!;
 }
 
+// 4. Call with fallback
+const FALLBACK_CHAINS: Record<string, string[]> = {
+  "gpt-4o": ["gpt-4o", "gpt-4o-mini"],
+  "gpt-4o-mini": ["gpt-4o-mini", "gpt-4o"],
+};
+
+async function callWithFallback(primaryModel: ModelConfig, request: any): Promise<any> {
+  const chain = FALLBACK_CHAINS[primaryModel.name] || [primaryModel.name];
+
+  for (let i = 0; i < chain.length; i++) {
+    const modelName = chain[i];
+    const isFallback = i > 0;
+
+    try {
+      const response = await openaiBreaker.fire("/chat/completions", {
+        model: modelName,
+        messages: [{ role: "system", content: request.systemPrompt }, ...request.messages],
+        tools: request.tools,
+        temperature: request.temperature ?? 0.1,
+        max_tokens: request.maxTokens ?? 1500,
+      });
+
+      if (isFallback) {
+        logger.warn("Fallback model used", {
+          correlationId: request.correlationId,
+          primary: primaryModel.name,
+          fallback: modelName,
+        });
+      }
+
+      return {
+        content: response.data.choices[0].message.content,
+        toolCalls: response.data.choices[0].message.tool_calls,
+        model: modelName,
+        usage: response.data.usage,
+        fallbackUsed: isFallback,
+      };
+    } catch (error) {
+      logger.error(`Model ${modelName} failed`, {
+        correlationId: request.correlationId,
+        error: (error as Error).message,
+        isLastFallback: i === chain.length - 1,
+      });
+
+      if (i === chain.length - 1) {
+        throw error; // All models failed
+      }
+      // Try next model in chain
+    }
+  }
+
+  throw new Error("All models in fallback chain failed");
+}
+
 function daysRemainingInMonth(): number {
   const now = new Date();
   const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
@@ -169,6 +224,7 @@ async function trackCost(userId: string, costUsd: number): Promise<void> {
   await redisClient.expire(monthKey, (daysLeft + 1) * 86400);
 }
 
+ // 6. Audit log
 async function auditLog(data: {
   userId: string;
   correlationId: string;

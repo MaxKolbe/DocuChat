@@ -111,3 +111,8 @@ export type WebhookEvent = Prisma.WebhookEventModel
  * 
  */
 export type PromptTemplate = Prisma.PromptTemplateModel
+/**
+ * Model AIAuditLog
+ * 
+ */
+export type AIAuditLog = Prisma.AIAuditLogModel

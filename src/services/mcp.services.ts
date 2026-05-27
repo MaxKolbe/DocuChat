@@ -131,52 +131,89 @@ async function trackCost(userId: string, costUsd: number): Promise<void> {
   await redisClient.expire(monthKey, (daysLeft + 1) * 86400);
 }
 
-// export async function mcpComplete(request: MCPRequest): Promise<MCPResponse> {
-//   const startTime = Date.now();
+async function auditLog(data: {
+  userId: string;
+  correlationId: string;
+  taskType: TaskType;
+  model: string;
+  promptVersion: string;
+  costUsd: number;
+  latencyMs: number;
+  messages: any[];
+  response?: string;
+  fallbackUsed?: boolean;
+}): Promise<void> {
+  try {
+    const inputText = data.messages.map((m) => `[${m.role}]: ${m.content}`).join("\n");
 
-//   // 1. Check budget
-//   await enforceBudget(request.userId);
+    await prisma.aIAuditLog.create({
+      data: {
+        userId: data.userId,
+        correlationId: data.correlationId,
+        taskType: data.taskType,
+        model: data.model,
+        promptVersion: data.promptVersion,
+        inputTokens: 0, // Filled from usage data
+        outputTokens: 0,
+        costUsd: data.costUsd,
+        latencyMs: data.latencyMs,
+        fallbackUsed: data.fallbackUsed ?? false,
+        inputSummary: inputText.substring(0, 500),
+        outputSummary: (data.response || "").substring(0, 500),
+      },
+    });
+  } catch (error) {
+    // Audit logging should never crash the request
+    logger.error("Audit log failed", { error });
+  }
+}
 
-//   // 2. Resolve prompt version
-//   const prompt = await resolvePrompt(request.taskType);
+export async function mcpComplete(request: MCPRequest): Promise<MCPResponse> {
+  const startTime = Date.now();
 
-//   // 3. Select model
-//   const model = await routeModel(request.taskType, request.messages);
+  // 1. Check budget
+  await enforceBudget(request.userId);
 
-//   // 4. Call with fallback
-//   const result = await callWithFallback(model, {
-//     ...request,
-//     systemPrompt: prompt.content,
-//   });
+  // 2. Resolve prompt version
+  const prompt = await resolvePrompt(request.taskType);
 
-//   // 5. Track cost
-//   const costUsd = calculateCost(result.model, result.usage);
-//   await trackCost(request.userId, costUsd);
+  // 3. Select model
+  const model = await routeModel(request.taskType, request.messages);
 
-//   // 6. Audit log
-//   await auditLog({
-//     ...request,
-//     model: result.model,
-//     promptVersion: prompt.version,
-//     costUsd,
-//     latencyMs: Date.now() - startTime,
-//   });
+  // 4. Call with fallback
+  const result = await callWithFallback(model, {
+    ...request,
+    systemPrompt: prompt.content,
+  });
 
-//   if (request.taskType === "chat") {
-//     // Track Confidence level metric
-//   }
+  // 5. Track cost
+  const costUsd = calculateCost(result.model, result.usage);
+  await trackCost(request.userId, costUsd);
 
-//   return {
-//     content: result.content,
-//     toolCalls: result.toolCalls,
-//     model: result.model,
-//     promptVersion: prompt.version,
-//     tokensUsed: result.usage,
-//     costUsd,
-//     latencyMs: Date.now() - startTime,
-//     fallbackUsed: result.fallbackUsed,
-//   };
-// }
+  // 6. Audit log
+  await auditLog({
+    ...request,
+    model: result.model,
+    promptVersion: prompt.version,
+    costUsd,
+    latencyMs: Date.now() - startTime,
+  });
+
+  if (request.taskType === "chat") {
+    // Track Confidence level metric
+  }
+
+  return {
+    content: result.content,
+    toolCalls: result.toolCalls,
+    model: result.model,
+    promptVersion: prompt.version,
+    tokensUsed: result.usage,
+    costUsd,
+    latencyMs: Date.now() - startTime,
+    fallbackUsed: result.fallbackUsed,
+  };
+}
 
 /** THE RAG SERVICE SHOULD MOVE FROM 
  * this: 

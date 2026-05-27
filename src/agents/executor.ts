@@ -101,7 +101,7 @@ export async function runAgent(options: {
     //   temperature: 0.1,
     // });
     const response = await mcpComplete({
-      taskType: "chat",
+      taskType: "agent",
       messages,
       userId,
       correlationId,
@@ -114,7 +114,7 @@ export async function runAgent(options: {
     //   (usage.prompt_tokens / 1_000_000) * 2.5 + (usage.completion_tokens / 1_000_000) * 10.0;
     // totalCostUsd += stepCost;
 
-    const stepCost = response.tokensUsed.total
+    const stepCost = (response.tokensUsed.prompt / 1_000_000) * 2.5 + (response.tokensUsed.completion / 1_000_000) * 10.0;
     totalCostUsd += stepCost;
 
     // const choice = response.data.choices[0];
@@ -275,7 +275,7 @@ export async function runAgent(options: {
   return buildResult("iteration_limit", trace, totalCostUsd, iteration);
 }
 
-function buildResult(
+function buildResult( 
   reason: AgentResult["terminationReason"],
   trace: TraceStep[],
   costUsd: number,

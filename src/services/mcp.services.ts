@@ -155,8 +155,6 @@ async function callWithFallback(primaryModel: ModelConfig, request: any): Promis
         max_tokens: request.maxTokens ?? 1500,
       });
 
-    //   console.log("response-->", response.data.choices[0].message);
-
       if (isFallback) {
         logger.warn("Fallback model used", {
           correlationId: request.correlationId,

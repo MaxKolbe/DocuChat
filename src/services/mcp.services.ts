@@ -208,6 +208,20 @@ async function callWithFallback(primaryModel: ModelConfig, request: any): Promis
   throw new Error("All models in fallback chain failed");
 }
 
+// 5. Track cost
+function calculateCost(
+  modelName: string,
+  usage: { prompt_tokens: number; completion_tokens: number },
+): number {
+  const model = MODELS[modelName];
+  if (!model) return 0;
+
+  return (
+    (usage.prompt_tokens / 1_000_000) * model.costPerMillionInput +
+    (usage.completion_tokens / 1_000_000) * model.costPerMillionOutput
+  );
+}
+
 function daysRemainingInMonth(): number {
   const now = new Date();
   const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
@@ -224,7 +238,7 @@ async function trackCost(userId: string, costUsd: number): Promise<void> {
   await redisClient.expire(monthKey, (daysLeft + 1) * 86400);
 }
 
- // 6. Audit log
+// 6. Audit log
 async function auditLog(data: {
   userId: string;
   correlationId: string;
@@ -262,6 +276,7 @@ async function auditLog(data: {
   }
 }
 
+/****************************************************************************/
 export async function mcpComplete(request: MCPRequest): Promise<MCPResponse> {
   const startTime = Date.now();
 
@@ -308,6 +323,7 @@ export async function mcpComplete(request: MCPRequest): Promise<MCPResponse> {
     fallbackUsed: result.fallbackUsed,
   };
 }
+/****************************************************************************/
 
 /** THE RAG SERVICE SHOULD MOVE FROM 
  * this: 

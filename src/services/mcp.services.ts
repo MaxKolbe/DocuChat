@@ -26,6 +26,7 @@ export interface MCPResponse {
   fallbackUsed: boolean;
 }
 
+// 1. Check budget
 const MONTHLY_BUDGETS: Record<string, number> = {
   free: 1.0,
   pro: 20.0,
@@ -75,6 +76,7 @@ async function enforceBudget(userId: string): Promise<void> {
   }
 }
 
+// 2. Resolve prompt version
 async function resolvePrompt(taskType: TaskType): Promise<{ content: string; version: string }> {
   // Check cache first
   const cacheKey = `prompt:${taskType}:active`;
@@ -113,6 +115,42 @@ async function resolvePromptAB(
 
   const selected = prompts[index];
   return { content: selected!.content, version: selected!.version };
+}
+
+// 3. Select model
+interface ModelConfig {
+  name: string;
+  costPerMillionInput: number;
+  costPerMillionOutput: number;
+  maxTokens: number;
+}
+
+const MODELS: Record<string, ModelConfig> = {
+  "gpt-4o": {
+    name: "gpt-4o",
+    costPerMillionInput: 2.5,
+    costPerMillionOutput: 10.0,
+    maxTokens: 128000,
+  },
+  "gpt-4o-mini": {
+    name: "gpt-4o-mini",
+    costPerMillionInput: 0.15,
+    costPerMillionOutput: 0.6,
+    maxTokens: 128000,
+  },
+};
+
+// Task type → default model mapping
+const MODEL_ROUTING: Record<TaskType, string> = {
+  chat: "gpt-4o-mini", // Simple Q&A — cheap model is fine
+  embedding: "text-embedding-3-small", // Embedding model
+  agent: "gpt-4o", // Agents need strong reasoning
+  summary: "gpt-4o-mini", // Summaries are straightforward
+};
+
+async function routeModel(taskType: TaskType, messages: any[]): Promise<ModelConfig> {
+  const modelName = MODEL_ROUTING[taskType];
+  return MODELS[modelName] || MODELS["gpt-4o-mini"]!;
 }
 
 function daysRemainingInMonth(): number {

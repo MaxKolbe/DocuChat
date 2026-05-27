@@ -255,5 +255,5 @@ model AIAuditLog {
   @@index([userId, createdAt]) 
   @@index([taskType, createdAt]) 
   @@index([model, createdAt]) 
-  @@map("aIauditlog")
+  @@map("aiauditlog")
 }

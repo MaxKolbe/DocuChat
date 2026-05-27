@@ -155,6 +155,8 @@ async function callWithFallback(primaryModel: ModelConfig, request: any): Promis
         max_tokens: request.maxTokens ?? 1500,
       });
 
+    //   console.log("response-->", response.data.choices[0].message);
+
       if (isFallback) {
         logger.warn("Fallback model used", {
           correlationId: request.correlationId,
@@ -169,6 +171,7 @@ async function callWithFallback(primaryModel: ModelConfig, request: any): Promis
         model: modelName,
         usage: response.data.usage,
         fallbackUsed: isFallback,
+        assistantMessage: response.data.choices[0].message,
       };
     } catch (error) {
       logger.error(`Model ${modelName} failed`, {
@@ -275,6 +278,7 @@ export interface MCPResponse {
   costUsd: number;
   latencyMs: number;
   fallbackUsed: boolean;
+  assistantMessage?: any;
 }
 
 export async function mcpComplete(request: MCPRequest): Promise<MCPResponse> {
@@ -327,6 +331,7 @@ export async function mcpComplete(request: MCPRequest): Promise<MCPResponse> {
     costUsd,
     latencyMs: Date.now() - startTime,
     fallbackUsed: result.fallbackUsed,
+    assistantMessage: result.assistantMessage
   };
 }
 /****************************************************************************/

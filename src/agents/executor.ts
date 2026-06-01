@@ -58,7 +58,6 @@ export async function runAgent(options: {
 
   // Build the conversation with the LLM
   const messages: any[] = [
-    { role: "system", content: AGENT_SYSTEM_PROMPT },
     { role: "user", content: question },
   ];
 

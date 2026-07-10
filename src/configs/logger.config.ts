@@ -8,7 +8,7 @@ import { Logtail } from "@logtail/node";
 //   endpoint: `https://${process.env.INGESTING_HOST}`,
 // });
 const isProduction = process.env.NODE_ENV === "production";
-const { combine, timestamp, json, errors, align, cli, printf } = winston.format;
+const { combine, timestamp, json, errors, align, colorize, printf } = winston.format;
 
 const logger = winston.createLogger({
   level: process.env.LOG_LEVEL || "info",
@@ -20,7 +20,7 @@ const logger = winston.createLogger({
     isProduction
       ? combine(json(), align())
       : combine(
-          cli(),
+          colorize(),
           printf(({ timestamp, level, message, ...meta }) => {
             const metaStr = Object.keys(meta).length ? ` ${JSON.stringify(meta)}` : "";
             return `${timestamp} ${level}: ${message}${metaStr}`;

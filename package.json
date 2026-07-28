@@ -33,6 +33,7 @@
     "@bull-board/express": "^7.0.0",
     "@logtail/node": "^0.5.8",
     "@logtail/winston": "^0.5.8",
+    "@modelcontextprotocol/sdk": "^1.29.0",
     "@prisma/adapter-pg": "^7.7.0",
     "@prisma/client": "^7.7.0",
     "axios": "^1.15.2",

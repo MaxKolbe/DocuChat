@@ -16,8 +16,8 @@ export interface SearchResult {
 export const semanticSearch = async (options: {
   query: string;
   userId: string;
-  documentId?: string; // Optional: search within a specific document
   topK?: number;
+  documentId?: string | undefined; // Optional: search within a specific document
   minScore?: number;
 }): Promise<SearchResult[]> => {
   const { query, userId, documentId, topK = 10, minScore = 0.3 } = options;
